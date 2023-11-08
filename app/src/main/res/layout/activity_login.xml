@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:layout_height="match_parent"
         android:background="@color/darkPurple"
-        tools:context=".LoginActivity">
+        tools:context=".activities.LoginActivity">
 
 
         <RelativeLayout
@@ -84,7 +84,6 @@
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="30dp"
                 android:backgroundTint="@color/purple"
-                android:focusableInTouchMode="true"
                 android:text="@string/loginTxt"
                 android:textColor="@color/black"
                 android:textSize="16sp"
@@ -109,11 +108,10 @@
                 <Button
                     android:id="@+id/signupButton"
                     android:layout_width="100dp"
-                    android:layout_height="45dp"
+                    android:layout_height="55dp"
                     android:layout_alignEnd="@id/signupTxt"
                     android:layout_marginEnd="24dp"
                     android:backgroundTint="@color/purple"
-                    android:focusableInTouchMode="true"
                     android:text="@string/signupButtonText"
                     android:textColor="@color/black"
                     />

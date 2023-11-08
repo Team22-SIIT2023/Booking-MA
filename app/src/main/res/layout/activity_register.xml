@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:background="@color/darkPurple"
+        tools:context=".activities.LoginActivity">
+
+        <RelativeLayout
+            android:layout_width="355dp"
+            android:layout_height="660dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/roundcorner"
+            android:backgroundTint="@color/purple">
+
+            <TextView
+                android:id="@+id/usernameTxt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/usernameTxt"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/usernameField"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@id/usernameTxt"
+                android:layout_marginLeft="22dp"
+                android:layout_marginRight="22dp"
+                android:inputType="text"
+                android:textColorHint="@color/black" />
+
+            <TextView
+                android:id="@+id/passwordTxt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/usernameField"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/passwordTxt"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/passwordField"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@id/passwordTxt"
+                android:layout_marginLeft="22dp"
+                android:layout_marginRight="22dp"
+                android:inputType="textPassword"
+                android:textColorHint="@color/black" />
+
+            <TextView
+                android:id="@+id/fullNameTxt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/passwordField"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/fullName"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/fullNameField"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@id/fullNameTxt"
+                android:layout_marginLeft="22dp"
+                android:layout_marginRight="22dp"
+                android:inputType="textPassword"
+                android:textColorHint="@color/black" />
+
+            <TextView
+                android:id="@+id/lastNameTxt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/fullNameField"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/lastName"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/lastNameField"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@id/lastNameTxt"
+                android:layout_marginLeft="22dp"
+                android:layout_marginRight="22dp"
+                android:inputType="textPassword"
+                android:textColorHint="@color/black" />
+
+            <TextView
+                android:id="@+id/emailTxt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/lastNameField"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/email"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/emailField"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@id/emailTxt"
+                android:layout_marginLeft="22dp"
+                android:layout_marginRight="22dp"
+                android:inputType="textEmailAddress"
+                android:textColorHint="@color/black" />
+
+            <TextView
+                android:id="@+id/adressTxt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/emailField"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/email"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/adressField"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@id/adressTxt"
+                android:layout_marginLeft="22dp"
+                android:layout_marginRight="22dp"
+                android:layout_marginBottom="20dp"
+                android:inputType="text"
+                android:textColorHint="@color/black" />
+
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="130dp"
+                android:layout_height="55dp"
+                android:layout_below="@id/adressField"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="30dp"
+                android:backgroundTint="@color/purple"
+                android:text="@string/signupButtonText"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:strokeColor="@color/grey"
+                app:strokeWidth="0.6dp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</ScrollView>

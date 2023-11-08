@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/base_navigation"
+    app:startDestination="@+id/nav_accomodations"
+    >
+    <fragment
+        android:id="@+id/nav_accomodations"
+        android:name="com.example.booking_team22.fragments.accomodation.GuestAccomodationPageFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_accomodation_page"
+        />
+
+    <fragment
+        android:id="@+id/nav_account"
+        android:name="com.example.booking_team22.fragments.account.AccountFragment"
+        android:label="Account"
+        tools:layout="@layout/fragment_account"
+        app:popUpToInclusive="true"
+        />
+
+    <fragment
+        android:id="@+id/nav_reservations"
+        android:name="com.example.booking_team22.fragments.reservations.GuestReservationFragment"
+        android:label="Reservations"
+        tools:layout="@layout/fragment_guest_reservation"
+        app:popUpToInclusive="true"
+        />
+    <fragment
+        android:id="@+id/nav_notifications"
+        android:name="com.example.booking_team22.fragments.notifications.NotificationsFragment"
+        android:label="Notifications"
+        tools:layout="@layout/fragment_notifications"
+        app:popUpToInclusive="true"
+        />
+
+</navigation>
