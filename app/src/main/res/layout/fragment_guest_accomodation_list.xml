@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.accomodation.GuestAccomodationPageFragment">
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <ListView
+        android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:id="@+id/scroll_products_list"
+        tools:listitem="@layout/accomodation_card"
         />
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
