@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Booking-team22</string>
+    <string name="usernameTxt">username</string>
+    <string name="passwordTxt">password</string>
+    <string name="loginTxt">login</string>
+    <string name="signupTxt">"Don't have an account?"</string>
+    <string name="signupButtonText">"sign up"</string>
+    <string name="fullName">"full name"</string>
+    <string name="lastName">"last name"</string>
+    <string name="email">email</string>
+    <string name="messageSignUp">"Beecome a member, sign up!"</string>
+</resources>
