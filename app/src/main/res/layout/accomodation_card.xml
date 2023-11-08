@@ -57,8 +57,8 @@
             android:autoSizeTextType="uniform"
             android:autoSizeMinTextSize="12sp"
             android:autoSizeMaxTextSize="48sp"
-            android:textSize="16sp"
-            android:text="View accomodation" />
+            android:textSize="14sp"
+            android:text="@string/accomodationButton" />
 
 
     </LinearLayout>
