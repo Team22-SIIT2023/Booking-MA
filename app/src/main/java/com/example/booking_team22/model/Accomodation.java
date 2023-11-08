@@ -63,7 +63,7 @@ public class Accomodation implements Parcelable {
 
     @Override
     public String toString() {
-        return "Product{" +
+        return "Accomodation{" +
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", image='" + image + '\'' +

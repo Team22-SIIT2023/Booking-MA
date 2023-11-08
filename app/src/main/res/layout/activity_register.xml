@@ -24,23 +24,22 @@
             <TextView
                 android:id="@+id/usernameTxt"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginTop="25dp"
                 android:text="@string/usernameTxt"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <EditText
                 android:id="@+id/usernameField"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="48dp"
                 android:layout_below="@id/usernameTxt"
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
                 android:inputType="text"
-                android:textColorHint="@color/black" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/passwordTxt"
@@ -50,15 +49,14 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
                 android:text="@string/passwordTxt"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <EditText
                 android:id="@+id/passwordField"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="48dp"
                 android:layout_below="@id/passwordTxt"
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
@@ -66,109 +64,104 @@
                 android:textColorHint="@color/black" />
 
             <TextView
-                android:id="@+id/fullNameTxt"
+                android:id="@+id/firstNameTxt"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/passwordField"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
-                android:text="@string/fullName"
+                android:text="@string/firstName"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <EditText
-                android:id="@+id/fullNameField"
+                android:id="@+id/firstNameField"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_below="@id/fullNameTxt"
+                android:layout_height="48dp"
+                android:layout_below="@id/firstNameTxt"
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
-                android:inputType="textPassword"
-                android:textColorHint="@color/black" />
+                android:inputType="text"
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/lastNameTxt"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_below="@id/fullNameField"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/firstNameField"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
                 android:text="@string/lastName"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <EditText
                 android:id="@+id/lastNameField"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="48dp"
                 android:layout_below="@id/lastNameTxt"
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
-                android:inputType="textPassword"
-                android:textColorHint="@color/black" />
+                android:inputType="text"
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/emailTxt"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/lastNameField"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
                 android:text="@string/email"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <EditText
                 android:id="@+id/emailField"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="48dp"
                 android:layout_below="@id/emailTxt"
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
                 android:inputType="textEmailAddress"
-                android:textColorHint="@color/black" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/adressTxt"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/emailField"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
-                android:text="@string/email"
+                android:text="@string/adress"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <EditText
                 android:id="@+id/adressField"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="48dp"
                 android:layout_below="@id/adressTxt"
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
                 android:layout_marginBottom="20dp"
                 android:inputType="text"
-                android:textColorHint="@color/black" />
+                android:textColor="@color/black" />
 
             <Button
                 android:id="@+id/loginButton"
-                android:layout_width="130dp"
-                android:layout_height="55dp"
+                android:layout_width="140dp"
+                android:layout_height="52dp"
                 android:layout_below="@id/adressField"
                 android:layout_centerInParent="true"
-                android:layout_marginBottom="30dp"
                 android:backgroundTint="@color/purple"
                 android:text="@string/signupButtonText"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 app:strokeColor="@color/grey"
                 app:strokeWidth="0.6dp" />
 
