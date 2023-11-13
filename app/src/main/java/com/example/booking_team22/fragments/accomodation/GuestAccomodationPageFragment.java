@@ -1,20 +1,30 @@
 package com.example.booking_team22.fragments.accomodation;
 
+import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 
 import com.example.booking_team22.R;
+import com.example.booking_team22.activities.LoginActivity;
+import com.example.booking_team22.activities.RegisterActivity;
 import com.example.booking_team22.databinding.FragmentAccomodationPageBinding;
 import com.example.booking_team22.fragments.FragmentTransition;
 import com.example.booking_team22.model.Accomodation;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,6 +32,7 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class GuestAccomodationPageFragment extends Fragment {
+    private int mYear, mMonth, mDay, mHour, mMinute;
 
     public static ArrayList<Accomodation> products = new ArrayList<Accomodation>();
     //private ProductsPageViewModel productsViewModel;
@@ -36,11 +47,44 @@ public class GuestAccomodationPageFragment extends Fragment {
         binding = FragmentAccomodationPageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        setDate(binding.cicoInput);
+        setDate(binding.cicoInput2);
+
         prepareProductList(products);
+
+        Button btnFilters = binding.btnFilters;
+        btnFilters.setOnClickListener(v -> {
+            Log.i("ShopApp", "Bottom Sheet Dialog");
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
+            View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
+            bottomSheetDialog.setContentView(dialogView);
+            bottomSheetDialog.show();
+        });
 
         FragmentTransition.to(GuestAccomodationListFragment.newInstance(products), getActivity(), false, R.id.scroll_products_list);
 
         return root;
+    }
+
+    private void setDate(TextInputEditText input) {
+        input.setOnClickListener(v->{
+            final Calendar c = Calendar.getInstance();
+
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+
+                            input.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        });
     }
 
     @Override

@@ -1,15 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.accomodation.GuestAccomodationPageFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:id="@+id/scroll_products_list"
-        />
+        android:orientation="vertical"
+        tools:context=".fragments.products.ProductsPageFragment"
+        >
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_text"
+                app:queryHint="Search"
+                android:layout_width="match_parent"
+                android:background="@drawable/backround"
+                android:layout_height="match_parent"
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linear2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:hint="start date">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/cicoInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="true"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:hint="end date">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/cicoInput2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="true"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnFilters"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:text="@string/filters"
+                tools:ignore="TextContrastCheck" />
+
+            <Button
+                android:id="@+id/btnAcceptFilters"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:text="Use filters"
+                tools:ignore="TextContrastCheck" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:id="@+id/scroll_products_list"
+            />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+

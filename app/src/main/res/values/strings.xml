@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">Booking-team22</string>
-    <string name="usernameTxt">username</string>
-    <string name="passwordTxt">password</string>
+    <string name="usernameTxt">Username</string>
+    <string name="passwordTxt">Password</string>
     <string name="loginTxt">login</string>
     <string name="signupTxt">"Don't have an account?"</string>
     <string name="signupButtonText">"sign up"</string>
-    <string name="firstName">"first name"</string>
-    <string name="adress">address</string>
+    <string name="firstName">"First name"</string>
+    <string name="LastName">"Last name"</string>
+    <string name="adress">Address</string>
     <string name="messageSignUp">"Beecome a member, sign up!"</string>
     <string name="hello_blank_fragment">"Hello blank fragment"</string>
     <string name="accomodationButton">"View accomodation"</string>
@@ -28,4 +29,25 @@
     <string name="myEmail">aleksicisidora@yahoo.com</string>
     <string name="saveChanges">SAVE CHANGES</string>
     <string name="deleteAccount">DELETE ACCOUNT</string>
+    <string name="passwordRepeatTxt">Repeat password</string>
+    <string name="phone">Phone number</string>
+    <string name="detailsOfAccommodation">detailss</string>
+    <string name="filters">filters</string>
+    <string name="Type">Accommodation type</string>
+    <string name="apartment">Apartment</string>
+    <string name="motel">Motel\n</string>
+    <string name="villa">Villa</string>
+    <string name="hotel">Hotel</string>
+    <string name="facilities">Facilities</string>
+    <string name="romService">Room service</string>
+    <string name="pool">Pool</string>
+    <string name="restaurant">Restaurant</string>
+    <string name="parking">Parking</string>
+    <string name="freeWifi">Free WiFi</string>
+    <string name="propertyRating">Property rating</string>
+    <string name="oneStar">1 star</string>
+    <string name="twoStars">2 stars</string>
+    <string name="threeStars">3 stars</string>
+    <string name="fourStars">4 stars</string>
+    <string name="fiveStars">5 stars</string>
 </resources>
