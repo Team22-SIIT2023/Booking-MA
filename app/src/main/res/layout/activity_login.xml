@@ -48,9 +48,9 @@
                 android:layout_below="@id/usernameTxt"
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
+                android:layout_marginBottom="30dp"
                 android:inputType="text"
-                android:textColorHint="@color/black"
-                android:layout_marginBottom="30dp" />
+                android:textColorHint="@color/black" />
 
             <TextView
                 android:id="@+id/passwordTxt"
@@ -72,9 +72,9 @@
                 android:layout_below="@id/passwordTxt"
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
+                android:layout_marginBottom="50dp"
                 android:inputType="textPassword"
-                android:textColorHint="@color/black"
-                android:layout_marginBottom="50dp" />
+                android:textColorHint="@color/black" />
 
             <Button
                 android:id="@+id/loginButton"
@@ -93,14 +93,15 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="80dp"
-                android:layout_below="@id/loginButton">
+                android:layout_below="@id/loginButton"
+                android:gravity="center">
 
                 <TextView
                     android:id="@+id/signupTxt"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_marginStart="53dp"
-                    android:layout_marginTop="13dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="20dp"
                     android:layout_marginBottom="20dp"
                     android:text="@string/signupTxt" />
@@ -108,13 +109,12 @@
                 <Button
                     android:id="@+id/signupButton"
                     android:layout_width="100dp"
-                    android:layout_height="55dp"
+                    android:layout_height="wrap_content"
                     android:layout_alignEnd="@id/signupTxt"
                     android:layout_marginEnd="24dp"
                     android:backgroundTint="@color/purple"
                     android:text="@string/signupButtonText"
-                    android:textColor="@color/black"
-                    />
+                    android:textColor="@color/black" />
             </RelativeLayout>
 
         </RelativeLayout>

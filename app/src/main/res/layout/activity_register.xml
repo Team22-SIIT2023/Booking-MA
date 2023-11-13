@@ -1,34 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/darkPurple"
     android:fillViewport="true">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:background="@drawable/roundcorner"
         android:orientation="vertical"
-        android:layout_height="match_parent"
-        android:background="@color/darkPurple"
-        tools:context=".activities.LoginActivity">
+        android:backgroundTint="@color/purple">
 
-        <RelativeLayout
-            android:layout_width="355dp"
-            android:layout_height="660dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/roundcorner"
-            android:backgroundTint="@color/purple">
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/usernameTxt"
+                android:id="@+id/messageTxt"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="21dp"
+                android:text="@string/messageSignUp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textAlignment="center"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/emailTxt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="@string/usernameTxt"
+                android:text="@string/email"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
@@ -36,19 +55,17 @@
                 android:id="@+id/usernameField"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:layout_below="@id/usernameTxt"
-                android:layout_marginLeft="22dp"
-                android:layout_marginRight="22dp"
-                android:inputType="text"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:inputType="textEmailAddress"
                 android:textColorHint="@color/black" />
 
             <TextView
                 android:id="@+id/passwordTxt"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_below="@id/usernameField"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="18dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
                 android:text="@string/passwordTxt"
@@ -59,9 +76,29 @@
                 android:id="@+id/passwordField"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:layout_below="@id/passwordTxt"
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
+                android:inputType="textPassword"
+                android:textColorHint="@color/black" />
+
+            <TextView
+                android:id="@+id/passwordRepeatTxt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/passwordRepeatTxt"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/passwordRepeatField"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:inputType="textPassword"
                 android:textColorHint="@color/black" />
 
@@ -69,9 +106,8 @@
                 android:id="@+id/fullNameTxt"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_below="@id/passwordField"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="18dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
                 android:text="@string/fullName"
@@ -82,9 +118,8 @@
                 android:id="@+id/fullNameField"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:layout_below="@id/fullNameTxt"
-                android:layout_marginLeft="22dp"
-                android:layout_marginRight="22dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:inputType="textPassword"
                 android:textColorHint="@color/black" />
 
@@ -92,9 +127,8 @@
                 android:id="@+id/lastNameTxt"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_below="@id/fullNameField"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="18dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
                 android:text="@string/lastName"
@@ -105,45 +139,20 @@
                 android:id="@+id/lastNameField"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:layout_below="@id/lastNameTxt"
-                android:layout_marginLeft="22dp"
-                android:layout_marginRight="22dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:inputType="textPassword"
-                android:textColorHint="@color/black" />
-
-            <TextView
-                android:id="@+id/emailTxt"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_below="@id/lastNameField"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
-                android:text="@string/email"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
-
-            <EditText
-                android:id="@+id/emailField"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_below="@id/emailTxt"
-                android:layout_marginLeft="22dp"
-                android:layout_marginRight="22dp"
-                android:inputType="textEmailAddress"
                 android:textColorHint="@color/black" />
 
             <TextView
                 android:id="@+id/adressTxt"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_below="@id/emailField"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="18dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="@string/email"
+                android:text="@string/address"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
@@ -151,28 +160,52 @@
                 android:id="@+id/adressField"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:layout_below="@id/adressTxt"
-                android:layout_marginLeft="22dp"
-                android:layout_marginRight="22dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginBottom="20dp"
                 android:inputType="text"
                 android:textColorHint="@color/black" />
 
-            <Button
-                android:id="@+id/loginButton"
-                android:layout_width="130dp"
-                android:layout_height="55dp"
-                android:layout_below="@id/adressField"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="30dp"
-                android:backgroundTint="@color/purple"
-                android:text="@string/signupButtonText"
+            <TextView
+                android:id="@+id/phoneTxt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/phone"
                 android:textColor="@color/black"
-                android:textSize="16sp"
-                app:strokeColor="@color/grey"
-                app:strokeWidth="0.6dp" />
+                android:textSize="15sp" />
 
-        </RelativeLayout>
+            <EditText
+                android:id="@+id/phoneField"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:inputType="text"
+                android:textColorHint="@color/black" />
 
-    </RelativeLayout>
-</ScrollView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="2dp"
+                android:gravity="center">
+                <Button
+                    android:id="@+id/loginButton"
+                    android:layout_width="130dp"
+                    android:layout_height="55dp"
+                    android:layout_marginBottom="20dp"
+                    android:backgroundTint="@color/purple"
+                    android:text="@string/signupButtonText"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:strokeColor="@color/grey"
+                    app:strokeWidth="0.6dp" />
+            </LinearLayout>
+        </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</LinearLayout>
