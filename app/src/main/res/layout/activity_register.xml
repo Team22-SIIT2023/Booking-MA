@@ -49,7 +49,7 @@
                 android:layout_marginBottom="20dp"
                 android:text="@string/email"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <EditText
                 android:id="@+id/usernameField"
@@ -67,10 +67,9 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
                 android:text="@string/passwordTxt"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <EditText
                 android:id="@+id/passwordField"
@@ -109,13 +108,12 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
-                android:text="@string/fullName"
+                android:text="@string/firstName"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <EditText
-                android:id="@+id/fullNameField"
+                android:id="@+id/firstNameField"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:layout_marginLeft="20dp"
@@ -130,10 +128,9 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
                 android:text="@string/lastName"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <EditText
                 android:id="@+id/lastNameField"
@@ -154,7 +151,7 @@
                 android:layout_marginBottom="20dp"
                 android:text="@string/address"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <EditText
                 android:id="@+id/adressField"
@@ -176,7 +173,7 @@
                 android:layout_marginBottom="20dp"
                 android:text="@string/phone"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <EditText
                 android:id="@+id/phoneField"
@@ -186,7 +183,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="20dp"
                 android:inputType="text"
-                android:textColorHint="@color/black" />
+                android:textColor="@color/black" />
 
             <LinearLayout
                 android:layout_width="match_parent"

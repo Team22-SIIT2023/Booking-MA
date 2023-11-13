@@ -20,63 +20,35 @@ import com.example.booking_team22.model.Accomodation;
 
 import java.util.ArrayList;
 
-/*
- * Adapteri unutar Android-a sluze da prikazu unapred nedefinisanu kolicinu podataka
- * pristigle sa interneta ili ucitane iz baze ili filesystem-a uredjaja.
- * Da bi napravili adapter treba da napraivmo klasu, koja nasledjuje neki od postojecih adaptera.
- * Za potrebe ovih vezbi koristicemo ArrayAdapter koji kao izvor podataka iskoristi listu ili niz.
- * Nasledjivanjem bilo kog adaptera, dobicemo
- * nekolko metoda koje moramo da referinisemo da bi adapter ispravno radio.
- * */
 public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
-    private ArrayList<Accomodation> aProducts;
+    private ArrayList<Accomodation> aAccomodation;
 
     public AccomodationListAdapter(FragmentActivity context, ArrayList<Accomodation> products){
         super(context, R.layout.accomodation_card, products);
-        aProducts = products;
+        aAccomodation = products;
 
     }
-    /*
-     * Ova metoda vraca ukupan broj elemenata u listi koje treba prikazati
-     * */
+
     @Override
     public int getCount() {
-        return aProducts.size();
+        return aAccomodation.size();
     }
 
-    /*
-     * Ova metoda vraca pojedinacan element na osnovu pozicije
-     * */
     @Nullable
     @Override
     public Accomodation getItem(int position) {
-        return aProducts.get(position);
+        return aAccomodation.get(position);
     }
 
-    /*
-     * Ova metoda vraca jedinstveni identifikator, za adaptere koji prikazuju
-     * listu ili niz, pozicija je dovoljno dobra. Naravno mozemo iskoristiti i
-     * jedinstveni identifikator objekta, ako on postoji.
-     * */
     @Override
     public long getItemId(int position) {
         return position;
     }
 
-    /*
-     * Ova metoda popunjava pojedinacan element ListView-a podacima.
-     * Ako adapter cuva listu od n elemenata, adapter ce u petlji ici
-     * onoliko puta koliko getCount() vrati. Prilikom svake iteracije
-     * uzece java objekat sa odredjene poziciuje (model) koji cuva podatke,
-     * i layout koji treba da prikaze te podatke (view) npr R.layout.product_card.
-     * Kada adapter ima model i view, prosto ce uzeti podatke iz modela,
-     * popuniti view podacima i poslati listview da prikaze, i nastavice
-     * sledecu iteraciju.
-     * */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Accomodation product = getItem(position);
+        Accomodation accomodation = getItem(position);
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.accomodation_card,
                     parent, false);
@@ -86,16 +58,16 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
         TextView productTitle = convertView.findViewById(R.id.product_title);
         TextView productDescription = convertView.findViewById(R.id.product_description);
 
-        if(product != null){
-            imageView.setImageResource(product.getImage());
-            productTitle.setText(product.getTitle());
-            productDescription.setText(product.getDescription());
+        if(accomodation != null){
+            imageView.setImageResource(accomodation.getImage());
+            productTitle.setText(accomodation.getTitle());
+            productDescription.setText(accomodation.getDescription());
             productCard.setOnClickListener(v -> {
                 // Handle click on the item at 'position'
-                Log.i("ShopApp", "Clicked: " + product.getTitle() + ", id: " +
-                        product.getId().toString());
-                Toast.makeText(getContext(), "Clicked: " + product.getTitle()  +
-                        ", id: " + product.getId().toString(), Toast.LENGTH_SHORT).show();
+                Log.i("ShopApp", "Clicked: " + accomodation.getTitle() + ", id: " +
+                        accomodation.getId().toString());
+                Toast.makeText(getContext(), "Clicked: " + accomodation.getTitle()  +
+                        ", id: " + accomodation.getId().toString(), Toast.LENGTH_SHORT).show();
             });
         }
 
