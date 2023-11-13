@@ -28,4 +28,7 @@
     <string name="myEmail">aleksicisidora@yahoo.com</string>
     <string name="saveChanges">SAVE CHANGES</string>
     <string name="deleteAccount">DELETE ACCOUNT</string>
+    <string name="detailsOfAccommodation">Detailss</string>
+    <string name="passwordRepeatTxt">Repeat password\n</string>
+    <string name="phone">Phone number</string>
 </resources>
