@@ -41,6 +41,18 @@ public class GuestReservationPagerAdapter  extends FragmentStateAdapter {
                 return new GuestReservationListFragment();
         }
     }
+    public String getPageTitle(int position)
+    {
+        String title = null;
+        if (position == 0)
+            title = "Reservations";
+        else if (position == 1)
+            title = "Requests";
+        else if (position == 2)
+            title = "Favorites";
+        return title;
+    }
+
 
     @Override
     public int getItemCount() {

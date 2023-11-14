@@ -11,6 +11,7 @@ public class Reservation implements Parcelable {
     private String address;
     private String dates;
     private int image;
+    private int icon;
 
     public Reservation(Long id, String title, String address, int image,String dates) {
         this.id = id;
@@ -18,6 +19,15 @@ public class Reservation implements Parcelable {
         this.address = address;
         this.image = image;
         this.dates=dates;
+    }
+
+    public Reservation(Long id, String title, String address, int image,String dates, int icon) {
+        this.id = id;
+        this.title = title;
+        this.address = address;
+        this.image = image;
+        this.dates=dates;
+        this.icon = icon;
     }
 
     public  Reservation() {
@@ -28,6 +38,7 @@ public class Reservation implements Parcelable {
         address = in.readString();
         image = in.readInt();
         dates=in.readString();
+        icon=in.readInt();
     }
 
     public Long getId() {
@@ -64,7 +75,12 @@ public class Reservation implements Parcelable {
     public String getDates() {
         return dates;
     }
-
+    public int getIcon() {
+        return icon;
+    }
+    public void setIcon(int icon) {
+        this.icon = icon;
+    }
     public void setDates(String dates) {
         this.dates = dates;
     }
@@ -91,6 +107,7 @@ public class Reservation implements Parcelable {
         dest.writeString(address);
         dest.writeInt(image);
         dest.writeString(dates);
+        dest.writeInt(icon);
     }
 
     public static final Parcelable.Creator<Accomodation> CREATOR = new Parcelable.Creator<Accomodation>() {

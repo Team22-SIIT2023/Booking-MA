@@ -33,7 +33,7 @@ public class GuestFavoritesFragment extends ListFragment {
         adapter = new GuestFavoriteAdapter(getActivity(), favorites);
         setListAdapter(adapter);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_guest_favorite_list, container, false);
+        return inflater.inflate(R.layout.fragment_guest_favorites, container, false);
     }
 
     private void prepareReservationsList(ArrayList<Accomodation> reservations){

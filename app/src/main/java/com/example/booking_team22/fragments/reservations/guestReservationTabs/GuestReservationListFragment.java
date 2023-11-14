@@ -19,8 +19,6 @@ import java.util.ArrayList;
 
 public class GuestReservationListFragment extends ListFragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private ArrayList<Reservation> reservations = new ArrayList<Reservation>();
     GuestReservationAdapter adapter;
 
@@ -30,8 +28,6 @@ public class GuestReservationListFragment extends ListFragment {
     public static GuestReservationListFragment newInstance(String param1, String param2) {
         GuestReservationListFragment fragment = new GuestReservationListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }

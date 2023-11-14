@@ -1,49 +1,48 @@
 package com.example.booking_team22.fragments.reservations.guestReservationTabs;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 
 import com.example.booking_team22.R;
+import com.example.booking_team22.adapters.GuestRequestAdapter;
+import com.example.booking_team22.adapters.GuestReservationAdapter;
+import com.example.booking_team22.databinding.FragmentAccomodationPageBinding;
+import com.example.booking_team22.databinding.FragmentGuestRequestsBinding;
+import com.example.booking_team22.fragments.FragmentTransition;
+import com.example.booking_team22.fragments.accomodation.GuestAccomodationListFragment;
+import com.example.booking_team22.model.Reservation;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link GuestRequestsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GuestRequestsFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+public class GuestRequestsFragment extends ListFragment {
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    private ArrayList<Reservation> reservations = new ArrayList<Reservation>();
+    GuestRequestAdapter adapter;
+    FragmentGuestRequestsBinding binding;
     public GuestRequestsFragment() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GuestRequestsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static GuestRequestsFragment newInstance(String param1, String param2) {
         GuestRequestsFragment fragment = new GuestRequestsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,16 +50,80 @@ public class GuestRequestsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_guest_requests, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        binding = FragmentGuestRequestsBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
+        prepareReservationsList(reservations);
+        adapter = new GuestRequestAdapter(getActivity(), reservations);
+        setListAdapter(adapter);
+
+        setDate(binding.cicoInput);
+        setDate(binding.cicoInput2);
+
+        Button btnFilters = binding.btnFiltersRequest;
+
+        btnFilters.setOnClickListener(v -> {
+            Log.i("ShopApp", "Bottom Sheet Dialog");
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
+            View dialogView = getLayoutInflater().inflate(R.layout.filter_requests, null);
+            bottomSheetDialog.setContentView(dialogView);
+            bottomSheetDialog.show();
+        });
+
+        return root;
+    }
+
+    private void setDate(TextInputEditText input) {
+        input.setOnClickListener(v->{
+            final Calendar c = Calendar.getInstance();
+
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+
+                            input.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        });
+    }
+
+
+    private void prepareReservationsList(ArrayList<Reservation> reservations){
+        reservations.add(new Reservation(
+                1L,
+                "Accomodation name",
+                "Address",
+                R.drawable.ap2,
+                "15-5-2023-20-5-2023",
+                R.drawable.ic_cancel
+        ));
+        reservations.add(new Reservation(
+                2L,
+                "Accomodation name",
+                "Address",
+                R.drawable.ap1,
+                "15-5-2023-26-5-2023",
+                R.drawable.ic_aacept
+        ));
+        reservations.add(new Reservation(
+                2L,
+                "Accomodation name",
+                "Address",
+                R.drawable.ap1,
+                "15-5-2023-26-5-2023",
+                R.drawable.ic_loading
+        ));
     }
 }

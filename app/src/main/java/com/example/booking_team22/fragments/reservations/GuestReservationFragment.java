@@ -21,19 +21,11 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class GuestReservationFragment extends Fragment {
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     TabLayout tabLayout;
     ViewPager viewPager;
     GuestReservationPagerAdapter myViewPagerAdapter;
     FragmentGuestReservationBinding binding;
 
-
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public GuestReservationFragment() {
         // Required empty public constructor
@@ -42,8 +34,6 @@ public class GuestReservationFragment extends Fragment {
     public static GuestReservationFragment newInstance(String param1, String param2) {
         GuestReservationFragment fragment = new GuestReservationFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,7 +56,7 @@ public class GuestReservationFragment extends Fragment {
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> tab.setText("Tab " + (position + 1))
+                (tab, position) -> tab.setText(adapter.getPageTitle(position))
         ).attach();
 
         return view;
