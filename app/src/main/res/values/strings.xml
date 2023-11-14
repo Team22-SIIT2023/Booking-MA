@@ -31,7 +31,7 @@
     <string name="deleteAccount">DELETE ACCOUNT</string>
     <string name="passwordRepeatTxt">Repeat password</string>
     <string name="phone">Phone number</string>
-    <string name="detailsOfAccommodation">detailss</string>
+    <string name="detailsOfAccommodation">Details</string>
     <string name="filters">filters</string>
     <string name="Type">Accommodation type</string>
     <string name="apartment">Apartment</string>
@@ -50,4 +50,7 @@
     <string name="threeStars">3 stars</string>
     <string name="fourStars">4 stars</string>
     <string name="fiveStars">5 stars</string>
+    <string name="view_reservation">View reservation</string>
+    <string name="cancel">Cancel\n</string>
+    <string name="rating">Rating\n</string>
 </resources>
