@@ -16,16 +16,17 @@ import android.view.MenuItem;
 
 import com.example.booking_team22.R;
 import com.example.booking_team22.databinding.ActivityHomeBinding;
-import com.example.booking_team22.databinding.ActivityLoginBinding;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class HomeActivity extends AppCompatActivity {
     ActivityHomeBinding binding;
     private AppBarConfiguration mAppBarConfiguration;
     private NavigationView navigationView;
+    private String userType;
     public static final int FRAGMENT_ACCOMMODATIONS = R.id.nav_accomodations;
     public static final int FRAGMENT_RESERVATIONS = R.id.nav_reservations;
     public static final int FRAGMENT_NOTIFICATIONS = R.id.nav_notifications;
@@ -43,6 +44,7 @@ public class HomeActivity extends AppCompatActivity {
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        userType=getIntent().getStringExtra("userType");
         toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
 
@@ -50,14 +52,8 @@ public class HomeActivity extends AppCompatActivity {
         mAppBarConfiguration = new AppBarConfiguration
                 .Builder(R.id.nav_accomodations,R.id.nav_reservations,R.id.nav_notifications)
                 .build();
-
-        //NavigationUI.setupWithNavController(navigationView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 
-        int fragmentId = getIntent().getIntExtra("fragmentId", 0);
-        if (fragmentId != 0) {
-            navController.navigate(fragmentId);
-        }
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -71,8 +67,37 @@ public class HomeActivity extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        if(Objects.equals(userType, "guest")) {
+            menu.add(Menu.NONE, R.id.nav_accomodations, Menu.NONE, "Home")
+                    .setIcon(R.drawable.ic_home)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+            menu.add(Menu.NONE, R.id.nav_reservations, Menu.NONE, "Reservations")
+                    .setIcon(R.drawable.ic_reservation)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+            menu.add(Menu.NONE, R.id.nav_notifications, Menu.NONE, "Notification")
+                    .setIcon(R.drawable.ic_notification)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+            menu.add(Menu.NONE, R.id.nav_account, Menu.NONE, "Account")
+                    .setIcon(R.drawable.ic_account)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }if(Objects.equals(userType, "host")) {
+            menu.add(Menu.NONE, R.id.nav_accomodations, Menu.NONE, "Home")
+                    .setIcon(R.drawable.ic_home)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+            menu.add(Menu.NONE, R.id.nav_reservations, Menu.NONE, "Reservations")
+                    .setIcon(R.drawable.ic_reservation)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        }
+
 
         return true;
+
+        // getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+
     }
 }

@@ -4,35 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/purple"
-   >
-
+    android:background="@color/purple">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.001">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/darkPurple"
-                app:layout_scrollFlags="scroll|enterAlways">
-
-            </androidx.appcompat.widget.Toolbar>
-
-        </com.google.android.material.appbar.AppBarLayout>
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/layoutAccommodationHeader"
@@ -99,14 +75,14 @@
                 android:textSize="16sp" />
 
             <TextView
-            android:id="@+id/textAvailableAmenities"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@color/white"
-            android:text="@string/availableAmenities"
-            android:textAlignment="center"
-            android:textSize="16sp" />
+                android:id="@+id/textAvailableAmenities"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/white"
+                android:text="@string/availableAmenities"
+                android:textAlignment="center"
+                android:textSize="16sp" />
             <ListView
                 android:id="@+id/amenity_list"
                 android:layout_width="match_parent"
@@ -126,11 +102,11 @@
             app:cameraZoom="12"
             />
         <CalendarView
-        android:id="@+id/calendarView"
+            android:id="@+id/calendarView"
             android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
         <LinearLayout
             android:backgroundTint="@color/white"
             android:padding="30dp"
@@ -270,17 +246,12 @@
                     android:paddingRight="2dp"
                     />
             </LinearLayout>
-                <ListView
-                    android:id="@+id/commentsList"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    tools:listitem="@layout/comment_card"/>
+            <ListView
+                android:id="@+id/commentsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/comment_card"/>
 
         </LinearLayout>
-
-
-
-
-
     </LinearLayout>
 </ScrollView>
