@@ -1,14 +1,14 @@
-package com.example.booking_team22.activities;
+package com.example.booking_team22.fragments.accomodation;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.app.ListActivity;
-import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.ui.AppBarConfiguration;
+
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,24 +19,12 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.ListFragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import com.example.booking_team22.R;
 import com.example.booking_team22.adapters.AmenityListAdapter;
 import com.example.booking_team22.adapters.CommentsAdapter;
-import com.example.booking_team22.adapters.NotificationListAdapter;
-import com.example.booking_team22.databinding.ActivityAccommodationDetailsBinding;
-import com.example.booking_team22.databinding.ActivityHomeBinding;
+import com.example.booking_team22.databinding.FragmentAccommodationDetailBinding;
 import com.example.booking_team22.model.Amenity;
 import com.example.booking_team22.model.Comment;
-import com.example.booking_team22.model.Notification;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -47,9 +35,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class AccommodationDetailsScreenActivity extends AppCompatActivity {
+public class AccommodationDetailFragment extends Fragment {
 
-    private Toolbar toolbar;
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
     private NavController navController;
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -62,38 +51,97 @@ public class AccommodationDetailsScreenActivity extends AppCompatActivity {
     private int mYear, mMonth, mDay, mHour, mMinute;
     private GoogleMap googleMap;
 
-    ActivityAccommodationDetailsBinding binding;
+    FragmentAccommodationDetailBinding binding;
 
-    public AccommodationDetailsScreenActivity() {
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public AccommodationDetailFragment() {
         // Required empty public constructor
     }
+    public static AccommodationDetailFragment newInstance() {
+        return new AccommodationDetailFragment();
+    }
 
+    public static AccommodationDetailFragment newInstance(String param1, String param2) {
+        AccommodationDetailFragment fragment = new AccommodationDetailFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+
+    }
+    private boolean enableListScroll(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return true;
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        listView.measure(0, 0);
+        params.height = listView.getMeasuredHeight() * listAdapter.getCount() + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        return false;
+    }
+
+    private void updateNumberText(int value) {
+        //for later
+    }
+    private void setDate(TextInputEditText input) {
+        input.setOnClickListener(v->{
+            final Calendar c = Calendar.getInstance();
+
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+
+                            input.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        });
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_home);
 
-        binding = ActivityAccommodationDetailsBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
-
+        binding = FragmentAccommodationDetailBinding.inflate(getLayoutInflater());
+        View root = binding.getRoot();
 
         prepareProductList(amenities);
-        adapter = new AmenityListAdapter(this, amenities);
+        adapter = new AmenityListAdapter(getActivity(), amenities);
         binding.amenityList.setAdapter(adapter);
 
         prepareCommentsList(comments);
-        commentsAdapter=new CommentsAdapter(this,comments);
+        commentsAdapter=new CommentsAdapter(getActivity(),comments);
         binding.commentsList.setAdapter(commentsAdapter);
 
-        LinearLayout linearLayout = findViewById(R.id.layoutPictures);
+        LinearLayout linearLayout = binding.layoutPictures;
 
         int[] imageResources = {R.drawable.ap1,R.drawable.ap2,R.drawable.ap5};
 
         for (int resourceId : imageResources) {
-            ImageView imageView = new ImageView(this);
+            ImageView imageView = new ImageView(getActivity());
             imageView.setImageResource(resourceId);
 
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -133,83 +181,8 @@ public class AccommodationDetailsScreenActivity extends AppCompatActivity {
         numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
             updateNumberText(newVal);
         });
+        return root;
     }
-
-    private boolean enableListScroll(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null)
-            return true;
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        listView.measure(0, 0);
-        params.height = listView.getMeasuredHeight() * listAdapter.getCount() + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-        return false;
-    }
-
-    private void updateNumberText(int value) {
-        //for later
-    }
-    private void setDate(TextInputEditText input) {
-        input.setOnClickListener(v->{
-            final Calendar c = Calendar.getInstance();
-
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker view, int year,
-                                              int monthOfYear, int dayOfMonth) {
-
-                            input.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                        }
-                    }, mYear, mMonth, mDay);
-            datePickerDialog.show();
-        });
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int itemId = item.getItemId();
-
-        if (itemId == R.id.nav_accomodations) {
-            navigateToOldActivityFragment(HomeActivity.FRAGMENT_ACCOMMODATIONS);
-            return true;
-        }
-
-        if (itemId == R.id.nav_reservations) {
-            navigateToOldActivityFragment(HomeActivity.FRAGMENT_RESERVATIONS);
-            return true;
-        }
-
-        if (itemId == R.id.nav_notifications) {
-            navigateToOldActivityFragment(HomeActivity.FRAGMENT_NOTIFICATIONS);
-            return true;
-        }
-        if (itemId == R.id.nav_account) {
-            navigateToOldActivityFragment(HomeActivity.FRAGMENT_ACCOUNT);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    private void navigateToOldActivityFragment(int fragmentId) {
-        Intent intent = new Intent(this, HomeActivity.class);
-        intent.putExtra("fragmentId", fragmentId);
-        startActivity(intent);
-    }
-
-
     private void prepareProductList(ArrayList<Amenity> amenities){
         amenities.add(new Amenity(
                 1L,

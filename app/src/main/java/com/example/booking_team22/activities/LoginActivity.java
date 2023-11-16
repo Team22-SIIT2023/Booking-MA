@@ -23,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         binding.loginButton.setOnClickListener(v->{
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            intent.putExtra("userType", binding.usernameField.getText().toString());
             startActivity(intent);
         });
     }
