@@ -5,37 +5,26 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-public class Accomodation implements Parcelable {
+public class Notification implements Parcelable {
     private Long id;
+    private String date;
     private String title;
     private String description;
-    private int image;
-    private int icon=0;
 
-    public Accomodation(Long id, String title, String description, int image, int icons) {
+    public Notification(Long id, String date, String title,String description) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.image = image;
-        this.icon = icons;
+        this.date = date;
     }
 
-    public Accomodation(Long id, String title, String description, int image) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.image = image;
+    public Notification() {
     }
-
-    public Accomodation() {
-    }
-    // Konstruktor za čitanje iz Parcel objekta
-    protected Accomodation(Parcel in) {
-        // Čitanje ostalih atributa proizvoda iz Parcel objekta
+    protected Notification(Parcel in) {
         id = in.readLong();
         title = in.readString();
         description = in.readString();
-        image = in.readInt();
+        date=in.readString();
     }
 
     public Long getId() {
@@ -54,14 +43,6 @@ public class Accomodation implements Parcelable {
         this.title = title;
     }
 
-    public int getIcon() {
-        return icon;
-    }
-
-    public void setIcon(int icon) {
-        this.icon = icon;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -70,20 +51,20 @@ public class Accomodation implements Parcelable {
         this.description = description;
     }
 
-    public int getImage() {
-        return image;
+    public String getDate() {
+        return date;
     }
 
-    public void setImage(int image) {
-        this.image = image;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     @Override
     public String toString() {
-        return "Accomodation{" +
+        return "Notification{" +
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", image='" + image + '\'' +
+                ", date='" + date + '\'' +
                 '}';
     }
 
@@ -97,19 +78,18 @@ public class Accomodation implements Parcelable {
         dest.writeLong(id);
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeInt(image);
-        dest.writeInt(icon);
+        dest.writeString(date);
     }
 
-    public static final Creator<Accomodation> CREATOR = new Creator<Accomodation>() {
+    public static final Parcelable.Creator<Notification> CREATOR = new Parcelable.Creator<Notification>() {
         @Override
-        public Accomodation createFromParcel(Parcel in) {
-            return new Accomodation(in);
+        public Notification createFromParcel(Parcel in) {
+            return new Notification(in);
         }
 
         @Override
-        public Accomodation[] newArray(int size) {
-            return new Accomodation[size];
+        public Notification[] newArray(int size) {
+            return new Notification[size];
         }
     };
 }

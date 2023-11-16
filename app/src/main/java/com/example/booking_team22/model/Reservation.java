@@ -5,37 +5,40 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-public class Accomodation implements Parcelable {
+public class Reservation implements Parcelable {
     private Long id;
     private String title;
-    private String description;
+    private String address;
+    private String dates;
     private int image;
-    private int icon=0;
+    private int icon;
 
-    public Accomodation(Long id, String title, String description, int image, int icons) {
+    public Reservation(Long id, String title, String address, int image,String dates) {
         this.id = id;
         this.title = title;
-        this.description = description;
+        this.address = address;
         this.image = image;
-        this.icon = icons;
+        this.dates=dates;
     }
 
-    public Accomodation(Long id, String title, String description, int image) {
+    public Reservation(Long id, String title, String address, int image,String dates, int icon) {
         this.id = id;
         this.title = title;
-        this.description = description;
+        this.address = address;
         this.image = image;
+        this.dates=dates;
+        this.icon = icon;
     }
 
-    public Accomodation() {
+    public  Reservation() {
     }
-    // Konstruktor za čitanje iz Parcel objekta
-    protected Accomodation(Parcel in) {
-        // Čitanje ostalih atributa proizvoda iz Parcel objekta
+    protected Reservation(Parcel in) {
         id = in.readLong();
         title = in.readString();
-        description = in.readString();
+        address = in.readString();
         image = in.readInt();
+        dates=in.readString();
+        icon=in.readInt();
     }
 
     public Long getId() {
@@ -54,20 +57,12 @@ public class Accomodation implements Parcelable {
         this.title = title;
     }
 
-    public int getIcon() {
-        return icon;
+    public String getAddress() {
+        return address;
     }
 
-    public void setIcon(int icon) {
-        this.icon = icon;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public int getImage() {
@@ -77,13 +72,26 @@ public class Accomodation implements Parcelable {
     public void setImage(int image) {
         this.image = image;
     }
+    public String getDates() {
+        return dates;
+    }
+    public int getIcon() {
+        return icon;
+    }
+    public void setIcon(int icon) {
+        this.icon = icon;
+    }
+    public void setDates(String dates) {
+        this.dates = dates;
+    }
 
     @Override
     public String toString() {
-        return "Accomodation{" +
+        return "Reservation{" +
                 "title='" + title + '\'' +
-                ", description='" + description + '\'' +
+                ", address='" + address + '\'' +
                 ", image='" + image + '\'' +
+                ", dates='" + dates + '\'' +
                 '}';
     }
 
@@ -96,12 +104,13 @@ public class Accomodation implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(title);
-        dest.writeString(description);
+        dest.writeString(address);
         dest.writeInt(image);
+        dest.writeString(dates);
         dest.writeInt(icon);
     }
 
-    public static final Creator<Accomodation> CREATOR = new Creator<Accomodation>() {
+    public static final Parcelable.Creator<Accomodation> CREATOR = new Parcelable.Creator<Accomodation>() {
         @Override
         public Accomodation createFromParcel(Parcel in) {
             return new Accomodation(in);

@@ -26,6 +26,10 @@ public class HomeActivity extends AppCompatActivity {
     ActivityHomeBinding binding;
     private AppBarConfiguration mAppBarConfiguration;
     private NavigationView navigationView;
+    public static final int FRAGMENT_ACCOMMODATIONS = R.id.nav_accomodations;
+    public static final int FRAGMENT_RESERVATIONS = R.id.nav_reservations;
+    public static final int FRAGMENT_NOTIFICATIONS = R.id.nav_notifications;
+    public static final int FRAGMENT_ACCOUNT = R.id.nav_account;
     private NavController navController;
     private Toolbar toolbar;
     private ActionBar actionBar;
@@ -35,7 +39,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_home);
 
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -43,20 +46,20 @@ public class HomeActivity extends AppCompatActivity {
         toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
 
-        topLevelDestinations.add(R.id.nav_accomodations);
-        topLevelDestinations.add(R.id.nav_reservations);
-        topLevelDestinations.add(R.id.nav_notifications);
-        topLevelDestinations.add(R.id.nav_account);
-
         navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
         mAppBarConfiguration = new AppBarConfiguration
-                .Builder(R.id.nav_accomodations,R.id.nav_reservations,R.id.nav_notifications,
-                R.id.nav_account)
+                .Builder(R.id.nav_accomodations,R.id.nav_reservations,R.id.nav_notifications)
                 .build();
+
         //NavigationUI.setupWithNavController(navigationView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 
+        int fragmentId = getIntent().getIntExtra("fragmentId", 0);
+        if (fragmentId != 0) {
+            navController.navigate(fragmentId);
+        }
     }
+
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
         return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
@@ -68,8 +71,8 @@ public class HomeActivity extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+
         return true;
     }
 }
