@@ -1,7 +1,7 @@
 package com.example.booking_team22.fragments.accomodation;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,25 +9,18 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ListView;
 
 import com.example.booking_team22.R;
-import com.example.booking_team22.activities.AccommodationDetailsScreenActivity;
-import com.example.booking_team22.activities.HomeActivity;
-import com.example.booking_team22.activities.LoginActivity;
-import com.example.booking_team22.activities.RegisterActivity;
 import com.example.booking_team22.adapters.AccomodationListAdapter;
-import com.example.booking_team22.adapters.NotificationListAdapter;
 import com.example.booking_team22.databinding.AccomodationCardBinding;
 import com.example.booking_team22.databinding.FragmentAccomodationPageBinding;
-import com.example.booking_team22.fragments.FragmentTransition;
 import com.example.booking_team22.model.Accomodation;
-import com.example.booking_team22.model.Notification;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -45,7 +38,6 @@ public class GuestAccomodationPageFragment extends ListFragment {
     public static ArrayList<Accomodation> products = new ArrayList<Accomodation>();
     AccomodationListAdapter adapter;
     private FragmentAccomodationPageBinding binding;
-    private AccomodationCardBinding cardBinding;
 
     public static GuestAccomodationPageFragment newInstance() {
         return new GuestAccomodationPageFragment();

@@ -3,9 +3,7 @@ package com.example.booking_team22.adapters;
 
 import static android.app.PendingIntent.getActivity;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
-import android.content.Intent;
+import android.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,25 +17,32 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.booking_team22.R;
-import com.example.booking_team22.activities.AccommodationDetailsScreenActivity;
+import com.example.booking_team22.fragments.accomodation.AccommodationDetailFragment;
 import com.example.booking_team22.model.Accomodation;
 
 import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
     private ArrayList<Accomodation> aAccomodation;
     private FragmentActivity context;
-
     public AccomodationListAdapter(FragmentActivity context, ArrayList<Accomodation> products){
         super(context, R.layout.accomodation_card, products);
         aAccomodation = products;
         this.context=context;
 
+
     }
+//    private static WeakReference<AppCompatActivity> mActivityReference;
+//
+//    public static void setActivityReference(AppCompatActivity activity) {
+//        mActivityReference = new WeakReference<>(activity);
+//    }
+
 
     @Override
     public int getCount() {
@@ -68,6 +73,22 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
         TextView productTitle = convertView.findViewById(R.id.product_title);
         TextView productDescription = convertView.findViewById(R.id.product_description);
         Button detailButton=convertView.findViewById(R.id.viewDetailButton);
+//ovo je za pravi detail, a ispod je samo proba za edit
+        detailButton.setOnClickListener(v -> {
+            AccommodationDetailFragment yourFragment = new AccommodationDetailFragment();
+            FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_nav_content_main, yourFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
+//        detailButton.setOnClickListener(v ->{
+//            LayoutInflater.from(context);
+//            View customLayout= LayoutInflater.from(getContext()).inflate(R.layout.filter_dialog,null);
+//            AlertDialog.Builder builder=new AlertDialog.Builder(context);
+//            builder.setView(customLayout);
+//            AlertDialog dialog=builder.create();
+//            dialog.show();
+//        });
 
         if(accomodation != null){
             imageView.setImageResource(accomodation.getImage());
@@ -80,10 +101,11 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                 Toast.makeText(getContext(), "Clicked: " + accomodation.getTitle()  +
                         ", id: " + accomodation.getId().toString(), Toast.LENGTH_SHORT).show();
             });
-            detailButton.setOnClickListener(v -> {
-                Intent intent = new Intent(context, AccommodationDetailsScreenActivity.class);
-                context.startActivity(intent);
-            });
+
+//            detailButton.setOnClickListener(v -> {
+//                Intent intent = new Intent(context, AccommodationDetailsScreenActivity.class);
+//                context.startActivity(intent);
+//            });
         }
 
         return convertView;
