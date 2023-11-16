@@ -15,11 +15,7 @@ import android.widget.DatePicker;
 
 import com.example.booking_team22.R;
 import com.example.booking_team22.adapters.GuestRequestAdapter;
-import com.example.booking_team22.adapters.GuestReservationAdapter;
-import com.example.booking_team22.databinding.FragmentAccomodationPageBinding;
 import com.example.booking_team22.databinding.FragmentGuestRequestsBinding;
-import com.example.booking_team22.fragments.FragmentTransition;
-import com.example.booking_team22.fragments.accomodation.GuestAccomodationListFragment;
 import com.example.booking_team22.model.Reservation;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;

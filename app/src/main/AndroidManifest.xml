@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -16,7 +18,7 @@
         android:theme="@style/Theme.Bookingteam22"
         tools:targetApi="31">
         <activity
-            android:name=".AmenitiesListView"
+            android:name=".activities.AccommodationDetailsScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.HomeActivity"
@@ -26,12 +28,6 @@
             android:exported="false" />
         <activity
             android:name=".activities.SplashScreenActivity"
-            android:exported="false"/>
-        <activity
-            android:name=".activities.LoginActivity"
-            android:exported="false">
-        </activity>
-        <activity android:name=".activities.AccommodationDetailsScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +35,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="false">
+        </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC9EE9DdsAWFD14arLFctrQPUxwAAnVDzs"/>
     </application>
 
 </manifest>

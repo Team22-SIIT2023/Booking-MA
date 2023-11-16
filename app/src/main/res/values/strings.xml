@@ -51,15 +51,7 @@
     <string name="fourStars">4 stars</string>
     <string name="fiveStars">5 stars</string>
     <string name="accommodationName"> Brand New DobHouse in Budapest</string>
-    <string name="accommodationDescription"> "DobHouse, situated in the heart of Budapest at 1072 Budapest, Dob utca 46, Hungary, is a shining example of contemporary comfort and style. This brand-new accommodation promises a delightful stay, blending modern amenities with a prime location.
-
-        As you step into DobHouse, you'll be greeted by a sleek and inviting atmosphere. The accommodation features state-of-the-art facilities, ensuring a seamless experience for guests. The well-designed rooms provide a comfortable and relaxing space, equipped with all the necessities for a memorable stay.
-
-        Conveniently located in Budapest, DobHouse offers easy access to the city's vibrant cultural scene, historical landmarks, and lively entertainment. Explore the nearby attractions, immerse yourself in the local culture, and return to DobHouse for a restful night's sleep.
-
-        The address, 1072 Budapest, Dob utca 46, Hungary, places DobHouse in a central and bustling part of the city, allowing guests to enjoy the best of Budapest within arm's reach. Whether you're a business traveler or a tourist seeking a stylish and convenient accommodation, DobHouse is your home away from home.
-
-        Indulge in the charm of Budapest and experience the warmth of DobHouse, where modern luxury meets the rich history of the city."
+    <string name="accommodationDescription"> "DobHouse, situated in the heart of Budapest at 1072 Budapest, Dob utca 46, Hungary, is a shining example of contemporary comfort and style. This brand-new accommodation promises a delightful stay, blending modern amenities with a prime location.As you step into DobHouse, you'll be greeted by a sleek and inviting atmosphere. The accommodation features state-of-the-art facilities, ensuring a seamless experience for guests. The well-designed rooms provide a comfortable and relaxing space, equipped with all the necessities for a memorable stay."
     </string>
     <string name="availableAmenities"> Available amenities</string>
     <string name="view_reservation">View reservation</string>

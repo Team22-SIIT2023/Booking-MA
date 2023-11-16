@@ -59,7 +59,7 @@
             android:verticalScrollbarPosition="right" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/viewDetailButton"
             android:layout_width="wrap_content"
             android:layout_height="37dp"
             android:backgroundTint="#D2A1DA"

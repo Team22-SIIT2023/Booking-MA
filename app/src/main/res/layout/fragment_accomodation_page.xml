@@ -99,12 +99,11 @@
                 tools:ignore="TextContrastCheck" />
             </LinearLayout>
         </LinearLayout>
-
-        <RelativeLayout
+        <ListView
+            android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:id="@+id/scroll_products_list"
+            tools:listitem="@layout/accomodation_card"
             />
     </LinearLayout>
 
