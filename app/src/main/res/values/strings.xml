@@ -64,4 +64,5 @@
     <string name="availableDates">Available dates\n</string>
     <string name="addressRegister">Address</string>
     <string name="forgot_password"><a href="">Forgot password?</a></string>
+    <string name="hostDescription">Name: Pera Peric\nSome basic information about the host of this accommodation</string>
 </resources>
