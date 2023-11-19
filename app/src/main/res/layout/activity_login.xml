@@ -34,13 +34,13 @@
             <TextView
                 android:id="@+id/usernameTxt"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/logo"
                 android:layout_marginStart="24dp"
                 android:layout_marginBottom="10dp"
                 android:text="@string/usernameTxt"
                 android:textColor="@color/black"
-                android:textSize="17sp" />
+                android:textSize="15sp" />
 
             <EditText
                 android:id="@+id/usernameField"
@@ -56,7 +56,7 @@
             <TextView
                 android:id="@+id/passwordTxt"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/usernameField"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="20dp"
@@ -64,7 +64,7 @@
                 android:layout_marginBottom="20dp"
                 android:text="@string/passwordTxt"
                 android:textColor="@color/black"
-                android:textSize="17sp" />
+                android:textSize="15sp" />
 
             <EditText
                 android:id="@+id/passwordField"
@@ -73,51 +73,60 @@
                 android:layout_below="@id/passwordTxt"
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
-                android:layout_marginBottom="50dp"
                 android:inputType="textPassword"
                 android:textColorHint="@color/black" />
 
+            <TextView
+                android:id="@+id/forgotPasswordTxt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/passwordField"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="right"
+                android:layout_marginBottom="37dp"
+                android:text="@string/forgot_password"
+                android:textColor="@color/black"
+                android:textSize="11sp" />
 
             <Button
                 android:id="@+id/loginButton"
                 android:layout_width="100dp"
                 android:layout_height="50dp"
-                android:layout_below="@id/passwordField"
+                android:layout_below="@id/forgotPasswordTxt"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="30dp"
                 android:backgroundTint="@color/purple"
                 android:text="@string/loginTxt"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 app:strokeColor="@color/grey"
                 app:strokeWidth="0.6dp" />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="80dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/loginButton"
-                android:gravity="center">
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
 
                 <TextView
                     android:id="@+id/signupTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="53dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="25dp"
                     android:text="@string/signupTxt" />
 
                 <Button
                     android:id="@+id/signupButton"
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignEnd="@id/signupTxt"
                     android:layout_marginEnd="24dp"
                     android:backgroundTint="@color/purple"
                     android:text="@string/signupButtonText"
                     android:textColor="@color/black" />
-            </RelativeLayout>
+            </LinearLayout>
 
         </RelativeLayout>
 

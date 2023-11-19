@@ -13,14 +13,13 @@
         <LinearLayout
             android:id="@+id/layoutAccommodationHeader"
             android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:gravity="center"
             android:orientation="vertical">
 
             <TextView
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="25dp"
                 android:id="@+id/textAccommodationName"
                 android:layout_width="match_parent"
                 android:textAlignment="center"
@@ -67,40 +66,57 @@
                 android:id="@+id/textAccommodationDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:padding="15dp"
+                android:layout_marginBottom="10dp"
                 android:background="@color/white"
                 android:textAlignment="viewStart"
                 android:text="@string/accommodationDescription"
                 android:textSize="16sp" />
 
+            <LinearLayout
+                android:layout_gravity="center"
+                android:layout_width="350dp"
+                android:layout_marginTop="3dp"
+                android:gravity="center"
+                android:layout_height="200dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/backround"
+                >
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="340dp"
+                android:layout_height="190dp"
+                android:apiKey="AIzaSyC9EE9DdsAWFD14arLFctrQPUxwAAnVDzs"
+                app:mapType="normal"
+                app:cameraZoom="12"
+                />
+            </LinearLayout>
             <TextView
                 android:id="@+id/textAvailableAmenities"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@color/white"
                 android:text="@string/availableAmenities"
                 android:textAlignment="center"
                 android:textSize="16sp" />
             <ListView
+                android:layout_marginLeft="7dp"
                 android:id="@+id/amenity_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:backgroundTint="@color/white"
                 tools:listitem="@layout/amenity_card">
             </ListView>
         </LinearLayout>
-        <com.google.android.gms.maps.MapView
+
+        <TextView
+            android:id="@+id/textAvailableDates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_gravity="center"
-            android:id="@+id/mapView"
-            android:layout_width="350dp"
-            android:layout_height="200dp"
-            android:apiKey="AIzaSyC9EE9DdsAWFD14arLFctrQPUxwAAnVDzs"
-            app:mapType="normal"
-            app:cameraZoom="12"
-            />
+            android:text="@string/availableDates"
+            android:textAlignment="center"
+            android:textSize="16sp" />
         <CalendarView
             android:id="@+id/calendarView"
             android:layout_gravity="center_horizontal"
@@ -110,6 +126,7 @@
         <LinearLayout
             android:backgroundTint="@color/white"
             android:padding="30dp"
+            android:layout_marginBottom="15dp"
             android:background="@drawable/roundcorner"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
@@ -160,6 +177,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="8dp"
                     android:layout_marginTop="10dp"
                     android:layout_gravity="center"
                     android:orientation="vertical">
@@ -223,7 +241,6 @@
             android:layout_margin="10dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:backgroundTint="@color/purple"
             android:background="@drawable/backround"
             android:padding="16dp">
 
@@ -246,6 +263,12 @@
                     android:paddingRight="2dp"
                     />
             </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/black"
+                android:layout_margin="2dp"
+                />
             <ListView
                 android:id="@+id/commentsList"
                 android:layout_width="match_parent"
