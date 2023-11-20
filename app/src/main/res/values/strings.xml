@@ -2,13 +2,13 @@
     <string name="app_name">Booking-team22</string>
     <string name="usernameTxt">Username</string>
     <string name="passwordTxt">Password</string>
-    <string name="loginTxt">login</string>
+    <string name="loginTxt">Login</string>
     <string name="signupTxt">"Don't have an account?"</string>
-    <string name="signupButtonText">"sign up"</string>
+    <string name="signupButtonText">"Sign up"</string>
     <string name="firstName">"First name"</string>
     <string name="LastName">"Last name"</string>
     <string name="adress">Address</string>
-    <string name="messageSignUp">"Beecome a member, sign up!"</string>
+    <string name="messageSignUp"><i>"Bee"</i>"come a member, sign up!"</string>
     <string name="hello_blank_fragment">"Hello blank fragment"</string>
     <string name="accomodationButton">"View accomodation"</string>
     <string name="title">My account</string>
@@ -51,7 +51,7 @@
     <string name="fourStars">4 stars</string>
     <string name="fiveStars">5 stars</string>
     <string name="accommodationName"> Brand New DobHouse in Budapest</string>
-    <string name="accommodationDescription"> "DobHouse, situated in the heart of Budapest at 1072 Budapest, Dob utca 46, Hungary, is a shining example of contemporary comfort and style. This brand-new accommodation promises a delightful stay, blending modern amenities with a prime location.As you step into DobHouse, you'll be greeted by a sleek and inviting atmosphere. The accommodation features state-of-the-art facilities, ensuring a seamless experience for guests. The well-designed rooms provide a comfortable and relaxing space, equipped with all the necessities for a memorable stay."
+    <string name="accommodationDescription"> "DobHouse, situated in the heart of Budapest at 1072 Budapest, Dob utca 46, Hungary, is a shining example of contemporary comfort and style. This brand-new accommodation promises a delightful stay, blending modern amenities with a prime location."
     </string>
     <string name="availableAmenities"> Available amenities</string>
     <string name="view_reservation">View reservation</string>
@@ -61,4 +61,8 @@
     <string name="Cancelled">Cancelled</string>
     <string name="Waiting">Waiting</string>
     <string name="status">Request status</string>
+    <string name="availableDates">Available dates\n</string>
+    <string name="addressRegister">Address</string>
+    <string name="forgot_password"><a href="">Forgot password?</a></string>
+    <string name="hostDescription">Name: Pera Peric\nSome basic information about the host of this accommodation</string>
 </resources>

@@ -40,6 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
+            android:rating="3"
+            android:progressTint="@color/yellow"
             style="@style/Widget.AppCompat.RatingBar.Small"
             android:scaleX="1.2"
             android:scaleY="1.2"/>
@@ -61,15 +63,15 @@
         <Button
             android:id="@+id/viewDetailButton"
             android:layout_width="wrap_content"
-            android:layout_height="37dp"
-            android:backgroundTint="#D2A1DA"
+            android:layout_height="40dp"
+            android:backgroundTint="@color/darkPurple"
             android:insetLeft="10dp"
             android:layout_marginTop="3dp"
             android:insetRight="10dp"
             android:autoSizeTextType="uniform"
             android:autoSizeMinTextSize="12sp"
             android:autoSizeMaxTextSize="48sp"
-            android:textSize="11sp"
+            android:textSize="12sp"
             android:textAlignment="center"
             android:text="@string/detailsOfAccommodation" />
 
