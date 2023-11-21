@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
         super(context, R.layout.comment_card, comments);
         aComments = comments;
     }
+
 
     @Override
     public int getCount() {
@@ -51,16 +53,20 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.comment_card,
                     parent, false);
         }
-        LinearLayout notificationCard = convertView.findViewById(R.id.comment_card_item);
+        LinearLayout commentCard = convertView.findViewById(R.id.comment_card_item);
         TextView commentEmail = convertView.findViewById(R.id.comment_email);
         TextView commentText = convertView.findViewById(R.id.comment_text);
         TextView commentDate = convertView.findViewById(R.id.comment_date);
+        Button acceptButton = convertView.findViewById(R.id.acceptComment);
+        Button declineButton = convertView.findViewById(R.id.declineComment);
 
         if(comment != null){
             commentEmail.setText(comment.getEmail());
             commentText.setText(comment.getCommentText());
             commentDate.setText(comment.getDate());
-            notificationCard.setOnClickListener(v -> {
+            acceptButton.setVisibility(comment.isButtonVisible() ? View.VISIBLE : View.INVISIBLE);
+            declineButton.setVisibility(comment.isButtonVisible() ? View.VISIBLE : View.INVISIBLE);
+            commentCard.setOnClickListener(v -> {
 
             });
         }
