@@ -73,6 +73,9 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
         TextView productTitle = convertView.findViewById(R.id.product_title);
         TextView productDescription = convertView.findViewById(R.id.product_description);
         Button detailButton=convertView.findViewById(R.id.viewDetailButton);
+        Button acceptAccommodation = convertView.findViewById(R.id.acceptAccommodation);
+        Button declineAccommodation = convertView.findViewById(R.id.declineAccommodation);
+
 //ovo je za pravi detail, a ispod je samo proba za edit
         detailButton.setOnClickListener(v -> {
             AccommodationDetailFragment yourFragment = new AccommodationDetailFragment();
@@ -94,6 +97,8 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
             imageView.setImageResource(accomodation.getImage());
             productTitle.setText(accomodation.getTitle());
             productDescription.setText(accomodation.getDescription());
+            acceptAccommodation.setVisibility(accomodation.isButtonVisible() ? View.VISIBLE : View.INVISIBLE);
+            declineAccommodation.setVisibility(accomodation.isButtonVisible() ? View.VISIBLE : View.INVISIBLE);
             productCard.setOnClickListener(v -> {
                 // Handle click on the item at 'position'
                 Log.i("ShopApp", "Clicked: " + accomodation.getTitle() + ", id: " +

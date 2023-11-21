@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.ui.AppBarConfiguration;
 
@@ -125,10 +126,10 @@ public class AccommodationDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_home);
 
         binding = FragmentAccommodationDetailBinding.inflate(getLayoutInflater());
         View root = binding.getRoot();
+
 
         prepareProductList(amenities);
         adapter = new AmenityListAdapter(getActivity(), amenities);
@@ -215,25 +216,29 @@ public class AccommodationDetailFragment extends Fragment {
                 1L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023."
+                "12.12.2023.",
+                false
         ));
         comments.add(new Comment(
                 2L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023."
+                "12.12.2023.",
+                false
         ));
         comments.add(new Comment(
                 3L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023."
+                "12.12.2023.",
+                false
         ));
         comments.add(new Comment(
                 4L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023."
+                "12.12.2023.",
+                false
         ));
     }
 }

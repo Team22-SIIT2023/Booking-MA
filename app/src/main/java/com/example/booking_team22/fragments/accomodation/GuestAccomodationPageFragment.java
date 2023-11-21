@@ -101,26 +101,31 @@ public class GuestAccomodationPageFragment extends ListFragment {
                 1L,
                 "Accomodation name",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap1));
+                R.drawable.ap1,
+                false));
         products.add(new Accomodation(
                 2L,
                 "Accomodation name",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap2));
+                R.drawable.ap2,
+                false));
         products.add(new Accomodation(
                 3L,
                 "Accomodation name",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap4));
+                R.drawable.ap4,
+                false));
         products.add(new Accomodation(
                 4L,
                 "Accomodation name",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap5));
+                R.drawable.ap5,
+                false));
         products.add(new Accomodation(
                 5L,
                 "Accomodation name",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap6));
+                R.drawable.ap6,
+                false));
     }
 }
