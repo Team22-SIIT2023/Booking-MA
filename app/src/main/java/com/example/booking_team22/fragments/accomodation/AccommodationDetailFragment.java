@@ -5,12 +5,14 @@ import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.ui.AppBarConfiguration;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -18,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.NumberPicker;
+import android.widget.Spinner;
 
 import com.example.booking_team22.R;
 import com.example.booking_team22.adapters.AmenityListAdapter;
@@ -123,10 +126,10 @@ public class AccommodationDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_home);
 
         binding = FragmentAccommodationDetailBinding.inflate(getLayoutInflater());
         View root = binding.getRoot();
+
 
         prepareProductList(amenities);
         adapter = new AmenityListAdapter(getActivity(), amenities);
@@ -171,16 +174,14 @@ public class AccommodationDetailFragment extends Fragment {
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);
 
-
-        NumberPicker numberPicker = binding.numberPicker;
-        numberPicker.setWrapSelectorWheel(true);
-        numberPicker.setMinValue(1);
-        numberPicker.setMaxValue(10);
-        numberPicker.setValue(1);
-
-        numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-            updateNumberText(newVal);
-        });
+        Integer[] arraySpinner = new Integer[] {
+                1, 2,3,4,5
+        };
+        Spinner s = (Spinner) binding.spinner;
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(getActivity(),
+                android.R.layout.simple_spinner_item, arraySpinner);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        s.setAdapter(adapter);
         return root;
     }
     private void prepareProductList(ArrayList<Amenity> amenities){
@@ -215,25 +216,29 @@ public class AccommodationDetailFragment extends Fragment {
                 1L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023."
+                "12.12.2023.",
+                false
         ));
         comments.add(new Comment(
                 2L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023."
+                "12.12.2023.",
+                false
         ));
         comments.add(new Comment(
                 3L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023."
+                "12.12.2023.",
+                false
         ));
         comments.add(new Comment(
                 4L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023."
+                "12.12.2023.",
+                false
         ));
     }
 }

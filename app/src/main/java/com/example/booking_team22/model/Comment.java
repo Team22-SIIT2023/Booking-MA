@@ -2,7 +2,6 @@ package com.example.booking_team22.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
 
 public class Comment implements Parcelable {
@@ -10,20 +9,24 @@ public class Comment implements Parcelable {
     private String email;
     private String commentText;
     private String date;
+    private boolean buttonVisible;
 
-    public Comment(Long id, String email, String commentText, String date) {
+    public Comment(Long id, String email, String commentText, String date, Boolean buttonVisibility) {
         this.id = id;
         this.email = email;
         this.commentText = commentText;
         this.date = date;
+        this.buttonVisible = buttonVisibility;
     }
-    public Comment(){}
+
+    public Comment() {}
 
     protected Comment(Parcel in) {
         id = in.readLong();
         email = in.readString();
         commentText = in.readString();
-        date=in.readString();
+        date = in.readString();
+        buttonVisible = in.readByte() != 0;
     }
 
     public Long getId() {
@@ -58,6 +61,13 @@ public class Comment implements Parcelable {
         this.date = date;
     }
 
+    public boolean isButtonVisible() {
+        return buttonVisible;
+    }
+
+    public void setButtonVisible(boolean buttonVisible) {
+        this.buttonVisible = buttonVisible;
+    }
 
     @Override
     public int describeContents() {
@@ -70,17 +80,18 @@ public class Comment implements Parcelable {
         dest.writeString(email);
         dest.writeString(commentText);
         dest.writeString(date);
+        dest.writeByte((byte) (buttonVisible ? 1 : 0));
     }
 
-    public static final Parcelable.Creator<Notification> CREATOR = new Parcelable.Creator<Notification>() {
+    public static final Parcelable.Creator<Comment> CREATOR = new Parcelable.Creator<Comment>() {
         @Override
-        public Notification createFromParcel(Parcel in) {
-            return new Notification(in);
+        public Comment createFromParcel(Parcel in) {
+            return new Comment(in);
         }
 
         @Override
-        public Notification[] newArray(int size) {
-            return new Notification[size];
+        public Comment[] newArray(int size) {
+            return new Comment[size];
         }
     };
 }

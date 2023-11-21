@@ -22,7 +22,7 @@ public class CheckConnectionTools {
             NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
             if (capabilities != null) {
                 if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                    Toast.makeText(context, "You are connect to WIFI", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "You are connect to WiFi", Toast.LENGTH_LONG).show();
                     return TYPE_WIFI;
                 } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
                     Toast.makeText(context, "You are connect to Mobile network", Toast.LENGTH_LONG).show();

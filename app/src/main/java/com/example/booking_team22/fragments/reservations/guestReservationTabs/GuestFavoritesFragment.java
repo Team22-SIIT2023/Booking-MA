@@ -42,14 +42,16 @@ public class GuestFavoritesFragment extends ListFragment {
                 "Accomodation name",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
                 R.drawable.ap2,
-                R.drawable.ic_favourite
+                R.drawable.ic_favourite,
+                false
         ));
         reservations.add(new Accomodation(
                 2L,
                 "Accomodation name",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
                 R.drawable.ap1,
-                R.drawable.ic_favourite
+                R.drawable.ic_favourite,
+                false
         ));
     }
 }
