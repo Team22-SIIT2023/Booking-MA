@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/nav_accomodations"
         android:name="com.example.booking_team22.fragments.accomodation.GuestAccomodationPageFragment"
-        android:label="Home"
+        android:label="TravelBee"
         tools:layout="@layout/fragment_accomodation_page"
         />
 
@@ -34,6 +34,24 @@
         android:label="Notifications"
         tools:layout="@layout/fragment_notifications"
         app:popUpToInclusive="true"
+        />
+    <fragment
+        android:id="@+id/nav_accommodations_approval"
+        android:name="com.example.booking_team22.fragments.users.admin.AccommodationApprovalFragment"
+        android:label="Accommodation approval"
+        tools:layout="@layout/fragment_accommodation_approval"
+        />
+    <fragment
+        android:id="@+id/nav_reported_comments"
+        android:name="com.example.booking_team22.fragments.users.admin.ReportedCommentsFragment"
+        android:label="Reported comment"
+        tools:layout="@layout/fragment_reported_comment"
+        />
+    <fragment
+        android:id="@+id/nav_reported_users"
+        android:name="com.example.booking_team22.fragments.users.admin.ReportedUsersFragment"
+        android:label="Reported user"
+        tools:layout="@layout/fragment_reported_user"
         />
 
 </navigation>

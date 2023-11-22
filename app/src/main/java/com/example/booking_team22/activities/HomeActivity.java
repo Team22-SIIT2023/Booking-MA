@@ -27,10 +27,10 @@ public class HomeActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private NavigationView navigationView;
     private String userType;
-    public static final int FRAGMENT_ACCOMMODATIONS = R.id.nav_accomodations;
-    public static final int FRAGMENT_RESERVATIONS = R.id.nav_reservations;
-    public static final int FRAGMENT_NOTIFICATIONS = R.id.nav_notifications;
-    public static final int FRAGMENT_ACCOUNT = R.id.nav_account;
+//    public static final int FRAGMENT_ACCOMMODATIONS = R.id.nav_accomodations;
+//    public static final int FRAGMENT_RESERVATIONS = R.id.nav_reservations;
+//    public static final int FRAGMENT_NOTIFICATIONS = R.id.nav_notifications;
+//    public static final int FRAGMENT_ACCOUNT = R.id.nav_account;
     private NavController navController;
     private Toolbar toolbar;
     private ActionBar actionBar;
@@ -50,7 +50,9 @@ public class HomeActivity extends AppCompatActivity {
 
         navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
         mAppBarConfiguration = new AppBarConfiguration
-                .Builder(R.id.nav_accomodations,R.id.nav_reservations,R.id.nav_notifications)
+                .Builder(R.id.nav_accomodations,R.id.nav_reservations,R.id.nav_notifications,
+                R.id.nav_account,R.id.nav_accommodations_approval,R.id.nav_reported_comments,
+                R.id.nav_reported_users)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 
@@ -68,36 +70,18 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if(Objects.equals(userType, "guest")) {
-            menu.add(Menu.NONE, R.id.nav_accomodations, Menu.NONE, "Home")
-                    .setIcon(R.drawable.ic_home)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            getMenuInflater().inflate(R.menu.guest_menu,menu);
 
-            menu.add(Menu.NONE, R.id.nav_reservations, Menu.NONE, "Reservations")
-                    .setIcon(R.drawable.ic_reservation)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
-            menu.add(Menu.NONE, R.id.nav_notifications, Menu.NONE, "Notification")
-                    .setIcon(R.drawable.ic_notification)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
-            menu.add(Menu.NONE, R.id.nav_account, Menu.NONE, "Account")
-                    .setIcon(R.drawable.ic_account)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }if(Objects.equals(userType, "host")) {
-            menu.add(Menu.NONE, R.id.nav_accomodations, Menu.NONE, "Home")
-                    .setIcon(R.drawable.ic_home)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            getMenuInflater().inflate(R.menu.guest_menu,menu);
 
-            menu.add(Menu.NONE, R.id.nav_reservations, Menu.NONE, "Reservations")
-                    .setIcon(R.drawable.ic_reservation)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }if(Objects.equals(userType, "admin")) {
 
+            getMenuInflater().inflate(R.menu.admin_menu,menu);
         }
 
 
         return true;
-
-        // getMenuInflater().inflate(R.menu.toolbar_menu, menu);
 
     }
 }

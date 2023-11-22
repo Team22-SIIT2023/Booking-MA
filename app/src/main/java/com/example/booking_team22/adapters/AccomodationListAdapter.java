@@ -21,6 +21,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.booking_team22.R;
+import com.example.booking_team22.activities.HomeActivity;
+import com.example.booking_team22.fragments.FragmentTransition;
 import com.example.booking_team22.fragments.accomodation.AccommodationDetailFragment;
 import com.example.booking_team22.model.Accomodation;
 
@@ -78,11 +80,12 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
 
 //ovo je za pravi detail, a ispod je samo proba za edit
         detailButton.setOnClickListener(v -> {
-            AccommodationDetailFragment yourFragment = new AccommodationDetailFragment();
-            FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_nav_content_main, yourFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+              FragmentTransition.to(AccommodationDetailFragment.newInstance(), context, true, R.id.fragment_nav_content_main);
+//            AccommodationDetailFragment yourFragment = new AccommodationDetailFragment();
+//            FragmentTransaction transaction = context.getSupportFragmentManager().beginTransaction();
+//            transaction.replace(R.id.fragment_nav_content_main, yourFragment);
+//            transaction.addToBackStack(null);
+//            transaction.commit();
         });
 //        detailButton.setOnClickListener(v ->{
 //            LayoutInflater.from(context);
@@ -107,10 +110,6 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                         ", id: " + accomodation.getId().toString(), Toast.LENGTH_SHORT).show();
             });
 
-//            detailButton.setOnClickListener(v -> {
-//                Intent intent = new Intent(context, AccommodationDetailsScreenActivity.class);
-//                context.startActivity(intent);
-//            });
         }
 
         return convertView;
