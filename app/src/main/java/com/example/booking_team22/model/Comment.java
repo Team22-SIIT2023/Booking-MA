@@ -9,14 +9,12 @@ public class Comment implements Parcelable {
     private String email;
     private String commentText;
     private String date;
-    private boolean buttonVisible;
 
-    public Comment(Long id, String email, String commentText, String date, Boolean buttonVisibility) {
+    public Comment(Long id, String email, String commentText, String date) {
         this.id = id;
         this.email = email;
         this.commentText = commentText;
         this.date = date;
-        this.buttonVisible = buttonVisibility;
     }
 
     public Comment() {}
@@ -26,7 +24,6 @@ public class Comment implements Parcelable {
         email = in.readString();
         commentText = in.readString();
         date = in.readString();
-        buttonVisible = in.readByte() != 0;
     }
 
     public Long getId() {
@@ -61,14 +58,6 @@ public class Comment implements Parcelable {
         this.date = date;
     }
 
-    public boolean isButtonVisible() {
-        return buttonVisible;
-    }
-
-    public void setButtonVisible(boolean buttonVisible) {
-        this.buttonVisible = buttonVisible;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -80,7 +69,6 @@ public class Comment implements Parcelable {
         dest.writeString(email);
         dest.writeString(commentText);
         dest.writeString(date);
-        dest.writeByte((byte) (buttonVisible ? 1 : 0));
     }
 
     public static final Parcelable.Creator<Comment> CREATOR = new Parcelable.Creator<Comment>() {

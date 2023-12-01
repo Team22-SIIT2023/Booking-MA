@@ -10,12 +10,16 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.example.booking_team22.R;
 import com.example.booking_team22.databinding.ActivityHomeBinding;
+import com.example.booking_team22.databinding.FragmentAccommodationDetailBinding;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.HashSet;
@@ -25,17 +29,11 @@ import java.util.Set;
 public class HomeActivity extends AppCompatActivity {
     ActivityHomeBinding binding;
     private AppBarConfiguration mAppBarConfiguration;
-    private NavigationView navigationView;
     private String userType;
-//    public static final int FRAGMENT_ACCOMMODATIONS = R.id.nav_accomodations;
-//    public static final int FRAGMENT_RESERVATIONS = R.id.nav_reservations;
-//    public static final int FRAGMENT_NOTIFICATIONS = R.id.nav_notifications;
-//    public static final int FRAGMENT_ACCOUNT = R.id.nav_account;
+
     private NavController navController;
     private Toolbar toolbar;
-    private ActionBar actionBar;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
-    private Set<Integer> topLevelDestinations = new HashSet<>();
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +42,8 @@ public class HomeActivity extends AppCompatActivity {
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        userType=getIntent().getStringExtra("userType");
+        sp= getApplicationContext().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
+        userType=sp.getString("userType","");
         toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
 
@@ -52,14 +51,17 @@ public class HomeActivity extends AppCompatActivity {
         mAppBarConfiguration = new AppBarConfiguration
                 .Builder(R.id.nav_accomodations,R.id.nav_reservations,R.id.nav_notifications,
                 R.id.nav_account,R.id.nav_accommodations_approval,R.id.nav_reported_comments,
-                R.id.nav_reported_users)
+                R.id.nav_reported_users,R.id.nav_details,R.id.nav_createAccommodation)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 
     }
-
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
+        if (item.getItemId() == R.id.nav_accomodations) {
+            navController.popBackStack(navController.getGraph().getStartDestination(), false);
+            return true;
+        }
         return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
     }
     @Override
@@ -73,14 +75,12 @@ public class HomeActivity extends AppCompatActivity {
             getMenuInflater().inflate(R.menu.guest_menu,menu);
 
         }if(Objects.equals(userType, "host")) {
-            getMenuInflater().inflate(R.menu.guest_menu,menu);
+            getMenuInflater().inflate(R.menu.host_menu,menu);
 
         }if(Objects.equals(userType, "admin")) {
 
             getMenuInflater().inflate(R.menu.admin_menu,menu);
         }
-
-
         return true;
 
     }

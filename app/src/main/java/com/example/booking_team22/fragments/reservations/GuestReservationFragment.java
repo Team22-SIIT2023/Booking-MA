@@ -50,9 +50,9 @@ public class GuestReservationFragment extends Fragment {
         View view= inflater.inflate(R.layout.fragment_guest_reservation, container, false);
 
         ViewPager2 viewPager = view.findViewById(R.id.viewPager);
-        TabLayout tabLayout = view.findViewById(R.id.tabLayout);
+        tabLayout = view.findViewById(R.id.tabLayout);
 
-        GuestReservationPagerAdapter adapter = new GuestReservationPagerAdapter(this);
+        GuestReservationPagerAdapter adapter = new GuestReservationPagerAdapter(this,getActivity());
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager,

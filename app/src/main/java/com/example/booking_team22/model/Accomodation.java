@@ -12,23 +12,19 @@ public class Accomodation implements Parcelable {
     private int image;
     private int icon=0;
 
-    private boolean buttonVisibility;
-
-    public Accomodation(Long id, String title, String description, int image, int icons, boolean buttonVisibility) {
+    public Accomodation(Long id, String title, String description, int image, int icons) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.image = image;
         this.icon = icons;
-        this.buttonVisibility = buttonVisibility;
     }
 
-    public Accomodation(Long id, String title, String description, int image, boolean buttonVisibility) {
+    public Accomodation(Long id, String title, String description, int image) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.image = image;
-        this.buttonVisibility = buttonVisibility;
     }
 
     public Accomodation() {
@@ -40,16 +36,8 @@ public class Accomodation implements Parcelable {
         title = in.readString();
         description = in.readString();
         image = in.readInt();
-        buttonVisibility = in.readByte() != 0;
     }
 
-    public boolean isButtonVisible() {
-        return buttonVisibility;
-    }
-
-    public void setButtonVisible(boolean buttonVisibility) {
-        this.buttonVisibility = buttonVisibility;
-    }
     public Long getId() {
         return id;
     }
@@ -111,7 +99,6 @@ public class Accomodation implements Parcelable {
         dest.writeString(description);
         dest.writeInt(image);
         dest.writeInt(icon);
-        dest.writeByte((byte) (buttonVisibility ? 1 : 0));
     }
 
     public static final Creator<Accomodation> CREATOR = new Creator<Accomodation>() {
