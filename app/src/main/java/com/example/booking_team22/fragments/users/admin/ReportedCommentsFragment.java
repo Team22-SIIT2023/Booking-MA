@@ -61,29 +61,25 @@ public class ReportedCommentsFragment extends ListFragment {
                 1L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023.",
-                true
+                "12.12.2023."
         ));
         comments.add(new Comment(
                 2L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023.",
-                true
+                "12.12.2023."
         ));
         comments.add(new Comment(
                 3L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023.",
-                true
+                "12.12.2023."
         ));
         comments.add(new Comment(
                 4L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023.",
-                true
+                "12.12.2023."
         ));
     }
 }

@@ -27,11 +27,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link GuestAccomodationPageFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class GuestAccomodationPageFragment extends ListFragment {
     private int mYear, mMonth, mDay, mHour, mMinute;
 
@@ -46,7 +41,7 @@ public class GuestAccomodationPageFragment extends ListFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         products = new ArrayList<Accomodation>();
 
-        binding = FragmentAccomodationPageBinding.inflate(inflater, container, false);        binding = FragmentAccomodationPageBinding.inflate(inflater, container, false);
+        binding = FragmentAccomodationPageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         setDate(binding.cicoInput);
@@ -101,31 +96,26 @@ public class GuestAccomodationPageFragment extends ListFragment {
                 1L,
                 "Accomodation name",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap1,
-                false));
+                R.drawable.ap1));
         products.add(new Accomodation(
                 2L,
                 "Accomodation name",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap2,
-                false));
+                R.drawable.ap2));
         products.add(new Accomodation(
                 3L,
                 "Accomodation name",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap4,
-                false));
+                R.drawable.ap4));
         products.add(new Accomodation(
                 4L,
                 "Accomodation name",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap5,
-                false));
+                R.drawable.ap5));
         products.add(new Accomodation(
                 5L,
                 "Accomodation name",
                 "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap6,
-                false));
+                R.drawable.ap6));
     }
 }

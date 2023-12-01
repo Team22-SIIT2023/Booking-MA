@@ -1,5 +1,8 @@
 package com.example.booking_team22.adapters;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +25,14 @@ import java.util.ArrayList;
 
 public class CommentsAdapter extends ArrayAdapter<Comment> {
     private ArrayList<Comment> aComments;
+    private SharedPreferences sp;
+    private String userType;
 
     public CommentsAdapter(FragmentActivity context, ArrayList<Comment> comments){
         super(context, R.layout.comment_card, comments);
         aComments = comments;
+        sp= context.getApplicationContext().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
+        userType=sp.getString("userType","");
     }
 
 
@@ -59,13 +66,19 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
         TextView commentDate = convertView.findViewById(R.id.comment_date);
         Button acceptButton = convertView.findViewById(R.id.acceptComment);
         Button declineButton = convertView.findViewById(R.id.declineComment);
+        Button reportButton=convertView.findViewById(R.id.reportComment);
 
         if(comment != null){
             commentEmail.setText(comment.getEmail());
             commentText.setText(comment.getCommentText());
             commentDate.setText(comment.getDate());
-            acceptButton.setVisibility(comment.isButtonVisible() ? View.VISIBLE : View.INVISIBLE);
-            declineButton.setVisibility(comment.isButtonVisible() ? View.VISIBLE : View.INVISIBLE);
+            if(!userType.equals("admin")){
+                acceptButton.setVisibility(View.INVISIBLE);
+                declineButton.setVisibility(View.INVISIBLE);
+            }
+            if(userType.equals("host")){
+                reportButton.setVisibility(View.VISIBLE);
+            }
             commentCard.setOnClickListener(v -> {
 
             });

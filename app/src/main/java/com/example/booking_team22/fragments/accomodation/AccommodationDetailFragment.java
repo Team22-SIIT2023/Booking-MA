@@ -1,6 +1,10 @@
 package com.example.booking_team22.fragments.accomodation;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
@@ -53,6 +57,8 @@ public class AccommodationDetailFragment extends Fragment {
     private MapView mapView;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private GoogleMap googleMap;
+    private SharedPreferences sp;
+    private String userType;
 
     FragmentAccommodationDetailBinding binding;
 
@@ -79,6 +85,7 @@ public class AccommodationDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -130,7 +137,6 @@ public class AccommodationDetailFragment extends Fragment {
         binding = FragmentAccommodationDetailBinding.inflate(getLayoutInflater());
         View root = binding.getRoot();
 
-
         prepareProductList(amenities);
         adapter = new AmenityListAdapter(getActivity(), amenities);
         binding.amenityList.setAdapter(adapter);
@@ -138,6 +144,9 @@ public class AccommodationDetailFragment extends Fragment {
         prepareCommentsList(comments);
         commentsAdapter=new CommentsAdapter(getActivity(),comments);
         binding.commentsList.setAdapter(commentsAdapter);
+
+        sp= getActivity().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
+        userType=sp.getString("userType","");
 
         LinearLayout linearLayout = binding.layoutPictures;
 
@@ -161,6 +170,24 @@ public class AccommodationDetailFragment extends Fragment {
 
         enableListScroll(binding.amenityList);
         enableListScroll(binding.commentsList);
+        Button editButton = binding.btnEditAccommodation;
+        Button addComment=binding.btnAddComments;
+        LinearLayout reservationLayout=binding.resrvationLayout;
+        if(!userType.equals("host")){
+            editButton.setVisibility(View.INVISIBLE);
+        }else{
+            reservationLayout.setVisibility(View.GONE);
+            addComment.setVisibility(View.GONE);
+        }
+        editButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit,0,0,0);
+        editButton.setOnClickListener(v ->{
+            LayoutInflater.from(getActivity());
+            View customLayout= LayoutInflater.from(getContext()).inflate(R.layout.activity_edit_accomodation,null);
+            AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+            builder.setView(customLayout);
+            AlertDialog dialog=builder.create();
+            dialog.show();
+        });
         Button myButton = binding.btnAddComments;
         myButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add,0,0,0);
 
@@ -216,29 +243,25 @@ public class AccommodationDetailFragment extends Fragment {
                 1L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023.",
-                false
+                "12.12.2023."
         ));
         comments.add(new Comment(
                 2L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023.",
-                false
+                "12.12.2023."
         ));
         comments.add(new Comment(
                 3L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023.",
-                false
+                "12.12.2023."
         ));
         comments.add(new Comment(
                 4L,
                 "a@gmail.com",
                 "Comment text....",
-                "12.12.2023.",
-                false
+                "12.12.2023."
         ));
     }
 }
