@@ -16,12 +16,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Bookingteam22"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
         <activity
             android:name=".activities.EditAccomodationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.AccommodationDetailsScreenActivity"
             android:exported="false" />
         <activity
             android:name=".activities.HomeActivity"

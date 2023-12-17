@@ -57,30 +57,30 @@ public class AccommodationApprovalFragment extends ListFragment {
     }
 
     private void prepareProductList(ArrayList<Accomodation> products){
-        products.add(new Accomodation(
-                1L,
-                "Accomodation name",
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap1));
-        products.add(new Accomodation(
-                2L,
-                "Accomodation name",
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap2));
-        products.add(new Accomodation(
-                3L,
-                "Accomodation name",
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap4));
-        products.add(new Accomodation(
-                4L,
-                "Accomodation name",
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap5));
-        products.add(new Accomodation(
-                5L,
-                "Accomodation name",
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap6));
-    }
+//        products.add(new Accomodation(
+//                1L,
+//                "Accomodation name",
+//                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+//                R.drawable.ap1));
+//        products.add(new Accomodation(
+//                2L,
+//                "Accomodation name",
+//                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+//                R.drawable.ap2));
+//        products.add(new Accomodation(
+//                3L,
+//                "Accomodation name",
+//                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+//                R.drawable.ap4));
+//        products.add(new Accomodation(
+//                4L,
+//                "Accomodation name",
+//                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+//                R.drawable.ap5));
+//        products.add(new Accomodation(
+//                5L,
+//                "Accomodation name",
+//                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+//                R.drawable.ap6));
+     }
 }
