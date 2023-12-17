@@ -6,6 +6,9 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,12 +29,18 @@ import androidx.navigation.Navigation;
 
 import com.example.booking_team22.R;
 import com.example.booking_team22.activities.HomeActivity;
+import com.example.booking_team22.clients.ClientUtils;
 import com.example.booking_team22.fragments.FragmentTransition;
 import com.example.booking_team22.fragments.accomodation.AccommodationDetailFragment;
 import com.example.booking_team22.model.Accomodation;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.Inflater;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
     private ArrayList<Accomodation> aAccomodation;
@@ -73,33 +82,52 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                     parent, false);
         }
         LinearLayout productCard = convertView.findViewById(R.id.product_card_item);
-        ImageView imageView = convertView.findViewById(R.id.product_image);
+
         TextView productTitle = convertView.findViewById(R.id.product_title);
         TextView productDescription = convertView.findViewById(R.id.product_description);
         Button detailButton=convertView.findViewById(R.id.viewDetailButton);
         Button acceptAccommodation = convertView.findViewById(R.id.acceptAccommodation);
         Button declineAccommodation = convertView.findViewById(R.id.declineAccommodation);
 
-        detailButton.setOnClickListener(v -> {
-             NavController navController = Navigation.findNavController(context, R.id.fragment_nav_content_main);
-             navController.navigate(R.id.nav_details);
-        });
+
+//        detailButton.setOnClickListener(v -> {
+//             NavController navController = Navigation.findNavController(context, R.id.fragment_nav_content_main);
+//             navController.navigate(R.id.nav_details);
+//        });
 
         if(accomodation != null){
-            imageView.setImageResource(accomodation.getImage());
-            productTitle.setText(accomodation.getTitle());
+            Call<List<String>> call = ClientUtils.accommodationService.getImages(accomodation.getId());
+            ImageView imageView = convertView.findViewById(R.id.product_image);
+            call.enqueue(new Callback<List<String>>() {
+                @Override
+                public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                    if (response.isSuccessful()) {
+                        List<String> images = response.body();
+                        if (images != null && !images.isEmpty()) {
+                            String imageString = images.get(0);
+                            byte[] decodedBytes = Base64.decode(imageString, Base64.DEFAULT);
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                            imageView.setImageBitmap(bitmap);
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<String>> call, Throwable t) {
+                }
+            });
+            productTitle.setText(accomodation.getName());
             productDescription.setText(accomodation.getDescription());
             if(!userType.equals("admin")){
                 acceptAccommodation.setVisibility(View.GONE);
                 declineAccommodation.setVisibility(View.GONE);
             }
-            productCard.setOnClickListener(v -> {
-                // Handle click on the item at 'position'
-                Log.i("ShopApp", "Clicked: " + accomodation.getTitle() + ", id: " +
-                        accomodation.getId().toString());
-                Toast.makeText(getContext(), "Clicked: " + accomodation.getTitle()  +
-                        ", id: " + accomodation.getId().toString(), Toast.LENGTH_SHORT).show();
-            });
+//            productCard.setOnClickListener(v -> {
+//                // Handle click on the item at 'position'
+//                Log.i("ShopApp", "Clicked: " + accomodation.getName() + ", id: " +
+//                        accomodation.getId().toString());
+//                Toast.makeText(getContext(), "Clicked: " + accomodation.getName()  +
+//                        ", id: " + accomodation.getId().toString(), Toast.LENGTH_SHORT).show();
+//            });
 
         }
 

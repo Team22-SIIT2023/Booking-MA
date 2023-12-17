@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
@@ -15,9 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ListView;
 
 import com.example.booking_team22.R;
 import com.example.booking_team22.adapters.AccomodationListAdapter;
+import com.example.booking_team22.clients.ClientUtils;
 import com.example.booking_team22.databinding.AccomodationCardBinding;
 import com.example.booking_team22.databinding.FragmentAccomodationPageBinding;
 import com.example.booking_team22.model.Accomodation;
@@ -26,6 +29,10 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class GuestAccomodationPageFragment extends ListFragment {
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -39,18 +46,12 @@ public class GuestAccomodationPageFragment extends ListFragment {
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        products = new ArrayList<Accomodation>();
 
         binding = FragmentAccomodationPageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);
-
-
-        prepareProductList(products);
-        adapter = new AccomodationListAdapter(getActivity(), products);
-        setListAdapter(adapter);
 
         Button btnFilters = binding.btnFilters;
         btnFilters.setOnClickListener(v -> {
@@ -62,6 +63,42 @@ public class GuestAccomodationPageFragment extends ListFragment {
         });
 
         return root;
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getDataFromClient();
+
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDataFromClient();
+    }
+
+    private void getDataFromClient() {
+        Call<ArrayList<Accomodation>> call = ClientUtils.accommodationService.getAll();
+        call.enqueue(new Callback<ArrayList<Accomodation>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Accomodation>> call, Response<ArrayList<Accomodation>> response) {
+                if (response.code() == 200) {
+                    Log.d("REZ", "Meesage recieved");
+                    System.out.println(response.body());
+                    products = response.body();
+                    adapter = new AccomodationListAdapter(getActivity(), products);
+                    //setListAdapter(adapter);
+                    ListView listView=binding.list;
+                    listView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Log.d("REZ", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<ArrayList<Accomodation>> call, Throwable t) {
+                Log.d("REZ", t.getMessage() != null?t.getMessage():"error");
+            }
+        });
     }
 
     private void setDate(TextInputEditText input) {
@@ -91,31 +128,31 @@ public class GuestAccomodationPageFragment extends ListFragment {
         binding = null;
     }
 
-    private void prepareProductList(ArrayList<Accomodation> products){
-        products.add(new Accomodation(
-                1L,
-                "Accomodation name",
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap1));
-        products.add(new Accomodation(
-                2L,
-                "Accomodation name",
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap2));
-        products.add(new Accomodation(
-                3L,
-                "Accomodation name",
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap4));
-        products.add(new Accomodation(
-                4L,
-                "Accomodation name",
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap5));
-        products.add(new Accomodation(
-                5L,
-                "Accomodation name",
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                R.drawable.ap6));
-    }
+//    private void prepareProductList(ArrayList<Accomodation> products){
+//        products.add(new Accomodation(
+//                1L,
+//                "Accomodation name",
+//                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+//                R.drawable.ap1));
+//        products.add(new Accomodation(
+//                2L,
+//                "Accomodation name",
+//                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+//                R.drawable.ap2));
+//        products.add(new Accomodation(
+//                3L,
+//                "Accomodation name",
+//                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+//                R.drawable.ap4));
+//        products.add(new Accomodation(
+//                4L,
+//                "Accomodation name",
+//                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+//                R.drawable.ap5));
+//        products.add(new Accomodation(
+//                5L,
+//                "Accomodation name",
+//                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+//                R.drawable.ap6));
+//    }
 }

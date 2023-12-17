@@ -58,15 +58,15 @@ public class GuestFavoriteAdapter extends ArrayAdapter<Accomodation> {
         TextView productDescription = convertView.findViewById(R.id.product_description);
 
         if(accomodation != null){
-            imageView.setImageResource(accomodation.getImage());
-            imageView2.setImageResource(accomodation.getIcon());
-            productTitle.setText(accomodation.getTitle());
+            //imageView.setImageResource(accomodation.getImage());
+            //imageView2.setImageResource(accomodation.getIcon());
+            productTitle.setText(accomodation.getName());
             productDescription.setText(accomodation.getDescription());
             productCard.setOnClickListener(v -> {
                 // Handle click on the item at 'position'
-                Log.i("ShopApp", "Clicked: " + accomodation.getTitle() + ", id: " +
+                Log.i("ShopApp", "Clicked: " + accomodation.getName() + ", id: " +
                         accomodation.getId().toString());
-                Toast.makeText(getContext(), "Clicked: " + accomodation.getTitle()  +
+                Toast.makeText(getContext(), "Clicked: " + accomodation.getName()  +
                         ", id: " + accomodation.getId().toString(), Toast.LENGTH_SHORT).show();
             });
         }
