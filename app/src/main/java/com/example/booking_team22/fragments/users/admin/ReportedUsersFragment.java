@@ -58,17 +58,17 @@ public class ReportedUsersFragment extends ListFragment {
     }
 
     private void prepareProductList(ArrayList<User> users) {
-        users.add(new User(
-                "isidoraaleksic@yahoo.com","isidoricaslatkica",User.UserStatus.ACTIVE
-        ));
-        users.add(new User(
-                "isidoraaleksic@yahoo.com","isidoricaslatkica", User.UserStatus.ACTIVE
-        ));
-        users.add(new User(
-                "isidoraaleksic@yahoo.com","isidoricaslatkica", User.UserStatus.ACTIVE
-        ));
-        users.add(new User(
-                "isidoraaleksic@yahoo.com","isidoricaslatkica", User.UserStatus.ACTIVE
-        ));
+//        users.add(new User(
+//                "isidoraaleksic@yahoo.com","isidoricaslatkica",User.UserStatus.ACTIVE
+//        ));
+//        users.add(new User(
+//                "isidoraaleksic@yahoo.com","isidoricaslatkica", User.UserStatus.ACTIVE
+//        ));
+//        users.add(new User(
+//                "isidoraaleksic@yahoo.com","isidoricaslatkica", User.UserStatus.ACTIVE
+//        ));
+//        users.add(new User(
+//                "isidoraaleksic@yahoo.com","isidoricaslatkica", User.UserStatus.ACTIVE
+//        ));
     }
 }

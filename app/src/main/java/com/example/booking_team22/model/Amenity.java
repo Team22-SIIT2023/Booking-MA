@@ -5,15 +5,18 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-public class Amenity implements Parcelable {
+import java.io.Serializable;
+
+public class Amenity implements Parcelable, Serializable {
+
     long id;
     String amenityName;
-    int amenityImage;
+//    int amenityImage;
 
-    public Amenity(Long id, String amenityName,int image ){
+    public Amenity(Long id, String amenityName){
         this.id = id;
         this.amenityName = amenityName;
-        this.amenityImage = image;
+//        this.amenityImage = image;
     }
 
     public Amenity() {
@@ -21,7 +24,7 @@ public class Amenity implements Parcelable {
     protected Amenity(Parcel in) {
         id = in.readLong();
         amenityName = in.readString();
-        amenityImage = in.readInt();
+//        amenityImage = in.readInt();
     }
 
     public Long getId() {
@@ -44,21 +47,19 @@ public class Amenity implements Parcelable {
         this.id = id;
     }
 
-    public void setAmenityImage(int amenityImage) {
-        this.amenityImage = amenityImage;
-    }
-
-    public int getAmenityImage() {
-        return amenityImage;
-    }
+//    public void setAmenityImage(int amenityImage) {
+//        this.amenityImage = amenityImage;
+//    }
+//
+//    public int getAmenityImage() {
+//        return amenityImage;
+//    }
 
     @Override
     public String toString() {
         return "Amenity{" +
                 "id=" + id +
-                ", amenityName='" + amenityName + '\'' +
-                ", amenityImage=" + amenityImage +
-                '}';
+                ", amenityName='" + amenityName;
     }
 
     @Override
@@ -70,7 +71,7 @@ public class Amenity implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(amenityName);
-        dest.writeInt(amenityImage);
+//        dest.writeInt(amenityImage);
     }
 
     public static final Parcelable.Creator<Amenity> CREATOR = new Parcelable.Creator<Amenity>() {

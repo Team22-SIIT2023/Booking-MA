@@ -54,7 +54,7 @@ public class UserListAdapter extends ArrayAdapter<User> {
         ImageView reportedUserPicture = convertView.findViewById(R.id.user_icon);
 
         if(user != null){
-            reportedUser.setText(user.getEmail());
+            reportedUser.setText(user.getAccount().getUsername());
             reportedUserPicture.setImageResource(R.drawable.user);
         }
         return convertView;
