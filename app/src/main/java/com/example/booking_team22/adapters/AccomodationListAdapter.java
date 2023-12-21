@@ -115,8 +115,8 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                 public void onFailure(Call<List<String>> call, Throwable t) {
                 }
             });
-            productTitle.setText(accomodation.getName());
-            productDescription.setText(accomodation.getDescription());
+            productTitle.setText(accomodation.getAddress().getAddress());
+            productDescription.setText(accomodation.getType().name());
             if(!userType.equals("admin")){
                 acceptAccommodation.setVisibility(View.GONE);
                 declineAccommodation.setVisibility(View.GONE);

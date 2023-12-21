@@ -214,28 +214,28 @@ public class AccommodationDetailFragment extends Fragment {
     private void prepareProductList(ArrayList<Amenity> amenities){
         amenities.add(new Amenity(
                 1L,
-                "Wifi",
-                R.drawable.ic_wifi
+                "Wifi"
+                //R.drawable.ic_wifi
         ));
         amenities.add(new Amenity(
                 1L,
-                "Air conditioning",
-                R.drawable.ic_air
+                "Air conditioning"
+                //R.drawable.ic_air
         ));
         amenities.add(new Amenity(
                 1L,
-                "Room service",
-                R.drawable.ic_room_service
+                "Room service"
+                //R.drawable.ic_room_service
         ));
         amenities.add(new Amenity(
                 1L,
-                "Pets",
-                R.drawable.ic_pets
+                "Pets"
+                //R.drawable.ic_pets
         ));
         amenities.add(new Amenity(
                 1L,
-                "Pool",
-                R.drawable.ic_pool
+                "Pool"
+                //R.drawable.ic_pool
         ));
     }
     private void prepareCommentsList(ArrayList<Comment> comments){

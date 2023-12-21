@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 
-public class Accomodation implements Parcelable {
+public class Accomodation implements Parcelable, Serializable {
 
         @SerializedName("id")
         @Expose
@@ -29,9 +29,9 @@ public class Accomodation implements Parcelable {
         @Expose
         private String description;
 
-//        @SerializedName("address")
-//        @Expose
-//        private Address address;
+        @SerializedName("address")
+        @Expose
+        private Address address;
 
         @SerializedName("minGuests")
         @Expose
@@ -41,9 +41,9 @@ public class Accomodation implements Parcelable {
         @Expose
         private int maxGuests;
 
-//        @SerializedName("type")
-//        @Expose
-//        private AccommodationType type;
+        @SerializedName("type")
+        @Expose
+        private AccommodationType type;
 
         @SerializedName("pricePerGuest")
         @Expose
@@ -53,34 +53,36 @@ public class Accomodation implements Parcelable {
         @Expose
         private boolean automaticConfirmation;
 
-//        @SerializedName("host")
-//        @Expose
-//        private Host host;
+        @SerializedName("host")
+        @Expose
+        private Host host;
 
-//        @SerializedName("status")
-//        @Expose
-//        private AccommodationStatus status;
+        @SerializedName("status")
+        @Expose
+        private AccommodationStatus status;
 
         @SerializedName("reservationDeadline")
         @Expose
         private int reservationDeadline;
 
-//        @SerializedName("amenities")
-//        @Expose
-//        private ArrayList<Amenity> amenities;
+        @SerializedName("amenities")
+        @Expose
+        private ArrayList<Amenity> amenities;
 
-//        @SerializedName("priceList")
-//        @Expose
-//        private ArrayList<PricelistItem> priceList;
-//
-//        @SerializedName("freeTimeSlots")
-//        @Expose
-//        private ArrayList<TimeSlot> freeTimeSlots;
+        @SerializedName("priceList")
+        @Expose
+        private ArrayList<PricelistItem> priceList;
+
+        @SerializedName("freeTimeSlots")
+        @Expose
+        private ArrayList<TimeSlot> freeTimeSlots;
 
         public Accomodation(Long id, String name, String description,
                              int minGuests, int maxGuests,
-                             boolean pricePerGuest, boolean automaticConfirmation,int reservationDeadline
-                            ) {
+                             boolean pricePerGuest, boolean automaticConfirmation,int reservationDeadline,
+                            Address address,AccommodationType type,AccommodationStatus status,
+                            ArrayList<Amenity>amenities,ArrayList<PricelistItem> priceList,
+                            ArrayList<TimeSlot> freeTimeSlots,Host host) {
             this.id = id;
             this.name = name;
             this.description = description;
@@ -89,6 +91,13 @@ public class Accomodation implements Parcelable {
             this.pricePerGuest = pricePerGuest;
             this.automaticConfirmation = automaticConfirmation;
             this.reservationDeadline = reservationDeadline;
+            this.address=address;
+            this.status=status;
+            this.type=type;
+            this.amenities=amenities;
+            this.priceList=priceList;
+            this.freeTimeSlots=freeTimeSlots;
+            this.host=host;
 
         }
 
@@ -101,7 +110,89 @@ public class Accomodation implements Parcelable {
             pricePerGuest=in.readBoolean();
             automaticConfirmation=in.readBoolean();
             reservationDeadline=in.readInt();
+            address=in.readParcelable(Address.class.getClassLoader());
+            status = AccommodationStatus.valueOf(in.readString());
+            type = AccommodationType.valueOf(in.readString());
+            amenities = in.createTypedArrayList(Amenity.CREATOR);
+            freeTimeSlots = in.createTypedArrayList(TimeSlot.CREATOR);
+            priceList = in.createTypedArrayList(PricelistItem.CREATOR);
+            host=in.readParcelable(Host.class.getClassLoader());
     }
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeInt(minGuests);
+        dest.writeInt(maxGuests);
+        dest.writeBoolean(pricePerGuest);
+        dest.writeBoolean(automaticConfirmation);
+        dest.writeInt(reservationDeadline);
+        dest.writeParcelable(address, flags);
+        dest.writeString(status.name());
+        dest.writeString(type.name());
+        dest.writeTypedList(amenities);
+        dest.writeTypedList(freeTimeSlots);
+        dest.writeTypedList(priceList);
+        dest.writeParcelable(host, flags);
+    }
+
+    public void setHost(Host host) {
+        this.host = host;
+    }
+
+    public Host getHost() {
+        return host;
+    }
+
+    public void setAmenities(ArrayList<Amenity> amenities) {
+        this.amenities = amenities;
+    }
+
+    public void setPriceList(ArrayList<PricelistItem> priceList) {
+        this.priceList = priceList;
+    }
+
+    public void setFreeTimeSlots(ArrayList<TimeSlot> freeTimeSlots) {
+        this.freeTimeSlots = freeTimeSlots;
+    }
+
+    public ArrayList<Amenity> getAmenities() {
+        return amenities;
+    }
+
+    public ArrayList<PricelistItem> getPriceList() {
+        return priceList;
+    }
+
+    public ArrayList<TimeSlot> getFreeTimeSlots() {
+        return freeTimeSlots;
+    }
+
+    public void setType(AccommodationType type) {
+        this.type = type;
+    }
+
+    public void setStatus(AccommodationStatus status) {
+        this.status = status;
+    }
+
+    public AccommodationType getType() {
+        return type;
+    }
+
+    public AccommodationStatus getStatus() {
+        return status;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
     public Long getId() {
         return id;
     }
@@ -171,17 +262,6 @@ public class Accomodation implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeLong(id);
-        dest.writeString(name);
-        dest.writeString(description);
-        dest.writeInt(minGuests);
-        dest.writeInt(maxGuests);
-        dest.writeBoolean(pricePerGuest);
-        dest.writeBoolean(automaticConfirmation);
-        dest.writeInt(reservationDeadline);
-    }
 
     public static final Creator<Accomodation> CREATOR = new Creator<Accomodation>() {
         @Override
@@ -197,110 +277,4 @@ public class Accomodation implements Parcelable {
 
 
 }
-//    private Long id;
-//    private String title;
-//    private String description;
-//    private int image;
-//    private int icon=0;
-//
-//    public Accomodation(Long id, String title, String description, int image, int icons) {
-//        this.id = id;
-//        this.title = title;
-//        this.description = description;
-//        this.image = image;
-//        this.icon = icons;
-//    }
-//
-//    public Accomodation(Long id, String title, String description, int image) {
-//        this.id = id;
-//        this.title = title;
-//        this.description = description;
-//        this.image = image;
-//    }
-//
-//    public Accomodation() {
-//    }
-//    // Konstruktor za čitanje iz Parcel objekta
-//    protected Accomodation(Parcel in) {
-//        // Čitanje ostalih atributa proizvoda iz Parcel objekta
-//        id = in.readLong();
-//        title = in.readString();
-//        description = in.readString();
-//        image = in.readInt();
-//    }
-//
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
-//
-//    public String getTitle() {
-//        return title;
-//    }
-//
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
-//
-//    public int getIcon() {
-//        return icon;
-//    }
-//
-//    public void setIcon(int icon) {
-//        this.icon = icon;
-//    }
-//
-//    public String getDescription() {
-//        return description;
-//    }
-//
-//    public void setDescription(String description) {
-//        this.description = description;
-//    }
-//
-//    public int getImage() {
-//        return image;
-//    }
-//
-//    public void setImage(int image) {
-//        this.image = image;
-//    }
-//
-//    @Override
-//    public String toString() {
-//        return "Accomodation{" +
-//                "title='" + title + '\'' +
-//                ", description='" + description + '\'' +
-//                ", image='" + image + '\'' +
-//                '}';
-//    }
-//
-//    @Override
-//    public int describeContents() {
-//        return 0;
-//    }
-//
-//    @Override
-//    public void writeToParcel(@NonNull Parcel dest, int flags) {
-//        dest.writeLong(id);
-//        dest.writeString(title);
-//        dest.writeString(description);
-//        dest.writeInt(image);
-//        dest.writeInt(icon);
-//    }
-//
-//    public static final Creator<Accomodation> CREATOR = new Creator<Accomodation>() {
-//        @Override
-//        public Accomodation createFromParcel(Parcel in) {
-//            return new Accomodation(in);
-//        }
-//
-//        @Override
-//        public Accomodation[] newArray(int size) {
-//            return new Accomodation[size];
-//        }
-//    };
 
