@@ -1,5 +1,7 @@
 package com.example.booking_team22.fragments.accomodation;
 
+import static com.example.booking_team22.clients.ClientUtils.accommodationService;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -14,21 +16,26 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.booking_team22.R;
 import com.example.booking_team22.adapters.AccomodationListAdapter;
 import com.example.booking_team22.clients.ClientUtils;
 import com.example.booking_team22.databinding.AccomodationCardBinding;
 import com.example.booking_team22.databinding.FragmentAccomodationPageBinding;
+import com.example.booking_team22.model.AccommodationType;
 import com.example.booking_team22.model.Accomodation;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,6 +61,15 @@ public class GuestAccomodationPageFragment extends ListFragment {
         setDate(binding.cicoInput2);
 
         Button btnFilters = binding.btnFilters;
+        Integer[] arraySpinner = new Integer[] {
+                1, 2,3,4,5
+        };
+        Spinner numberOfGuestsSpinner = (Spinner) binding.guestNum;
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(getActivity(),
+                android.R.layout.simple_spinner_item, arraySpinner);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        numberOfGuestsSpinner.setAdapter(adapter);
+
         btnFilters.setOnClickListener(v -> {
             Log.i("ShopApp", "Bottom Sheet Dialog");
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
@@ -61,23 +77,46 @@ public class GuestAccomodationPageFragment extends ListFragment {
             bottomSheetDialog.setContentView(dialogView);
             bottomSheetDialog.show();
         });
+        Button btnSearch = binding.btnAcceptFilters;
+        btnSearch.setOnClickListener(v -> {
+
+            int selectedNumberOfGuests = (int) numberOfGuestsSpinner.getSelectedItem();
+            TextInputEditText startDateInput = binding.cicoInput;
+            String startDate = startDateInput.getText().toString();
+            TextInputEditText endDateInput =binding.cicoInput2;
+            String endDate = endDateInput.getText().toString();
+            TextView destination = binding.locationText;
+            String location=destination.getText().toString();
+
+            getDataFromClient("2024-01-01","2024-01-08",4,AccommodationType.HOTEL.name(),
+                    0,0,null,
+                    null,null,null,null);
+        });
+
+
 
         return root;
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getDataFromClient();
-
+        getDataFromClient(null,null,0,null,0,0,null,
+                null,null,null,null);
     }
     @Override
     public void onResume() {
         super.onResume();
-        getDataFromClient();
+        getDataFromClient(null,null,0,null,0,0,null,
+        null,null,null,null);
     }
 
-    private void getDataFromClient() {
-        Call<ArrayList<Accomodation>> call = ClientUtils.accommodationService.getAll();
+    private void getDataFromClient(String begin, String end, int guestNumber, String type,
+                                   double startPrice, double endPrice, String status,
+                                   String country, String city, List<String> amenities, Integer hostId) {
+        Call<ArrayList<Accomodation>> call = accommodationService.getAll(
+                begin, end, guestNumber, type, startPrice, endPrice, status, country, city, amenities, hostId
+        );
+
         call.enqueue(new Callback<ArrayList<Accomodation>>() {
             @Override
             public void onResponse(Call<ArrayList<Accomodation>> call, Response<ArrayList<Accomodation>> response) {
