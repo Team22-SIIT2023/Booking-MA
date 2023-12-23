@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -30,6 +33,7 @@ public interface AccommodationService {
             @Query("amenities") List<String> amenities,
             @Query("hostId") Integer hostId
     );
+  
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
@@ -37,12 +41,39 @@ public interface AccommodationService {
     @GET("accommodations/{accommodationId}/images")
     Call<List<String>> getImages(@Path("accommodationId") Long accommodationId);
 
+  
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @POST("accommodations")
+    Call<Accomodation> createAccommodation(@Body Accomodation accomodation);
+
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @PUT("accommodations/editPricelist/{id}")
+    Call<ArrayList<Accomodation>> editPrice();
+  
+  
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
     @GET("accommodations/{id}")
     Call<Accomodation> getById(@Path("id") Long id);
+
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+
+    @PUT("accommodations/editTimeSlot/{id}")
+    Call<ArrayList<Accomodation>> editFreeTimeslots();
+
 
     @Headers({
             "User-Agent: Mobile-Android",
@@ -54,4 +85,5 @@ public interface AccommodationService {
             @Query("guestNumber") int guestNumber,
             @Query("begin") String begin,
             @Query("end") String end);
+
 }
