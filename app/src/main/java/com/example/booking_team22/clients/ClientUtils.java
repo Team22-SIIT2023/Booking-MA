@@ -1,5 +1,7 @@
 package com.example.booking_team22.clients;
 
+import android.content.Context;
+
 import com.example.booking_team22.BuildConfig;
 
 import java.util.concurrent.TimeUnit;
@@ -11,6 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClientUtils {
     private static final String SERVICE_API_PATH = "http://" + BuildConfig.IP_ADDR + ":8080/api/";
+
     public static OkHttpClient test(){
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -38,5 +41,10 @@ public class ClientUtils {
      * vrsimo komunikaciju
      * */
     public static AccommodationService accommodationService = retrofit.create(AccommodationService.class);
+    public static CommentService commentService = retrofit.create(CommentService.class);
+    public static UserService userService = retrofit.create(UserService.class);
+    public static RequestService requestService=retrofit.create(RequestService.class);
+    public static AuthenticationService authenticationService = new AuthenticationService(userService);
+
 
 }

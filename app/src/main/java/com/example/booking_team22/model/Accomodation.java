@@ -101,6 +101,9 @@ public class Accomodation implements Parcelable, Serializable {
 
         }
 
+    public Accomodation() {
+    }
+
     public Accomodation(Parcel in) {
             id=in.readLong();
             name=in.readString();

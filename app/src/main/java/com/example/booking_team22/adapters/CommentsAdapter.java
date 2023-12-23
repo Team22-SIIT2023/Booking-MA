@@ -69,8 +69,8 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
         Button reportButton=convertView.findViewById(R.id.reportComment);
 
         if(comment != null){
-            commentEmail.setText(comment.getEmail());
-            commentText.setText(comment.getCommentText());
+            commentEmail.setText(comment.getGuest().getAccount().getUsername());
+            commentText.setText(comment.getText());
             commentDate.setText(comment.getDate());
             if(!userType.equals("admin")){
                 acceptButton.setVisibility(View.INVISIBLE);

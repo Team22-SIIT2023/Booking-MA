@@ -22,13 +22,21 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp">
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/search_text"
-                app:queryHint="Search"
-                android:layout_width="match_parent"
-                android:background="@drawable/backround"
+            <TextView
+                android:id="@+id/locationText"
+                android:layout_width="0dp"
+                android:padding="10dp"
                 android:layout_height="match_parent"
-                />
+                android:layout_weight="1"
+                android:hint="Search"/>
+
+            <!-- Spinner for combo box -->
+            <Spinner
+                android:id="@+id/guestNum"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp">
+            </Spinner>
 
         </LinearLayout>
         <LinearLayout
@@ -106,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
                 android:textSize="13sp"
-                android:text="Use filters"
+                android:text="Search"
                 tools:ignore="TextContrastCheck" />
             </LinearLayout>
         </LinearLayout>
