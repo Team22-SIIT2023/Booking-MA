@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -90,10 +91,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
         Button declineAccommodation = convertView.findViewById(R.id.declineAccommodation);
 
 
-//        detailButton.setOnClickListener(v -> {
-//             NavController navController = Navigation.findNavController(context, R.id.fragment_nav_content_main);
-//             navController.navigate(R.id.nav_details);
-//        });
+
 
         if(accomodation != null){
             Call<List<String>> call = ClientUtils.accommodationService.getImages(accomodation.getId());
@@ -115,19 +113,39 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                 public void onFailure(Call<List<String>> call, Throwable t) {
                 }
             });
-            productTitle.setText(accomodation.getAddress().getAddress());
-            productDescription.setText(accomodation.getType().name());
+            productTitle.setText(accomodation.getName());
+            productDescription.setText(accomodation.getDescription());
             if(!userType.equals("admin")){
                 acceptAccommodation.setVisibility(View.GONE);
                 declineAccommodation.setVisibility(View.GONE);
             }
-//            productCard.setOnClickListener(v -> {
-//                // Handle click on the item at 'position'
-//                Log.i("ShopApp", "Clicked: " + accomodation.getName() + ", id: " +
-//                        accomodation.getId().toString());
-//                Toast.makeText(getContext(), "Clicked: " + accomodation.getName()  +
-//                        ", id: " + accomodation.getId().toString(), Toast.LENGTH_SHORT).show();
-//            });
+
+
+            detailButton.setOnClickListener(v->{
+                Call<Accomodation> callDetails = ClientUtils.accommodationService.getById(accomodation.getId());
+                callDetails.enqueue(new Callback<Accomodation>() {
+                    @Override
+                    public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
+                        if (response.code() == 200){
+                            Log.d("UCITA PRVO","GET PRODUCT BY ID " + accomodation.getId());
+                            Log.d("UCITA PRVO", response.body().toString());
+
+                            Accomodation detailAccommodation = response.body();
+                            Bundle args = new Bundle();
+                            args.putParcelable("detailAccommodation", detailAccommodation);
+                            NavController navController = Navigation.findNavController(context, R.id.fragment_nav_content_main);
+                            navController.navigate(R.id.nav_details,args);
+                        }else{
+                            Log.d("REZ","Meesage recieved: "+response.code());
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Accomodation> call, Throwable t) {
+                        Log.d("REZ", t.getMessage() != null?t.getMessage():"error");
+                    }
+                });
+            });
+
 
         }
 

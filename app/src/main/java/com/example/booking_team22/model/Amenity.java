@@ -10,12 +10,12 @@ import java.io.Serializable;
 public class Amenity implements Parcelable, Serializable {
 
     long id;
-    String amenityName;
+    String name;
 //    int amenityImage;
 
     public Amenity(Long id, String amenityName){
         this.id = id;
-        this.amenityName = amenityName;
+        this.name = amenityName;
 //        this.amenityImage = image;
     }
 
@@ -23,7 +23,7 @@ public class Amenity implements Parcelable, Serializable {
     }
     protected Amenity(Parcel in) {
         id = in.readLong();
-        amenityName = in.readString();
+        name = in.readString();
 //        amenityImage = in.readInt();
     }
 
@@ -36,11 +36,11 @@ public class Amenity implements Parcelable, Serializable {
     }
 
     public String getAmenityName() {
-        return amenityName;
+        return name;
     }
 
     public void setAmenityName(String title) {
-        this.amenityName = title;
+        this.name = title;
     }
 
     public void setId(long id) {
@@ -59,7 +59,7 @@ public class Amenity implements Parcelable, Serializable {
     public String toString() {
         return "Amenity{" +
                 "id=" + id +
-                ", amenityName='" + amenityName;
+                ", amenityName='" + name;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class Amenity implements Parcelable, Serializable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeLong(id);
-        dest.writeString(amenityName);
+        dest.writeString(name);
 //        dest.writeInt(amenityImage);
     }
 

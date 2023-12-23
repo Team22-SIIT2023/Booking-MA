@@ -71,13 +71,13 @@ public class HomeActivity extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(Objects.equals(userType, "guest")) {
+        if(Objects.equals(userType, "ROLE_GUEST")) {
             getMenuInflater().inflate(R.menu.guest_menu,menu);
 
-        }if(Objects.equals(userType, "host")) {
+        }if(Objects.equals(userType, "ROLE_HOST")) {
             getMenuInflater().inflate(R.menu.host_menu,menu);
 
-        }if(Objects.equals(userType, "admin")) {
+        }if(Objects.equals(userType, "ROLE_ADMIN")) {
 
             getMenuInflater().inflate(R.menu.admin_menu,menu);
         }

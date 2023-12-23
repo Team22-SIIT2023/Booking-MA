@@ -52,10 +52,11 @@ public class AmenityListAdapter extends ArrayAdapter<Amenity> {
         }
         LinearLayout amenityCard = convertView.findViewById(R.id.amenity_card_item);
         TextView amenityName = convertView.findViewById(R.id.textViewAmenity);
-        ImageView amenityImage = convertView.findViewById(R.id.imageIconAmenity);
+        amenityName.setText(amenity.getAmenityName());
+        //ImageView amenityImage = convertView.findViewById(R.id.imageIconAmenity);
 
         if(amenity != null){
-            amenityName.setText(amenity.getAmenityName());
+
             //amenityImage.setImageResource(amenity.getAmenityImage());
         }
         return convertView;
