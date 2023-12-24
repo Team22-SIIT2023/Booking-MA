@@ -37,6 +37,7 @@ import com.example.booking_team22.model.Accomodation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.Inflater;
 
 import retrofit2.Call;
@@ -48,6 +49,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
     private SharedPreferences sp;
     private String userType;
     private FragmentActivity context;
+
 
     public AccomodationListAdapter(FragmentActivity context, ArrayList<Accomodation> products){
         super(context, R.layout.accomodation_card, products);
@@ -85,12 +87,13 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
         LinearLayout productCard = convertView.findViewById(R.id.product_card_item);
 
         TextView productTitle = convertView.findViewById(R.id.product_title);
+        TextView price = convertView.findViewById(R.id.priceView);
+        TextView unitPrice = convertView.findViewById(R.id.unitPriceView);
+        TextView unitLabel = convertView.findViewById(R.id.unitLabel);
         TextView productDescription = convertView.findViewById(R.id.product_description);
         Button detailButton=convertView.findViewById(R.id.viewDetailButton);
         Button acceptAccommodation = convertView.findViewById(R.id.acceptAccommodation);
         Button declineAccommodation = convertView.findViewById(R.id.declineAccommodation);
-
-
 
 
         if(accomodation != null){
@@ -115,6 +118,12 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
             });
             productTitle.setText(accomodation.getName());
             productDescription.setText(accomodation.getDescription());
+            price.setText(String.valueOf((int)accomodation.getPrice()));
+            unitPrice.setText(String.valueOf((int)accomodation.getUnitPrice()));
+            if(accomodation.isPricePerGuest()){
+                unitLabel.setText("/guest:");
+            }else{unitLabel.setText("/unit:");}
+
             if(!userType.equals("admin")){
                 acceptAccommodation.setVisibility(View.GONE);
                 declineAccommodation.setVisibility(View.GONE);

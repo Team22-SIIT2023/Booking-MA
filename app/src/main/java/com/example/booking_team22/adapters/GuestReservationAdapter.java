@@ -17,13 +17,14 @@ import androidx.fragment.app.FragmentActivity;
 import com.example.booking_team22.R;
 import com.example.booking_team22.model.Notification;
 import com.example.booking_team22.model.Reservation;
+import com.example.booking_team22.model.ReservationRequest;
 
 import java.util.ArrayList;
 
 public class GuestReservationAdapter extends ArrayAdapter {
-    private ArrayList<Reservation> aReservations;
+    private ArrayList<ReservationRequest> aReservations;
 
-    public GuestReservationAdapter(FragmentActivity context, ArrayList<Reservation> reservations){
+    public GuestReservationAdapter(FragmentActivity context, ArrayList<ReservationRequest> reservations){
         super(context, R.layout.reservation_card, reservations);
         aReservations = reservations;
     }
@@ -35,7 +36,7 @@ public class GuestReservationAdapter extends ArrayAdapter {
 
     @Nullable
     @Override
-    public Reservation getItem(int position) {
+    public ReservationRequest getItem(int position) {
         return aReservations.get(position);
     }
 
@@ -47,28 +48,34 @@ public class GuestReservationAdapter extends ArrayAdapter {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Reservation reservation = getItem(position);
+        ReservationRequest reservation = getItem(position);
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.reservation_card,
                     parent, false);
         }
-        LinearLayout reservationCard = convertView.findViewById(R.id.reservation_card_item);
-        TextView reservationTitle = convertView.findViewById(R.id.reservation_title);
-        TextView reservationAddress = convertView.findViewById(R.id.apartment_address);
-        ImageView imageView = convertView.findViewById(R.id.apartment_icon);
-        TextView resevationDate = convertView.findViewById(R.id.reservation_dates);
+        LinearLayout reservationCard = convertView.findViewById(R.id.request_card_item);
+        TextView timeSlot = convertView.findViewById(R.id.textViewTimeSlot);
+        TextView price = convertView.findViewById(R.id.textViewPrice);
+        TextView guest = convertView.findViewById(R.id.textViewGuest);
+        TextView guestNum = convertView.findViewById(R.id.textViewGuestNumber);
+        TextView status = convertView.findViewById(R.id.textViewStatus);
+        TextView accommodation = convertView.findViewById(R.id.textViewAccommodation);
+
 
         if(reservation != null){
-            reservationTitle.setText(reservation.getTitle());
-            reservationAddress.setText(reservation.getAddress());
-            imageView.setImageResource(reservation.getImage());
-            resevationDate.setText(reservation.getDates());
+            timeSlot.setText(reservation.getTimeSlot().getStartDate()+"-"+reservation.getTimeSlot().getEndDate());
+            price.setText(String.valueOf((reservation.getPrice())));
+            guest.setText(String.valueOf(reservation.getGuest().getFirstName()));
+            guestNum.setText(String.valueOf(reservation.getGuestNumber()));
+            status.setText(reservation.getStatus().name());
+            accommodation.setText(reservation.getAccommodation().getName());
+
             reservationCard.setOnClickListener(v -> {
-                // Handle click on the item at 'position'
-                Log.i("ShopApp", "Clicked: " + reservation.getTitle() + ", id: " +
-                        reservation.getId().toString());
-                Toast.makeText(getContext(), "Clicked: " + reservation.getTitle()  +
-                        ", id: " + reservation.getId().toString(), Toast.LENGTH_SHORT).show();
+//                // Handle click on the item at 'position'
+//                Log.i("ShopApp", "Clicked: " + reservation.getTitle() + ", id: " +
+//                        reservation.getId().toString());
+//                Toast.makeText(getContext(), "Clicked: " + reservation.getTitle()  +
+//                        ", id: " + reservation.getId().toString(), Toast.LENGTH_SHORT).show();
             });
         }
         return convertView;

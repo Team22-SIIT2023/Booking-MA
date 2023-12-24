@@ -76,13 +76,20 @@ public class Accomodation implements Parcelable, Serializable {
         @SerializedName("freeTimeSlots")
         @Expose
         private ArrayList<TimeSlot> freeTimeSlots;
+        @SerializedName("price")
+        @Expose
+        private double price=0.0;
+        @SerializedName("unitPrice")
+        @Expose
+        private double unitPrice=0.0;
+
 
         public Accomodation(Long id, String name, String description,
                              int minGuests, int maxGuests,
                              boolean pricePerGuest, boolean automaticConfirmation,int reservationDeadline,
                             Address address,AccommodationType type,AccommodationStatus status,
                             ArrayList<Amenity>amenities,ArrayList<PricelistItem> priceList,
-                            ArrayList<TimeSlot> freeTimeSlots,Host host) {
+                            ArrayList<TimeSlot> freeTimeSlots,Host host,double price,double unitPrice) {
             this.id = id;
             this.name = name;
             this.description = description;
@@ -98,6 +105,8 @@ public class Accomodation implements Parcelable, Serializable {
             this.priceList=priceList;
             this.freeTimeSlots=freeTimeSlots;
             this.host=host;
+            this.price=price;
+            this.unitPrice=unitPrice;
 
         }
 
@@ -119,6 +128,8 @@ public class Accomodation implements Parcelable, Serializable {
             freeTimeSlots = in.createTypedArrayList(TimeSlot.CREATOR);
             priceList = in.createTypedArrayList(PricelistItem.CREATOR);
             host=in.readParcelable(Host.class.getClassLoader());
+            price=in.readDouble();
+            unitPrice=in.readDouble();
     }
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
@@ -137,6 +148,24 @@ public class Accomodation implements Parcelable, Serializable {
         dest.writeTypedList(freeTimeSlots);
         dest.writeTypedList(priceList);
         dest.writeParcelable(host, flags);
+        dest.writeDouble(price);
+        dest.writeDouble(unitPrice);
+    }
+
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public void setHost(Host host) {

@@ -18,8 +18,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -30,12 +34,18 @@ import com.example.booking_team22.databinding.AccomodationCardBinding;
 import com.example.booking_team22.databinding.FragmentAccomodationPageBinding;
 import com.example.booking_team22.model.AccommodationType;
 import com.example.booking_team22.model.Accomodation;
+import com.example.booking_team22.model.Amenity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +56,19 @@ public class GuestAccomodationPageFragment extends ListFragment {
 
     public static ArrayList<Accomodation> products = new ArrayList<Accomodation>();
     AccomodationListAdapter adapter;
+    private String startDate=null;
+    private String endDate=null;
+    private String location=null;
+    private String type=null;
+    private List<String>amenities=new ArrayList<>();
+    private int numberOfGuests=0;
+    private int minPrice=0;
+    private int maxPrice=0;
+    private final Map<CheckBox, Boolean> checkboxStates = new HashMap<>();
+    private Map<Long, Double> pricesMap=new HashMap<>();
+    private Map<Long, Double> unitPricesMap=new HashMap<>();
+
+    private  BottomSheetDialog bottomSheetDialog;
     private FragmentAccomodationPageBinding binding;
 
     public static GuestAccomodationPageFragment newInstance() {
@@ -61,39 +84,131 @@ public class GuestAccomodationPageFragment extends ListFragment {
         setDate(binding.cicoInput2);
 
         Button btnFilters = binding.btnFilters;
-        Integer[] arraySpinner = new Integer[] {
-                1, 2,3,4,5
+        bottomSheetDialog = new BottomSheetDialog(getActivity());
+
+        String[] arraySpinner = new String[] {
+                "","HOTEL", "MOTEL", "VILLA", "APARTMENT"
         };
-        Spinner numberOfGuestsSpinner = (Spinner) binding.guestNum;
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(getActivity(),
+        Spinner typeSpinner = (Spinner) binding.typeSpinner;
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, arraySpinner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        numberOfGuestsSpinner.setAdapter(adapter);
+        typeSpinner.setAdapter(adapter);
 
+
+        SeekBar minSeekBar = binding.minSeekBar;
+        TextView minValueText = binding.minValueText;
+        minSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Update the TextView with the current min value
+                minValueText.setText("Min: $" + progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Not needed for this example
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Not needed for this example
+            }
+        });
+        SeekBar maxSeekBar = binding.maxSeekBar;
+        TextView maxValueText =binding.maxValueText;
+        maxSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Update the TextView with the current max value
+                maxValueText.setText("Max: $" + progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Not needed for this example
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Not needed for this example
+            }
+        });
+
+
+        View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
+        bottomSheetDialog.setContentView(dialogView);
         btnFilters.setOnClickListener(v -> {
             Log.i("ShopApp", "Bottom Sheet Dialog");
-            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
-            View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
-            bottomSheetDialog.setContentView(dialogView);
             bottomSheetDialog.show();
         });
+
         Button btnSearch = binding.btnAcceptFilters;
         btnSearch.setOnClickListener(v -> {
+            amenities.clear();
 
-            int selectedNumberOfGuests = (int) numberOfGuestsSpinner.getSelectedItem();
+            minPrice = minSeekBar.getProgress();
+            maxPrice = maxSeekBar.getProgress();
+
+            LinearLayout checkboxContainer = bottomSheetDialog.findViewById(R.id.filterLayout);
+            for (int i = 0; i < checkboxContainer.getChildCount(); i++) {
+                View childView = checkboxContainer.getChildAt(i);
+
+                if (childView instanceof CheckBox) {
+                    CheckBox checkBox = (CheckBox) childView;
+
+                    if (checkBox.isChecked()) {
+                        String optionText = checkBox.getText().toString();
+                        amenities.add(optionText);
+                    }
+                }
+            }
+
+
+            EditText guestNum = binding.numberOfGuests;
+            if(!guestNum.getText().toString().equals("")){
+                numberOfGuests=Integer.parseInt(guestNum.getText().toString());
+            }
+            type = typeSpinner.getSelectedItem().toString();
             TextInputEditText startDateInput = binding.cicoInput;
-            String startDate = startDateInput.getText().toString();
+            startDate = startDateInput.getText().toString();
             TextInputEditText endDateInput =binding.cicoInput2;
-            String endDate = endDateInput.getText().toString();
-            TextView destination = binding.locationText;
-            String location=destination.getText().toString();
+            endDate = endDateInput.getText().toString();
+            EditText destination = binding.locationText;
+            if(!destination.getText().toString().equals("")){
+                location=destination.getText().toString();
+            }
+            if ( !startDate.isEmpty() && !endDate.isEmpty() && numberOfGuests != 0) {
+                long numberOfNights = ChronoUnit.DAYS.between(LocalDate.parse(startDate), LocalDate.parse(endDate));
+                for(Accomodation accomodation:products){
+                    Call<Double> callPrice = accommodationService.calculatePrice(accomodation.getId(), numberOfGuests, startDate, endDate);
+                    callPrice.enqueue(new Callback<Double>() {
+                        @Override
+                        public void onResponse(Call<Double> call, Response<Double> response) {
+                            if (response.isSuccessful()) {
+                                Double calculatedPrice = response.body();
+                                pricesMap.put(accomodation.getId(),calculatedPrice);
+                                if(accomodation.isPricePerGuest()){
+                                    unitPricesMap.put(accomodation.getId(),calculatedPrice/numberOfNights/numberOfGuests);
+                                }else{
+                                    unitPricesMap.put(accomodation.getId(),calculatedPrice/numberOfNights);
+                                }
 
-            getDataFromClient("2024-01-01","2024-01-08",4,AccommodationType.HOTEL.name(),
-                    0,0,null,
-                    null,null,null,null);
+                            } else {
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<Double> call, Throwable t) {
+                            // Handle network error or API call failure
+                            t.printStackTrace();
+                        }
+                    });
+                }
+            }
+            getDataFromClient(startDate,endDate,numberOfGuests,type,
+                    minPrice,maxPrice,null,
+                    location,null,amenities,null);
         });
-
-
 
         return root;
     }
@@ -106,6 +221,13 @@ public class GuestAccomodationPageFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
+        binding.cicoInput.setText("");
+        binding.cicoInput2.setText("");
+        binding.numberOfGuests.setText("");
+        binding.locationText.setText("");
+        binding.typeSpinner.setSelection(0);
+        pricesMap.clear();
+        unitPricesMap.clear();
         getDataFromClient(null,null,0,null,0,0,null,
         null,null,null,null);
     }
@@ -124,8 +246,16 @@ public class GuestAccomodationPageFragment extends ListFragment {
                     Log.d("REZ", "Meesage recieved");
                     System.out.println(response.body());
                     products = response.body();
+                    for(Accomodation accomodation:products){
+                        try {
+                            accomodation.setPrice(pricesMap.get(accomodation.getId()));
+                            accomodation.setUnitPrice(unitPricesMap.get(accomodation.getId()));
+                        }catch (Exception ex){
+                            accomodation.setPrice(0.0);
+                            accomodation.setUnitPrice(0.0);
+                        }
+                    }
                     adapter = new AccomodationListAdapter(getActivity(), products);
-                    //setListAdapter(adapter);
                     ListView listView=binding.list;
                     listView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
@@ -154,7 +284,8 @@ public class GuestAccomodationPageFragment extends ListFragment {
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
 
-                            input.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            String formattedDate = String.format(Locale.US, "%04d-%02d-%02d", year, monthOfYear + 1, dayOfMonth);
+                            input.setText(formattedDate);
                         }
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
