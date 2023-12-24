@@ -38,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -210,6 +211,24 @@ public class AccommodationDetailFragment extends Fragment {
 
         TextView name=binding.textAccommodationName;
         name.setText(accommodation.getName());
+
+        RatingBar ratingBar=binding.rating;
+        Call<Double> callRating = ClientUtils.commentService.getAccommodationRating(accommodation.getId());
+        callRating.enqueue(new Callback<Double>() {
+            @Override
+            public void onResponse(Call<Double> call, Response<Double> response) {
+                if (response.isSuccessful()) {
+                    ratingBar.setRating(response.body().floatValue());
+                }
+            }
+            @Override
+            public void onFailure(Call<Double> call, Throwable t) {
+            }
+        });
+
+        TextView addressTxt=binding.addressFiled;
+        addressTxt.setText(accommodation.getAddress().getCountry()+","
+                +accommodation.getAddress().getCity()+", "+accommodation.getAddress().getAddress());
 
         TextView host=binding.txtHost;
         host.setText(accommodation.getHost().getFirstName()+" "+

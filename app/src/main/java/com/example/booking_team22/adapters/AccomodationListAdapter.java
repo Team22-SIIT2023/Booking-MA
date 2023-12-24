@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -94,6 +95,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
         Button detailButton=convertView.findViewById(R.id.viewDetailButton);
         Button acceptAccommodation = convertView.findViewById(R.id.acceptAccommodation);
         Button declineAccommodation = convertView.findViewById(R.id.declineAccommodation);
+        RatingBar ratingBar=convertView.findViewById(R.id.rating);
 
 
         if(accomodation != null){
@@ -116,6 +118,20 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                 public void onFailure(Call<List<String>> call, Throwable t) {
                 }
             });
+            Call<Double> callRating = ClientUtils.commentService.getAccommodationRating(accomodation.getId());
+            callRating.enqueue(new Callback<Double>() {
+                @Override
+                public void onResponse(Call<Double> call, Response<Double> response) {
+                    if (response.isSuccessful()) {
+                        ratingBar.setRating(response.body().floatValue());
+                    }
+                }
+                @Override
+                public void onFailure(Call<Double> call, Throwable t) {
+                }
+            });
+
+
             productTitle.setText(accomodation.getName());
             productDescription.setText(accomodation.getDescription());
             price.setText(String.valueOf((int)accomodation.getPrice()));

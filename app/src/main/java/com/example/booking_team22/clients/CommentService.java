@@ -28,5 +28,13 @@ public interface CommentService {
             @Path("accommodationId") Long accommodationId,
             @Query("status") String status
     );
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("comments/accommodation/{accommodationId}/averageRate")
+    Call<Double> getAccommodationRating(
+            @Path("accommodationId") Long accommodationId
+    );
 
 }
