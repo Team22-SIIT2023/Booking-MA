@@ -32,18 +32,25 @@
     <string name="passwordRepeatTxt">Repeat password</string>
     <string name="phone">Phone number</string>
     <string name="detailsOfAccommodation">Details</string>
-    <string name="filters">Filters</string>
+    <string name="filters">Amenities</string>
     <string name="Type">Accommodation type</string>
     <string name="apartment">Apartment</string>
-    <string name="motel">Motel\n</string>
+    <string name="motel">Motel</string>
     <string name="villa">Villa</string>
     <string name="hotel">Hotel</string>
-    <string name="facilities">Facilities</string>
-    <string name="romService">Room service</string>
-    <string name="pool">Pool</string>
-    <string name="restaurant">Restaurant</string>
-    <string name="parking">Parking</string>
-    <string name="freeWifi">Free WiFi</string>
+
+    <string name="facilities">Amenities available</string>
+    <string name="freeWifi">wifi</string>
+    <string name="pool">pool</string>
+    <string name="airConditioning">air conditioning</string>
+    <string name="spa">spa</string>
+    <string name="tv">tv</string>
+    <string name="breakfast">breakfast</string>
+    <string name="petFriendly">pet friendly</string>
+    <string name="bar">bar</string>
+    <string name="kitchen">kitchen</string>
+    <string name="balcony">balcony</string>
+
     <string name="propertyRating">Property rating</string>
     <string name="oneStar">1 star</string>
     <string name="twoStars">2 stars</string>

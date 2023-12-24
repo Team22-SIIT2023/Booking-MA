@@ -21,24 +21,69 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp">
-
-            <TextView
-                android:id="@+id/locationText"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
-                android:padding="10dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:hint="Search"/>
-
-            <!-- Spinner for combo box -->
-            <Spinner
-                android:id="@+id/guestNum"
-                android:layout_width="wrap_content"
+                app:cardCornerRadius="2dp"
+                app:cardBackgroundColor="@color/darkPurple"
+                app:cardElevation="1dp">
+                <Spinner
+                    android:id="@+id/typeSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+            </androidx.cardview.widget.CardView>
+            <EditText
+                android:id="@+id/locationText"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="8dp">
-            </Spinner>
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:hint="Country, City"/>
+            <EditText
+                android:id="@+id/numberOfGuests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="guest num"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/rangeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp">
+            <TextView
+                android:id="@+id/minValueText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Min: $0"/>
+            <SeekBar
+                android:id="@+id/minSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="20000"
+                android:progress="0"/>
+
+            <SeekBar
+                android:id="@+id/maxSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="20000"
+                android:progress="20000"/>
+            <TextView
+                android:id="@+id/maxValueText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Max: $20000"/>
 
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/linear2"
             android:layout_width="match_parent"
@@ -55,7 +100,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="160dp"

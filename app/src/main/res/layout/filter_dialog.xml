@@ -27,44 +27,21 @@
         android:layout_margin="2dp"
         />
     <LinearLayout
+        android:id="@+id/filterLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_margin="2dp">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/Type"/>
-            <CheckBox
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/apartment"/>
-            <CheckBox
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/hotel"/>
-            <CheckBox
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/motel"/>
-            <CheckBox
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/villa"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@color/black"
             android:layout_margin="2dp"
             />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/facilities"/>
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/romService"/>
+            android:text="@string/freeWifi"/>
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,45 +49,65 @@
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/restaurant"/>
+            android:text="@string/airConditioning"/>
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/parking"/>
+            android:text="@string/spa"/>
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/freeWifi"/>
+            android:text="@string/tv"/>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/breakfast"/>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/petFriendly"/>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/kitchen"/>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/bar"/>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/balcony"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/black"
             android:layout_margin="2dp"
             />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/propertyRating"/>
-        <CheckBox
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/oneStar"/>
-        <CheckBox
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/twoStars"/>
-        <CheckBox
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/threeStars"/>
-        <CheckBox
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/fourStars"/>
-        <CheckBox
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/fiveStars"/>
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/propertyRating"/>-->
+<!--        <CheckBox-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/oneStar"/>-->
+<!--        <CheckBox-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/twoStars"/>-->
+<!--        <CheckBox-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/threeStars"/>-->
+<!--        <CheckBox-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/fourStars"/>-->
+<!--        <CheckBox-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/fiveStars"/>-->
 
     </LinearLayout>
     <View
