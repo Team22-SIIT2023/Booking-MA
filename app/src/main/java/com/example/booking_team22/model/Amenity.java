@@ -5,11 +5,19 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class Amenity implements Parcelable, Serializable {
 
+    @SerializedName("id")
+    @Expose
     long id;
+
+    @SerializedName("amenity_name")
+    @Expose
     String name;
 //    int amenityImage;
 
@@ -17,6 +25,10 @@ public class Amenity implements Parcelable, Serializable {
         this.id = id;
         this.name = amenityName;
 //        this.amenityImage = image;
+    }
+
+    public Amenity(String amenityName){
+        this.name = amenityName;
     }
 
     public Amenity() {

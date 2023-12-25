@@ -36,6 +36,7 @@ public class Account implements Parcelable, Serializable {
         this.roles = roles;
     }
 
+    public Account() {}
     protected Account(Parcel in) {
         username = in.readString();
         password = in.readString();

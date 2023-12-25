@@ -8,6 +8,7 @@ import static com.example.booking_team22.clients.ClientUtils.userService;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 
 import android.text.Editable;
@@ -38,6 +40,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.booking_team22.R;
+import com.example.booking_team22.activities.EditAccommodationFreeTimeSlots;
 import com.example.booking_team22.adapters.AmenityListAdapter;
 import com.example.booking_team22.adapters.CommentsAdapter;
 import com.example.booking_team22.clients.ClientUtils;
@@ -77,7 +80,6 @@ public class AccommodationDetailFragment extends Fragment {
     private NavController navController;
     private AppBarConfiguration mAppBarConfiguration;
 
-
     private ArrayList<Amenity> amenities = new ArrayList<Amenity>();
     private ArrayList<Comment> comments=new ArrayList<>();
     CommentsAdapter commentsAdapter;
@@ -88,6 +90,8 @@ public class AccommodationDetailFragment extends Fragment {
     private GoogleMap googleMap;
     private SharedPreferences sp;
     private String userType;
+
+    private Accomodation detailAccommodation;
 
     FragmentAccommodationDetailBinding binding;
 
@@ -110,7 +114,7 @@ public class AccommodationDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        Accomodation detailAccommodation = args.getParcelable("detailAccommodation");
+        detailAccommodation = args.getParcelable("detailAccommodation");
         if (detailAccommodation != null) {
             accommodation.setId(detailAccommodation.getId());
             accommodation.setName(detailAccommodation.getName());
@@ -118,6 +122,16 @@ public class AccommodationDetailFragment extends Fragment {
             accommodation.setHost(detailAccommodation.getHost());
             accommodation.setAmenities(detailAccommodation.getAmenities());
             accommodation.setFreeTimeSlots(detailAccommodation.getFreeTimeSlots());
+            accommodation.setAddress(detailAccommodation.getAddress());
+//            accommodation.setStatus(detailAccommodation.getStatus());
+//            accommodation.setType(detailAccommodation.getType());
+//            accommodation.setAddress(detailAccommodation.getAddress());
+//            accommodation.setPriceList(detailAccommodation.getPriceList());
+//            accommodation.setReservationDeadline(detailAccommodation.getReservationDeadline());
+//            accommodation.setAutomaticConfirmation(detailAccommodation.isAutomaticConfirmation());
+//            accommodation.setPricePerGuest(detailAccommodation.isPricePerGuest());
+//            accommodation.setMinGuests(detailAccommodation.getMinGuests());
+//            accommodation.setMaxGuests(detailAccommodation.getMaxGuests());
         }
 
     }
@@ -319,15 +333,19 @@ public class AccommodationDetailFragment extends Fragment {
         });
 
         Button editButton = binding.btnEditAccommodation;
+        Button editPriceButton = binding.btnEditPriceAccommodation;
         Button addComment=binding.btnAddComments;
         LinearLayout reservationLayout=binding.resrvationLayout;
         if(!userType.equals("ROLE_HOST")){
             editButton.setVisibility(View.INVISIBLE);
+            editPriceButton.setVisibility(View.INVISIBLE);
         }else{
             reservationLayout.setVisibility(View.GONE);
             addComment.setVisibility(View.GONE);
         }
         editButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit,0,0,0);
+        editPriceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar,0,0,0);
+
         editButton.setOnClickListener(v ->{
             LayoutInflater.from(getActivity());
             View customLayout= LayoutInflater.from(getContext()).inflate(R.layout.activity_edit_accomodation,null);
@@ -336,6 +354,28 @@ public class AccommodationDetailFragment extends Fragment {
             AlertDialog dialog=builder.create();
             dialog.show();
         });
+
+        editPriceButton.setOnClickListener(v ->{
+//            Bundle args = new Bundle();
+//            args.putParcelable("detailAccommodation", detailAccommodation);
+//            Intent intent = new Intent(getContext(), EditAccommodationFreeTimeSlots.class);
+//            intent.putExtras(args);
+//
+//            startActivity(intent);
+//            LayoutInflater.from(getActivity());
+//            View customLayout= LayoutInflater.from(getContext()).inflate(R.layout.activity_edit_accommodation_free_time_slots,null);
+//            AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+//            builder.setView(customLayout);
+//            AlertDialog dialog=builder.create();
+//            dialog.show();
+//            Bundle args = new Bundle();
+//            args.putParcelable("detailAccommodation", detailAccommodation);
+            Bundle args = new Bundle();
+            NavController navController = Navigation.findNavController(getActivity(),R.id.fragment_nav_content_main);
+            navController.navigate(R.id.nav_edit_price_and_timeslot, args);
+        });
+
+
         Button myButton = binding.btnAddComments;
         myButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add,0,0,0);
 
