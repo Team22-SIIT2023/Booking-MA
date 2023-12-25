@@ -141,13 +141,13 @@ public class Accomodation implements Parcelable, Serializable {
         dest.writeBoolean(pricePerGuest);
         dest.writeBoolean(automaticConfirmation);
         dest.writeInt(reservationDeadline);
-        dest.writeParcelable(address, flags);
+//        dest.writeParcelable(address, flags);
         dest.writeString(status.name());
         dest.writeString(type.name());
         dest.writeTypedList(amenities);
         dest.writeTypedList(freeTimeSlots);
         dest.writeTypedList(priceList);
-        dest.writeParcelable(host, flags);
+//        dest.writeParcelable(host, flags);
         dest.writeDouble(price);
         dest.writeDouble(unitPrice);
     }

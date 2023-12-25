@@ -1,6 +1,10 @@
 package com.example.booking_team22.fragments.accomodation;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.booking_team22.clients.ClientUtils.userService;
+
 import android.app.DatePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -25,9 +29,11 @@ import com.example.booking_team22.model.AccommodationStatus;
 import com.example.booking_team22.model.AccommodationType;
 import com.example.booking_team22.model.Accomodation;
 import com.example.booking_team22.model.Address;
+import com.example.booking_team22.model.Amenity;
 import com.example.booking_team22.model.Host;
 import com.example.booking_team22.model.PricelistItem;
 import com.example.booking_team22.model.TimeSlot;
+import com.example.booking_team22.model.User;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -35,6 +41,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,6 +66,11 @@ public class CreateAccommodationFragment extends Fragment {
     private Button confirm;
     private Accomodation newAccommodation;
     FragmentCreateAccommodationBinding binding;
+
+    private SharedPreferences sp;
+    private String userType;
+    private User user;
+
 
     public CreateAccommodationFragment() {
     }
@@ -98,8 +111,8 @@ public class CreateAccommodationFragment extends Fragment {
                         @Override
                         public void onDateSet(DatePicker view, int year,
                                               int monthOfYear, int dayOfMonth) {
-
-                            input.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            String formattedDate = String.format(Locale.US, "%04d-%02d-%02d", year, monthOfYear + 1, dayOfMonth);
+                            input.setText(formattedDate);
                         }
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
@@ -142,6 +155,27 @@ public class CreateAccommodationFragment extends Fragment {
                 android.R.layout.simple_spinner_item, arraySpinner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         s.setAdapter(adapter);
+
+        sp= getActivity().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
+        userType=sp.getString("userType","");
+        long id=sp.getLong("userId",0L);
+
+        Call<User> callUser = userService.getUser(sp.getLong("userId",0L)); // Assuming you have a method in your UserApiClient to get a user by ID
+        callUser.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.code() == 200) {
+                    Log.d("USER", "Message received");
+                    user = response.body();
+                } else {
+                    Log.d("USER_REQUEST", "Message received: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e("USER_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,25 +238,32 @@ public class CreateAccommodationFragment extends Fragment {
 //        LocalDate endDateLocal = LocalDate.parse(endDate);
         TimeSlot timeslot = new TimeSlot(startDate, endDate);
         ArrayList<TimeSlot> timeslots = new ArrayList<>();
-//        timeslots.add(timeslot);
+        timeslots.add(timeslot);
         System.out.println("Timeslotssssssss");
         System.out.println(startDate);
         System.out.println(endDate);
+
+        Amenity amenity = new Amenity();
+        amenity.setId(2L);
+        amenity.setAmenityName("pool");
+        ArrayList<Amenity> amenities = new ArrayList<>();
+        amenities.add(amenity);
 
         PricelistItem pricelistItem = new PricelistItem();
         pricelistItem.setPrice(price);
         pricelistItem.setTimeSlot(timeslot);
         ArrayList<PricelistItem> pricelist = new ArrayList<>();
-//        pricelist.add(pricelistItem);
+        pricelist.add(pricelistItem);
 
         Address accAddress = new Address();
-        Host host = new Host();
+        Host host = new Host(user);
 
-        newAccommodation.setHost(null);
+        newAccommodation.setHost(host);
         newAccommodation.setAddress(accAddress);
         newAccommodation.setType(AccommodationType.HOTEL);
-        newAccommodation.setStatus(AccommodationStatus.CREATED);
+//        newAccommodation.setStatus(AccommodationStatus.ACCEPTED);
         newAccommodation.setFreeTimeSlots(timeslots);
         newAccommodation.setPriceList(pricelist);
+        newAccommodation.setAmenities(amenities);
     }
 }

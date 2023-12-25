@@ -13,6 +13,12 @@ public class Host extends User implements Parcelable, Serializable{
         super(id, firstName, lastName, address, phoneNumber, account, picturePath, lastPasswordResetDate, activationLink, activationLinkDate);
     }
 
+    public Host(User user) {
+        super(user.getId(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhoneNumber(),
+                user.getAccount(), user.getPicturePath(), user.getLastPasswordResetDate(), user.getActivationLink(),
+                user.getActivationLinkDate());
+    }
+
     public Host() {
     }
 

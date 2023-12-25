@@ -34,7 +34,15 @@
                 <Button
                     android:id="@+id/btnEditAccommodation"
                     android:layout_marginTop="10dp"
-                    android:layout_width="80dp"
+                    android:layout_width="60dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@color/white"
+                    android:textSize="13sp"/>
+
+                <Button
+                    android:id="@+id/btnEditPriceAccommodation"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="60dp"
                     android:layout_height="50dp"
                     android:backgroundTint="@color/white"
                     android:textSize="13sp"/>

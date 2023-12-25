@@ -1,6 +1,8 @@
 package com.example.booking_team22.clients;
 
 import com.example.booking_team22.model.Accomodation;
+import com.example.booking_team22.model.PricelistItem;
+import com.example.booking_team22.model.TimeSlot;
 import com.example.booking_team22.model.User;
 
 import java.util.ArrayList;
@@ -56,7 +58,7 @@ public interface AccommodationService {
             "Content-Type:application/json"
     })
     @PUT("accommodations/editPricelist/{id}")
-    Call<ArrayList<Accomodation>> editPrice();
+    Call<Accomodation> editPrice(@Body PricelistItem pricelistItem, @Path("id") Long id);
   
   
     @Headers({
@@ -73,7 +75,7 @@ public interface AccommodationService {
     })
 
     @PUT("accommodations/editTimeSlot/{id}")
-    Call<ArrayList<Accomodation>> editFreeTimeslots();
+    Call<Accomodation> editFreeTimeslots(@Body TimeSlot timeSlot, @Path("id") Long id);
 
 
     @Headers({

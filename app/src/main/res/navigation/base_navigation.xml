@@ -66,10 +66,15 @@
         tools:layout="@layout/fragment_accommodation_detail"
         />
     <fragment
+        android:id="@+id/nav_edit_price_and_timeslot"
+        android:name="com.example.booking_team22.fragments.accomodation.EditAccommodationPriceAndTimeslotFragment"
+        android:label="Details"
+        tools:layout="@layout/fragment_edit_accommodation_price_and_timeslot"
+        />
+    <fragment
         android:id="@+id/nav_update"
         android:name="com.example.booking_team22.fragments.accomodation.UpdateAccommodationFragment"
         android:label="Update"
         tools:layout="@layout/fragment_update_accommodation"
         />
-
 </navigation>
