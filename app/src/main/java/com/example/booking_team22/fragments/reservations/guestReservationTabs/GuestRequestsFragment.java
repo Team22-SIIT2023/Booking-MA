@@ -1,5 +1,7 @@
 package com.example.booking_team22.fragments.reservations.guestReservationTabs;
 
+import static com.example.booking_team22.clients.ClientUtils.requestService;
+
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
@@ -12,16 +14,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ListView;
 
 import com.example.booking_team22.R;
+import com.example.booking_team22.adapters.AccomodationListAdapter;
 import com.example.booking_team22.adapters.GuestRequestAdapter;
 import com.example.booking_team22.databinding.FragmentGuestRequestsBinding;
+import com.example.booking_team22.model.Comment;
 import com.example.booking_team22.model.Reservation;
+import com.example.booking_team22.model.ReservationRequest;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,9 +64,31 @@ public class GuestRequestsFragment extends ListFragment {
         binding = FragmentGuestRequestsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        prepareReservationsList(reservations);
-        adapter = new GuestRequestAdapter(getActivity(), reservations);
-        setListAdapter(adapter);
+       // prepareReservationsList(reservations);
+
+        Call<ArrayList<ReservationRequest>> call = requestService.getAll(null, null, null, null);
+        call.enqueue(new Callback<ArrayList<ReservationRequest>>() {
+            @Override
+            public void onResponse(Call<ArrayList<ReservationRequest>> call, Response<ArrayList<ReservationRequest>> response) {
+                if (response.isSuccessful()) {
+                    ArrayList<ReservationRequest> requests = response.body();
+                    adapter = new GuestRequestAdapter(getActivity(), requests);
+                    ListView listView=binding.list;
+                    listView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                } else {
+                }
+            }
+            @Override
+            public void onFailure(Call<ArrayList<ReservationRequest>> call, Throwable t) {
+                // Handle network errors or unexpected failures
+                t.printStackTrace();
+            }
+        });
+
+
+//        adapter = new GuestRequestAdapter(getActivity(), reservations);
+//        setListAdapter(adapter);
 
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);

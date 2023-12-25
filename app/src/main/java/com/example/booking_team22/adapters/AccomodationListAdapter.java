@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ import com.example.booking_team22.model.Accomodation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.Inflater;
 
 import retrofit2.Call;
@@ -49,6 +51,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
     private SharedPreferences sp;
     private String userType;
     private FragmentActivity context;
+
 
     public AccomodationListAdapter(FragmentActivity context, ArrayList<Accomodation> products){
         super(context, R.layout.accomodation_card, products);
@@ -86,13 +89,15 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
         LinearLayout productCard = convertView.findViewById(R.id.product_card_item);
 
         TextView productTitle = convertView.findViewById(R.id.product_title);
+        TextView price = convertView.findViewById(R.id.priceView);
+        TextView unitPrice = convertView.findViewById(R.id.unitPriceView);
+        TextView unitLabel = convertView.findViewById(R.id.unitLabel);
         TextView productDescription = convertView.findViewById(R.id.product_description);
         Button detailButton=convertView.findViewById(R.id.viewDetailButton);
         Button updateButton=convertView.findViewById(R.id.accommodationUpdate);
         Button acceptAccommodation = convertView.findViewById(R.id.acceptAccommodation);
         Button declineAccommodation = convertView.findViewById(R.id.declineAccommodation);
-
-
+        RatingBar ratingBar=convertView.findViewById(R.id.rating);
 
 
         if(accomodation != null){
@@ -115,9 +120,31 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                 public void onFailure(Call<List<String>> call, Throwable t) {
                 }
             });
+            Call<Double> callRating = ClientUtils.commentService.getAccommodationRating(accomodation.getId());
+            callRating.enqueue(new Callback<Double>() {
+                @Override
+                public void onResponse(Call<Double> call, Response<Double> response) {
+                    if (response.isSuccessful()) {
+                        ratingBar.setRating(response.body().floatValue());
+                    }
+                }
+                @Override
+                public void onFailure(Call<Double> call, Throwable t) {
+                }
+            });
+
+
             productTitle.setText(accomodation.getName());
             productDescription.setText(accomodation.getDescription());
-            if(!userType.equals("ROLE_ADMIN")){
+
+      
+            price.setText(String.valueOf((int)accomodation.getPrice()));
+            unitPrice.setText(String.valueOf((int)accomodation.getUnitPrice()));
+            if(accomodation.isPricePerGuest()){
+                unitLabel.setText("/guest:");
+            }else{unitLabel.setText("/unit:");}
+
+           if(!userType.equals("ROLE_ADMIN")){
                 acceptAccommodation.setVisibility(View.GONE);
                 declineAccommodation.setVisibility(View.GONE);
             }

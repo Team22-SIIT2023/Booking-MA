@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,11 +68,13 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
         Button acceptButton = convertView.findViewById(R.id.acceptComment);
         Button declineButton = convertView.findViewById(R.id.declineComment);
         Button reportButton=convertView.findViewById(R.id.reportComment);
+        RatingBar ratingBar=convertView.findViewById(R.id.ratingAcc);
 
         if(comment != null){
             commentEmail.setText(comment.getGuest().getAccount().getUsername());
             commentText.setText(comment.getText());
             commentDate.setText(comment.getDate());
+            ratingBar.setRating((float)comment.getRating());
             if(!userType.equals("admin")){
                 acceptButton.setVisibility(View.INVISIBLE);
                 declineButton.setVisibility(View.INVISIBLE);
