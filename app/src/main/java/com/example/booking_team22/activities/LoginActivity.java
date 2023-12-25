@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.booking_team22.databinding.ActivityLoginBinding;
+import com.example.booking_team22.fragments.users.admin.AccommodationApprovalFragment;
 import com.example.booking_team22.model.User;
 import com.example.booking_team22.model.UserCredentials;
 import com.example.booking_team22.model.UserTokenState;
@@ -50,7 +51,6 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("userType", userTokenState.getRole());
                     editor.putLong("userId",userTokenState.getId());
                     editor.apply();
-
                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                     startActivity(intent);
                 } else {

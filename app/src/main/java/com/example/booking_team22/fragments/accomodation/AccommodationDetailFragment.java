@@ -9,9 +9,12 @@ import static com.example.booking_team22.clients.ClientUtils.userService;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -23,6 +26,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +40,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.booking_team22.R;
 import com.example.booking_team22.activities.EditAccommodationFreeTimeSlots;
@@ -61,6 +67,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -123,17 +130,7 @@ public class AccommodationDetailFragment extends Fragment {
             accommodation.setAmenities(detailAccommodation.getAmenities());
             accommodation.setFreeTimeSlots(detailAccommodation.getFreeTimeSlots());
             accommodation.setAddress(detailAccommodation.getAddress());
-//            accommodation.setStatus(detailAccommodation.getStatus());
-//            accommodation.setType(detailAccommodation.getType());
-//            accommodation.setAddress(detailAccommodation.getAddress());
-//            accommodation.setPriceList(detailAccommodation.getPriceList());
-//            accommodation.setReservationDeadline(detailAccommodation.getReservationDeadline());
-//            accommodation.setAutomaticConfirmation(detailAccommodation.isAutomaticConfirmation());
-//            accommodation.setPricePerGuest(detailAccommodation.isPricePerGuest());
-//            accommodation.setMinGuests(detailAccommodation.getMinGuests());
-//            accommodation.setMaxGuests(detailAccommodation.getMaxGuests());
         }
-
     }
     private boolean enableListScroll(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
@@ -217,6 +214,24 @@ public class AccommodationDetailFragment extends Fragment {
 
         TextView name=binding.textAccommodationName;
         name.setText(accommodation.getName());
+
+        RatingBar ratingBar=binding.rating;
+        Call<Double> callRating = ClientUtils.commentService.getAccommodationRating(accommodation.getId());
+        callRating.enqueue(new Callback<Double>() {
+            @Override
+            public void onResponse(Call<Double> call, Response<Double> response) {
+                if (response.isSuccessful()) {
+                    ratingBar.setRating(response.body().floatValue());
+                }
+            }
+            @Override
+            public void onFailure(Call<Double> call, Throwable t) {
+            }
+        });
+
+        TextView addressTxt=binding.addressFiled;
+        addressTxt.setText(accommodation.getAddress().getCountry()+","
+                +accommodation.getAddress().getCity()+", "+accommodation.getAddress().getAddress());
 
         TextView host=binding.txtHost;
         host.setText(accommodation.getHost().getFirstName()+" "+
@@ -381,11 +396,36 @@ public class AccommodationDetailFragment extends Fragment {
 
         mapView=binding.mapView;
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(googleMap1 -> {
-            LatLng markerLatLng=new LatLng(47.5189687,18.9606965);
-            googleMap1.addMarker(new MarkerOptions().position(markerLatLng).title("Marker title"));
-            googleMap1.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,12));
-        });
+//        mapView.getMapAsync(googleMap1 -> {
+//            LatLng markerLatLng=new LatLng(47.5189687,18.9606965);
+//            googleMap1.addMarker(new MarkerOptions().position(markerLatLng).title("Marker title"));
+//            googleMap1.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,12));
+//        });
+
+        String street=accommodation.getAddress().getAddress();
+        String city=accommodation.getAddress().getCity();
+        String country=accommodation.getAddress().getCountry();
+        String location=street+", "+city+", "+country;
+
+        Geocoder geocoder = new Geocoder(requireContext());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocationName(location, 1);
+            if (addresses != null && addresses.size() > 0) {
+                Address address = addresses.get(0);
+                double latitude = address.getLatitude();
+                double longitude = address.getLongitude();
+                LatLng markerLatLng = new LatLng(latitude, longitude);
+
+                mapView.getMapAsync(googleMap1 -> {
+                    googleMap1.addMarker(new MarkerOptions().position(markerLatLng).title(location));
+                    googleMap1.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng, 12));
+                });
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);
 
@@ -433,6 +473,11 @@ public class AccommodationDetailFragment extends Fragment {
                 if (response.isSuccessful()) {
                     ReservationRequest createdRequest = response.body();
                     Log.d("POST_SUCCESS", "Reservation request created: " + createdRequest);
+                     Toast toastMessage=new Toast(requireContext());
+                     toastMessage.setText("Reservation request sent!");
+                     toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
+                     toastMessage.setDuration(Toast.LENGTH_SHORT);
+                     toastMessage.show();
                 } else {
                     Log.d("POST_ERROR", "Error code: " + response.code());
                 }

@@ -94,6 +94,15 @@
                 android:textAlignment="viewStart"
                 android:text="@string/accommodationDescription"
                 android:textSize="16sp" />
+            <TextView
+                android:id="@+id/addressFiled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:background="@color/white"
+                android:textAlignment="viewStart"
+                android:text="Address:"
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_marginTop="20dp"
@@ -173,14 +182,14 @@
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/backround"
                 >
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mapView"
-                android:layout_width="340dp"
-                android:layout_height="190dp"
-                android:apiKey="AIzaSyC9EE9DdsAWFD14arLFctrQPUxwAAnVDzs"
-                app:mapType="normal"
-                app:cameraZoom="12"
-                />
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapView"
+                    android:layout_width="372dp"
+                    android:layout_height="190dp"
+                    android:apiKey="AIzaSyC9EE9DdsAWFD14arLFctrQPUxwAAnVDzs"
+                    app:cameraZoom="12"
+                    app:mapType="normal" />
             </LinearLayout>
             <TextView
                 android:id="@+id/textAvailableAmenities"

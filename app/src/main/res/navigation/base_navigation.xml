@@ -44,7 +44,7 @@
     <fragment
         android:id="@+id/nav_accommodations_approval"
         android:name="com.example.booking_team22.fragments.users.admin.AccommodationApprovalFragment"
-        android:label="Accommodation approval"
+        android:label="Approve"
         tools:layout="@layout/fragment_accommodation_approval"
         />
     <fragment
@@ -70,5 +70,11 @@
         android:name="com.example.booking_team22.fragments.accomodation.EditAccommodationPriceAndTimeslotFragment"
         android:label="Details"
         tools:layout="@layout/fragment_edit_accommodation_price_and_timeslot"
+        />
+    <fragment
+        android:id="@+id/nav_update"
+        android:name="com.example.booking_team22.fragments.accomodation.UpdateAccommodationFragment"
+        android:label="Update"
+        tools:layout="@layout/fragment_update_accommodation"
         />
 </navigation>
