@@ -1,6 +1,7 @@
 package com.example.booking_team22.clients;
 
 import com.example.booking_team22.model.Accomodation;
+import com.example.booking_team22.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,4 +87,13 @@ public interface AccommodationService {
             @Query("begin") String begin,
             @Query("end") String end);
 
+
+    @PUT("accommodations/{id}")
+    Call<Accomodation> updateAccommodation(@Body Accomodation accomodation, @Path("id") Long id);
+
+    @PUT("accommodations/accept/{id}")
+    Call<Accomodation> accept(@Body  Accomodation acceptingAccommodation,@Path("id") Long id);
+
+    @PUT("accommodations/decline/{id}")
+    Call<Accomodation> decline(@Body Accomodation decliningAccommodation, @Path("id") Long id);
 }

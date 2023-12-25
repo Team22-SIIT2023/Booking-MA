@@ -289,6 +289,27 @@ public class Accomodation implements Parcelable, Serializable {
     }
 
     @Override
+    public String toString() {
+        return "Accomodation{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", address=" + address +
+                ", minGuests=" + minGuests +
+                ", maxGuests=" + maxGuests +
+                ", type=" + type +
+                ", pricePerGuest=" + pricePerGuest +
+                ", automaticConfirmation=" + automaticConfirmation +
+                ", host=" + host +
+                ", status=" + status +
+                ", reservationDeadline=" + reservationDeadline +
+                ", amenities=" + amenities +
+                ", priceList=" + priceList +
+                ", freeTimeSlots=" + freeTimeSlots +
+                '}';
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
