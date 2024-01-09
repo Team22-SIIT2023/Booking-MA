@@ -130,5 +130,30 @@
         android:layout_height="0.7dp"
         android:background="@color/black"
         />
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/graphLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/barChart"
+                android:layout_marginTop="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="400dp" />
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/barChartSecond"
+                android:layout_marginTop="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="400dp" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
