@@ -57,7 +57,7 @@
                 android:layout_marginBottom="10dp"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:scaleX="1.7"
-                android:rating="3"
+                android:rating="0"
                 android:progressTint="@color/yellow"
                 android:scaleY="1.7"/>
 
@@ -172,6 +172,40 @@
                         android:text="Leave a comment"
                         android:textSize="13sp" />
                 </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/approvalLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+                <RadioGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/manualRbt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Manual"
+                    android:layout_marginEnd="16dp"/>
+
+                <RadioButton
+                    android:id="@+id/automaticRbt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Automatic"
+                    android:layout_marginEnd="16dp"/>
+                </RadioGroup>
+
+                <Button
+                    android:id="@+id/changeApprovalBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/darkPurple"
+                    android:text="Set approval"/>
+
             </LinearLayout>
             <LinearLayout
                 android:layout_gravity="center"

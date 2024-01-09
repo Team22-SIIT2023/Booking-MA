@@ -12,12 +12,8 @@ import java.io.Serializable;
 
 public class Amenity implements Parcelable, Serializable {
 
-    @SerializedName("id")
-    @Expose
     long id;
 
-    @SerializedName("amenity_name")
-    @Expose
     String name;
 //    int amenityImage;
 

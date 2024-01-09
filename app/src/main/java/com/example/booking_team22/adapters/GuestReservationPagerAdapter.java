@@ -41,7 +41,7 @@ public class GuestReservationPagerAdapter  extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        if(userType.equals("guest")) {
+        if(userType.equals("ROLE_GUEST")) {
             switch (position) {
                 case 0:
                     return new GuestReservationListFragment();
@@ -66,7 +66,7 @@ public class GuestReservationPagerAdapter  extends FragmentStateAdapter {
     public String getPageTitle(int position)
     {
         String title = null;
-        if(userType.equals("guest")){
+        if(userType.equals("ROLE_GUEST")){
             if (position == 0)
                 title = "Reservations";
             else if (position == 1)
@@ -89,7 +89,7 @@ public class GuestReservationPagerAdapter  extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        if(userType.equals("guest")){
+        if(userType.equals("ROLE_GUEST")){
             return 3;
         }
         return 2;

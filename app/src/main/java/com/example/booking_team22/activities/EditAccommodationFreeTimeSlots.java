@@ -43,6 +43,7 @@ public class EditAccommodationFreeTimeSlots extends AppCompatActivity {
     private TextInputEditText freeTimeSlotsEnd;
 
     private SharedPreferences sp;
+    private String accessToken;
     private Accomodation accommodation;
 
 
@@ -53,6 +54,9 @@ public class EditAccommodationFreeTimeSlots extends AppCompatActivity {
 
         binding = ActivityEditAccommodationFreeTimeSlotsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        sp = getSharedPreferences("mySharedPrefs", MODE_PRIVATE);
+        accessToken=sp.getString("accessToken","");
 
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);
@@ -70,7 +74,7 @@ public class EditAccommodationFreeTimeSlots extends AppCompatActivity {
         this.freeTimeSlotsEnd = binding.freeTimeSlotsInput2;
 
 
-        Call<Accomodation> callUser = accommodationService.getById(1L); // Assuming you have a method in your UserApiClient to get a user by ID
+        Call<Accomodation> callUser = accommodationService.getById("Bearer "+accessToken,1L); // Assuming you have a method in your UserApiClient to get a user by ID
         callUser.enqueue(new Callback<Accomodation>() {
             @Override
             public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {

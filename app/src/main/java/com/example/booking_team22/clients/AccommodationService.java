@@ -11,6 +11,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -18,12 +19,13 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface AccommodationService {
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
+//    @Headers({
+//            "User-Agent: Mobile-Android",
+//            "Content-Type:application/json"
+//    })
     @GET("accommodations")
     Call<ArrayList<Accomodation>> getAll(
+            @Header("Authorization") String authorization,
             @Query("begin") String begin,
             @Query("end") String end,
             @Query("guestNumber") int guestNumber,
@@ -37,12 +39,12 @@ public interface AccommodationService {
             @Query("hostId") Integer hostId
     );
   
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
+//    @Headers({
+//            "User-Agent: Mobile-Android",
+//            "Content-Type:application/json"
+//    })
     @GET("accommodations/{accommodationId}/images")
-    Call<List<String>> getImages(@Path("accommodationId") Long accommodationId);
+    Call<List<String>> getImages( @Header("Authorization") String authorization,@Path("accommodationId") Long accommodationId);
 
   
     @Headers({
@@ -61,12 +63,12 @@ public interface AccommodationService {
     Call<Accomodation> editPrice(@Body PricelistItem pricelistItem, @Path("id") Long id);
   
   
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
+//    @Headers({
+//            "User-Agent: Mobile-Android",
+//            "Content-Type:application/json"
+//    })
     @GET("accommodations/{id}")
-    Call<Accomodation> getById(@Path("id") Long id);
+    Call<Accomodation> getById(@Header("Authorization") String authorization,@Path("id") Long id);
 
 
     @Headers({
@@ -78,16 +80,21 @@ public interface AccommodationService {
     Call<Accomodation> editFreeTimeslots(@Body TimeSlot timeSlot, @Path("id") Long id);
 
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
+//    @Headers({
+//            "User-Agent: Mobile-Android",
+//            "Content-Type:application/json"
+//    })
     @GET("accommodations/calculatePrice/{id}")
     Call<Double> calculatePrice(
+            @Header("Authorization") String authorization,
             @Path("id") Long id,
             @Query("guestNumber") int guestNumber,
             @Query("begin") String begin,
             @Query("end") String end);
+
+    @PUT("accommodations/approval")
+    Call<Accomodation> updateAccommodationRequestApproval( @Header("Authorization") String authorization,
+                                                           @Body Accomodation accomodation);
 
 
     @PUT("accommodations/{id}")
