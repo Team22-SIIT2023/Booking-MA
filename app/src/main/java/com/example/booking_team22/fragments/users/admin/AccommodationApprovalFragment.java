@@ -78,7 +78,7 @@ public class AccommodationApprovalFragment extends ListFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Call<ArrayList<Accomodation>> call = accommodationService.getAll(
+        Call<ArrayList<Accomodation>> call = accommodationService.getAll(null,
                 null, null, 0, null, 0, 0,"CREATED", null, null, null, null
         );
 
@@ -106,7 +106,7 @@ public class AccommodationApprovalFragment extends ListFragment {
         });
 
 
-        Call<ArrayList<Accomodation>> call1 = accommodationService.getAll(
+        Call<ArrayList<Accomodation>> call1 = accommodationService.getAll(null,
                 null, null, 0, null, 0, 0,"UPDATED", null, null, null, null
         );
         call1.enqueue(new Callback<ArrayList<Accomodation>>() {

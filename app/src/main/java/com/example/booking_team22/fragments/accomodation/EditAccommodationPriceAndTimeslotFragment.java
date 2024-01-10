@@ -1,5 +1,6 @@
 package com.example.booking_team22.fragments.accomodation;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.booking_team22.clients.ClientUtils.accommodationService;
 
 import android.app.DatePickerDialog;
@@ -42,6 +43,7 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
     private TextInputEditText freeTimeSlotsStart;
     private TextInputEditText freeTimeSlotsEnd;
     private SharedPreferences sp;
+    private String accessToken;
     private Accomodation accommodation;
 
     FragmentEditAccommodationPriceAndTimeslotBinding binding;
@@ -66,6 +68,8 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
+        sp = getActivity().getSharedPreferences("mySharedPrefs", MODE_PRIVATE);
+        accessToken=sp.getString("accessToken","");
 //        accommodation = args.getParcelable("detailAccommodation");
     }
 
@@ -119,7 +123,7 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
         this.freeTimeSlotsEnd = binding.freeTimeSlotsInput2;
 
 
-        Call<Accomodation> callUser = accommodationService.getById(1L); // Assuming you have a method in your UserApiClient to get a user by ID
+        Call<Accomodation> callUser = accommodationService.getById("Bearer "+accessToken,1L); // Assuming you have a method in your UserApiClient to get a user by ID
         callUser.enqueue(new Callback<Accomodation>() {
             @Override
             public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {

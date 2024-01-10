@@ -77,4 +77,10 @@
         android:label="Update"
         tools:layout="@layout/fragment_update_accommodation"
         />
+    <fragment
+        android:id="@+id/nav_reports"
+        android:name="com.example.booking_team22.fragments.reports.ReportsFragment"
+        android:label="Reports"
+        tools:layout="@layout/fragment_reports"
+        />
 </navigation>

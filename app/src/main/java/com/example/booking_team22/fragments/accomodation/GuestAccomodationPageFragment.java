@@ -1,9 +1,11 @@
 package com.example.booking_team22.fragments.accomodation;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.booking_team22.clients.ClientUtils.accommodationService;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -47,6 +49,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,6 +73,8 @@ public class GuestAccomodationPageFragment extends ListFragment {
 
     private  BottomSheetDialog bottomSheetDialog;
     private FragmentAccomodationPageBinding binding;
+    private SharedPreferences sp;
+    private String accessToken;
 
     public static GuestAccomodationPageFragment newInstance() {
         return new GuestAccomodationPageFragment();
@@ -79,6 +84,9 @@ public class GuestAccomodationPageFragment extends ListFragment {
 
         binding = FragmentAccomodationPageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        sp = getActivity().getSharedPreferences("mySharedPrefs", MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
 
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);
@@ -181,7 +189,7 @@ public class GuestAccomodationPageFragment extends ListFragment {
             if ( !startDate.isEmpty() && !endDate.isEmpty() && numberOfGuests != 0) {
                 long numberOfNights = ChronoUnit.DAYS.between(LocalDate.parse(startDate), LocalDate.parse(endDate));
                 for(Accomodation accomodation:products){
-                    Call<Double> callPrice = accommodationService.calculatePrice(accomodation.getId(), numberOfGuests, startDate, endDate);
+                    Call<Double> callPrice = accommodationService.calculatePrice("Bearer " + accessToken,accomodation.getId(), numberOfGuests, startDate, endDate);
                     callPrice.enqueue(new Callback<Double>() {
                         @Override
                         public void onResponse(Call<Double> call, Response<Double> response) {
@@ -235,10 +243,10 @@ public class GuestAccomodationPageFragment extends ListFragment {
     private void getDataFromClient(String begin, String end, int guestNumber, String type,
                                    double startPrice, double endPrice, String status,
                                    String country, String city, List<String> amenities, Integer hostId) {
-        Call<ArrayList<Accomodation>> call = accommodationService.getAll(
+
+        Call<ArrayList<Accomodation>> call = accommodationService.getAll( "Bearer " + accessToken,
                 begin, end, guestNumber, type, startPrice, endPrice, status, country, city, amenities, hostId
         );
-
         call.enqueue(new Callback<ArrayList<Accomodation>>() {
             @Override
             public void onResponse(Call<ArrayList<Accomodation>> call, Response<ArrayList<Accomodation>> response) {

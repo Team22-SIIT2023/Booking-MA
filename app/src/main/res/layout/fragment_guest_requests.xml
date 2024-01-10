@@ -8,17 +8,10 @@
     android:background="@color/purple"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_text"
-        app:queryHint="Search"
-        android:layout_width="match_parent"
-        android:background="@drawable/backround"
-        android:layout_height="wrap_content"
-        />
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_gravity="center"
         android:orientation="horizontal">
@@ -57,20 +50,40 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnFiltersRequest"
-            android:layout_width="200dp"
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
-            android:text="@string/filters"
-            tools:ignore="TextContrastCheck" />
+            android:layout_weight="1"
+            app:cardCornerRadius="2dp"
+            app:cardBackgroundColor="@color/darkPurple">
+        <Spinner
+            android:id="@+id/statusSpinner"
+            android:layout_width="150dp"
+            android:layout_height="50dp" />
+        </androidx.cardview.widget.CardView>
 
+        <EditText
+            android:id="@+id/accNameText"
+            android:layout_width="188dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="22dp"
+            android:hint="Accommodation:"
+            android:padding="10dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
         <Button
             android:id="@+id/btnAcceptFilters"
             android:layout_width="200dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="30dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
+            android:layout_weight="0.3"
             android:text="Search"
             tools:ignore="TextContrastCheck" />
     </LinearLayout>
