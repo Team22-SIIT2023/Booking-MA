@@ -43,22 +43,38 @@ public class LoginActivity extends AppCompatActivity {
             String username = binding.usernameField.getText().toString();
             String password = binding.passwordField.getText().toString();
 
-            UserCredentials userCredentials = new UserCredentials(username, password);
-            authenticationService.authenticateUser(userCredentials).observe(this, userTokenState -> {
-                if (userTokenState != null) {
-                    binding.usernameField.setText("");
-                    binding.passwordField.setText("");
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("accessToken", userTokenState.getAccessToken());
-                    editor.putString("userType", userTokenState.getRole());
-                    editor.putLong("userId",userTokenState.getId());
-                    editor.apply();
-                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(LoginActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
-                }
-            });
+            boolean isAllFieldChecked = checkAllFields(username, password);
+
+            if (isAllFieldChecked) {
+                UserCredentials userCredentials = new UserCredentials(username, password);
+                authenticationService.authenticateUser(userCredentials).observe(this, userTokenState -> {
+                    if (userTokenState != null) {
+                        binding.usernameField.setText("");
+                        binding.passwordField.setText("");
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString("accessToken", userTokenState.getAccessToken());
+                        editor.putString("userType", userTokenState.getRole());
+                        editor.putLong("userId",userTokenState.getId());
+                        editor.apply();
+                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         });
+    }
+
+    public boolean checkAllFields(String usernane, String password) {
+        if (usernane.trim().length() == 0) {
+            binding.usernameField.setError("Username is required!");
+            return false;
+        }
+        if (password.trim().length() == 0) {
+            binding.passwordField.setError("Password is required!");
+            return false;
+        }
+        return true;
     }
 }

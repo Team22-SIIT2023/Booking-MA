@@ -44,7 +44,7 @@ public interface AccommodationService {
 //            "Content-Type:application/json"
 //    })
     @GET("accommodations/{accommodationId}/images")
-    Call<List<String>> getImages( @Header("Authorization") String authorization,@Path("accommodationId") Long accommodationId);
+    Call<List<String>> getImages(@Header("Authorization") String authorization, @Path("accommodationId") Long accommodationId);
 
   
     @Headers({
@@ -52,7 +52,7 @@ public interface AccommodationService {
             "Content-Type:application/json"
     })
     @POST("accommodations")
-    Call<Accomodation> createAccommodation(@Body Accomodation accomodation);
+    Call<Accomodation> createAccommodation(@Header("Authorization") String authorization, @Body Accomodation accomodation);
 
 
     @Headers({
@@ -60,7 +60,7 @@ public interface AccommodationService {
             "Content-Type:application/json"
     })
     @PUT("accommodations/editPricelist/{id}")
-    Call<Accomodation> editPrice(@Body PricelistItem pricelistItem, @Path("id") Long id);
+    Call<Accomodation> editPrice(@Header("Authorization") String authorization, @Body PricelistItem pricelistItem, @Path("id") Long id);
   
   
 //    @Headers({
@@ -68,7 +68,7 @@ public interface AccommodationService {
 //            "Content-Type:application/json"
 //    })
     @GET("accommodations/{id}")
-    Call<Accomodation> getById(@Header("Authorization") String authorization,@Path("id") Long id);
+    Call<Accomodation> getById(@Header("Authorization") String authorization, @Path("id") Long id);
 
 
     @Headers({
@@ -77,7 +77,7 @@ public interface AccommodationService {
     })
 
     @PUT("accommodations/editTimeSlot/{id}")
-    Call<Accomodation> editFreeTimeslots(@Body TimeSlot timeSlot, @Path("id") Long id);
+    Call<Accomodation> editFreeTimeslots(@Header("Authorization") String authorization, @Body TimeSlot timeSlot, @Path("id") Long id);
 
 
 //    @Headers({

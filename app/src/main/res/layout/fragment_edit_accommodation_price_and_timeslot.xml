@@ -41,14 +41,14 @@
         android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="185dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             app:endIconMode="custom"
             app:endIconDrawable="@drawable/ic_calendar"
             android:hint="Start date">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="182dp"
+                android:layout_width="178dp"
                 android:id="@+id/cicoInput"
                 android:layout_height="match_parent"
                 android:inputType="text" />
@@ -95,14 +95,14 @@
         android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="185dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             app:endIconMode="custom"
             app:endIconDrawable="@drawable/ic_calendar"
             android:hint="Start date">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="182dp"
+                android:layout_width="178dp"
                 android:id="@+id/freeTimeSlotsInput1"
                 android:layout_height="match_parent"
                 android:inputType="text" />

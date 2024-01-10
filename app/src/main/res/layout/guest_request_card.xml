@@ -16,6 +16,31 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- guest -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guest: "
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/textViewGuest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/reportGuestButton"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:textAlignment="center"
+                android:backgroundTint="@color/purple" />
+
+        </LinearLayout>
+
         <!-- timeSlot -->
         <TextView
             android:layout_width="match_parent"
@@ -29,24 +54,13 @@
 
         <!-- price -->
         <TextView
+            android:id="@+id/labelGuest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Price: "
             android:textStyle="bold"/>
         <TextView
             android:id="@+id/textViewPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <!-- guest -->
-        <TextView
-            android:id="@+id/labelGuest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Guest: "
-            android:textStyle="bold"/>
-        <TextView
-            android:id="@+id/textViewGuest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -93,6 +107,7 @@
             android:id="@+id/textViewStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
         <Button
             android:id="@+id/deleteRequest"
             android:layout_width="wrap_content"

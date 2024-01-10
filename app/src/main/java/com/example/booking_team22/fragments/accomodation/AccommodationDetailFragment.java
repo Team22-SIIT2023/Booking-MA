@@ -8,6 +8,8 @@ import static com.example.booking_team22.clients.ClientUtils.userService;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
@@ -24,6 +26,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
@@ -48,10 +51,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.booking_team22.R;
-import com.example.booking_team22.activities.EditAccommodationFreeTimeSlots;
 import com.example.booking_team22.adapters.AmenityListAdapter;
 import com.example.booking_team22.adapters.CommentsAdapter;
 import com.example.booking_team22.clients.ClientUtils;
+import com.example.booking_team22.databinding.CommentCardBinding;
 import com.example.booking_team22.databinding.FragmentAccommodationDetailBinding;
 import com.example.booking_team22.model.Accomodation;
 import com.example.booking_team22.model.Amenity;
@@ -68,10 +71,12 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -84,30 +89,32 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AccommodationDetailFragment extends Fragment {
-    private Accomodation accommodation=new Accomodation();
-
+    private Accomodation accommodation = new Accomodation();
+    float accommodationRating = 0;
+    float hostRating = 0;
+    private Button reportHostButton, viewHostCommentsButton;
     private NavController navController;
     private AppBarConfiguration mAppBarConfiguration;
-
     private ArrayList<Amenity> amenities = new ArrayList<Amenity>();
     private ArrayList<Comment> comments=new ArrayList<>();
-    CommentsAdapter commentsAdapter;
-    AmenityListAdapter adapter;
+    private CommentsAdapter commentsAdapter;
+    private AmenityListAdapter adapter;
     private MapView mapView;
     private User user;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private GoogleMap googleMap;
     private SharedPreferences sp;
-    private String accessToken;
-    private String userType;
-
+    private String userType, accessToken;
+    private RatingBar ratingBarHost, ratingBarAccommodation;
     private Accomodation detailAccommodation;
+    private FragmentAccommodationDetailBinding binding;
+    private Guest guest;
+    private String reportText;
 
-    FragmentAccommodationDetailBinding binding;
 
-    public AccommodationDetailFragment() {
-        // Required empty public constructor
+    public AccommodationDetailFragment() { // Required empty public constructor
     }
+
     public static AccommodationDetailFragment newInstance() {
         return new AccommodationDetailFragment();
     }
@@ -138,6 +145,7 @@ public class AccommodationDetailFragment extends Fragment {
         sp = getActivity().getSharedPreferences("mySharedPrefs", MODE_PRIVATE);
         accessToken = sp.getString("accessToken", "");
     }
+
     private boolean enableListScroll(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
@@ -153,6 +161,7 @@ public class AccommodationDetailFragment extends Fragment {
     private void updateNumberText(int value) {
         //for later
     }
+
     private void setDate(TextInputEditText input) {
         input.setOnClickListener(v -> {
             final Calendar c = Calendar.getInstance();
@@ -177,10 +186,8 @@ public class AccommodationDetailFragment extends Fragment {
             datePickerDialog.getDatePicker().setMinDate(dateMin.getTime());
             datePickerDialog.getDatePicker().setMaxDate(dateMax.getTime());
 
-
             datePickerDialog.show();
         });
-
     }
 
 
@@ -192,11 +199,13 @@ public class AccommodationDetailFragment extends Fragment {
         binding = FragmentAccommodationDetailBinding.inflate(getLayoutInflater());
         View root = binding.getRoot();
 
-        sp= getActivity().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
-        userType=sp.getString("userType","");
-        long id=sp.getLong("userId",0L);
+        sp = getActivity().getSharedPreferences("mySharedPrefs", Context.MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
 
-        Call<User> callUser = userService.getUser(sp.getLong("userId",0L)); // Assuming you have a method in your UserApiClient to get a user by ID
+        userType = sp.getString("userType","");
+        long id = sp.getLong("userId",0L);
+
+        Call<User> callUser = userService.getUser(id); // Assuming you have a method in your UserApiClient to get a user by ID
         callUser.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -229,7 +238,7 @@ public class AccommodationDetailFragment extends Fragment {
         name.setText(accommodation.getName());
 
         RatingBar ratingBar=binding.rating;
-        Call<Double> callRating = ClientUtils.commentService.getAccommodationRating(accommodation.getId());
+        Call<Double> callRating = ClientUtils.commentService.getAccommodationRating("Bearer " + accessToken, accommodation.getId());
         callRating.enqueue(new Callback<Double>() {
             @Override
             public void onResponse(Call<Double> call, Response<Double> response) {
@@ -243,12 +252,29 @@ public class AccommodationDetailFragment extends Fragment {
         });
 
         TextView addressTxt=binding.addressFiled;
-        addressTxt.setText(accommodation.getAddress().getCountry()+","
-                +accommodation.getAddress().getCity()+", "+accommodation.getAddress().getAddress());
+        String addressAcc = accommodation.getAddress().getCountry()+","
+                +accommodation.getAddress().getCity()+", "+accommodation.getAddress().getAddress();
+        addressTxt.setText(addressAcc);
 
         TextView host=binding.txtHost;
-        host.setText(accommodation.getHost().getFirstName()+" "+
-                accommodation.getHost().getLastName()+"\n"+accommodation.getHost().getAccount().getUsername());
+        String hostTxt = accommodation.getHost().getFirstName()+" "+
+                accommodation.getHost().getLastName()+"\n"+accommodation.getHost().getAccount().getUsername();
+        host.setText(hostTxt);
+
+        reportHostButton = binding.reportHostButton;
+        reportHostButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_report_user,0,0,0);
+
+        reportHostButton.setOnClickListener(v ->{
+//            reportHost();
+            showReportDialog();
+
+        });
+
+
+        viewHostCommentsButton = binding.viewHostComments;
+        viewHostCommentsButton.setOnClickListener(v ->{
+            showHostComments();
+        });
 
 
         adapter = new AmenityListAdapter(getActivity(), accommodation.getAmenities());
@@ -305,7 +331,7 @@ public class AccommodationDetailFragment extends Fragment {
 
 
 
-        Call<ArrayList<Comment>> callComment = ClientUtils.commentService.getAccommodationComments(accommodation.getId(), Status.ACTIVE.name());
+        Call<ArrayList<Comment>> callComment = ClientUtils.commentService.getAccommodationComments("Bearer " + accessToken, accommodation.getId(), Status.ACTIVE.name());
         callComment.enqueue(new Callback<ArrayList<Comment>>() {
             @Override
             public void onResponse(Call<ArrayList<Comment>> call, Response<ArrayList<Comment>> response) {
@@ -328,7 +354,8 @@ public class AccommodationDetailFragment extends Fragment {
         });
 
         LinearLayout linearLayout = binding.layoutPictures;
-        Call<List<String>> callImages = ClientUtils.accommodationService.getImages("Bearer " + accessToken,accommodation.getId());
+        Call<List<String>> callImages = ClientUtils.accommodationService.getImages("Bearer " + accessToken, accommodation.getId());
+
         callImages.enqueue(new Callback<List<String>>() {
             @Override
             public void onResponse(Call<List<String>> call, Response<List<String>> response) {
@@ -351,7 +378,6 @@ public class AccommodationDetailFragment extends Fragment {
                             imageView.setLayoutParams(layoutParams);
                             linearLayout.addView(imageView);
                         }
-
                     }
                 }
             }
@@ -364,7 +390,9 @@ public class AccommodationDetailFragment extends Fragment {
         Button editPriceButton = binding.btnEditPriceAccommodation;
         Button addComment=binding.btnAddComments;
         LinearLayout reservationLayout=binding.resrvationLayout;
+
         LinearLayout approvalLayout=binding.approvalLayout;
+
         if(!userType.equals("ROLE_HOST")){
             approvalLayout.setVisibility(View.GONE);
             editButton.setVisibility(View.INVISIBLE);
@@ -379,6 +407,7 @@ public class AccommodationDetailFragment extends Fragment {
 
             });
         }
+
         editButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit,0,0,0);
         editPriceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar,0,0,0);
 
@@ -392,21 +421,8 @@ public class AccommodationDetailFragment extends Fragment {
         });
 
         editPriceButton.setOnClickListener(v ->{
-//            Bundle args = new Bundle();
-//            args.putParcelable("detailAccommodation", detailAccommodation);
-//            Intent intent = new Intent(getContext(), EditAccommodationFreeTimeSlots.class);
-//            intent.putExtras(args);
-//
-//            startActivity(intent);
-//            LayoutInflater.from(getActivity());
-//            View customLayout= LayoutInflater.from(getContext()).inflate(R.layout.activity_edit_accommodation_free_time_slots,null);
-//            AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
-//            builder.setView(customLayout);
-//            AlertDialog dialog=builder.create();
-//            dialog.show();
-//            Bundle args = new Bundle();
-//            args.putParcelable("detailAccommodation", detailAccommodation);
             Bundle args = new Bundle();
+            args.putParcelable("accommodation", accommodation);
             NavController navController = Navigation.findNavController(getActivity(),R.id.fragment_nav_content_main);
             navController.navigate(R.id.nav_edit_price_and_timeslot, args);
         });
@@ -414,6 +430,35 @@ public class AccommodationDetailFragment extends Fragment {
 
         Button myButton = binding.btnAddComments;
         myButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add,0,0,0);
+
+        ratingBarHost = binding.ratingForHost;
+        ratingBarHost.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                int ratingInt = (int) rating;
+                hostRating = ratingBar.getRating();
+            }
+        });
+
+        binding.commentHostButton.setOnClickListener(v->{
+            createHostComm();
+        });
+
+        ratingBarAccommodation = binding.ratingAcoommodation;
+
+        ratingBarAccommodation.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                int ratingInt = (int) rating;
+                accommodationRating = ratingBar.getRating();
+                Toast.makeText(getActivity(),"Rating" + ratingInt, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        binding.commentAccommmodationButton.setOnClickListener(v->{
+            createAccommodationComm();
+        });
+
 
 //        mapView=binding.mapView;
 //        mapView.onCreate(savedInstanceState);
@@ -469,7 +514,7 @@ public class AccommodationDetailFragment extends Fragment {
             double price = Double.parseDouble(priceInput.getText().toString());
 
             TimeSlot timeSlot = new TimeSlot(startDate,endDate);
-            Guest guest = new Guest(user.getId(), user.getFirstName(), user.getLastName(), user.getAddress(),
+            this.guest = new Guest(user.getId(), user.getFirstName(), user.getLastName(), user.getAddress(),
                                 user.getPhoneNumber(), user.getAccount(), user.getPicturePath(),
                                 user.getLastPasswordResetDate(), user.getActivationLink(), user.getActivationLinkDate());
             RequestStatus status = RequestStatus.PENDING;
@@ -531,8 +576,8 @@ public class AccommodationDetailFragment extends Fragment {
                 Log.e("POST_FAILURE", "Error: " + t.getMessage(), t);
             }
         });
-
     }
+
     private void updatePrice() {
 
         TextInputEditText startDateInput = binding.cicoInput;
@@ -547,7 +592,8 @@ public class AccommodationDetailFragment extends Fragment {
         if ( !startDate.isEmpty() && !endDate.isEmpty() && numberOfGuestsSpinner.getSelectedItem() != null) {
             int numberOfGuests = (Integer) numberOfGuestsSpinner.getSelectedItem();
 
-            Call<Double> callPrice = accommodationService.calculatePrice("Bearer " + accessToken,accommodation.getId(), numberOfGuests, startDate, endDate);
+            Call<Double> callPrice = accommodationService.calculatePrice("Bearer " + accessToken, accommodation.getId(), numberOfGuests, startDate, endDate);
+
             callPrice.enqueue(new Callback<Double>() {
                 @Override
                 public void onResponse(Call<Double> call, Response<Double> response) {
@@ -619,5 +665,130 @@ public class AccommodationDetailFragment extends Fragment {
 //                "Comment text....",
 //                "12.12.2023."
 //        ));
+    }
+
+    public void createAccommodationComm() {
+        TextInputLayout hostComm = binding.inputAccommodationComment;
+
+        this.guest = new Guest(user.getId(), user.getFirstName(), user.getLastName(), user.getAddress(),
+                user.getPhoneNumber(), user.getAccount(), user.getPicturePath(),
+                user.getLastPasswordResetDate(), user.getActivationLink(), user.getActivationLinkDate());
+
+        Comment accommodationComment = new Comment();
+        accommodationComment.setDate(LocalDate.now().toString());
+        accommodationComment.setGuest(this.guest);
+        accommodationComment.setStatus(Status.ACTIVE);
+        accommodationComment.setText(String.valueOf(hostComm.getEditText().getText()));
+        accommodationComment.setRating(accommodationRating);
+
+        Call<Comment> callCreateComment = ClientUtils.commentService.createAccommodationComment("Bearer " + accessToken, accommodationComment, accommodation.getId());
+        callCreateComment.enqueue(new Callback<Comment>() {
+            @Override
+            public void onResponse(Call<Comment> call, Response<Comment> response) {
+                if (response.code() == 201) {
+                    Log.d("COMMENTS", "Meesage recieved");
+                    System.out.println(response.body());
+//                    comments = response.body();
+                    commentsAdapter=new CommentsAdapter(getActivity(),comments);
+                    binding.commentsList.setAdapter(commentsAdapter);
+                    enableListScroll(binding.commentsList);
+                    commentsAdapter.notifyDataSetChanged();
+                    Toast.makeText(getActivity(),"Comment created", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(),"You can't comment on accommodation!", Toast.LENGTH_SHORT).show();
+                    Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<Comment> call, Throwable t) {
+                Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
+    }
+
+
+    public void createHostComm() {
+        TextInputLayout accommodationComm = binding.hostComment;
+
+        this.guest = new Guest(user.getId(), user.getFirstName(), user.getLastName(), user.getAddress(),
+                user.getPhoneNumber(), user.getAccount(), user.getPicturePath(),
+                user.getLastPasswordResetDate(), user.getActivationLink(), user.getActivationLinkDate());
+
+        Comment accommodationComment = new Comment();
+        accommodationComment.setDate(LocalDate.now().toString());
+        accommodationComment.setGuest(this.guest);
+        accommodationComment.setStatus(Status.ACTIVE);
+        accommodationComment.setText(String.valueOf(accommodationComm.getEditText().getText()));
+        accommodationComment.setRating(hostRating);
+
+        Call<Comment> callCreateComment = ClientUtils.commentService.createHostComment("Bearer " + accessToken, accommodationComment, accommodation.getHost().getId());
+        callCreateComment.enqueue(new Callback<Comment>() {
+            @Override
+            public void onResponse(Call<Comment> call, Response<Comment> response) {
+                if (response.code() == 201) {
+                    Log.d("COMMENTS", "Meesage recieved");
+                    Toast.makeText(getActivity(),"Comment created", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(getActivity(),"You can't comment on host!", Toast.LENGTH_SHORT).show();
+                    Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<Comment> call, Throwable t) {
+                Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
+    }
+
+    public void showReportDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Reason");
+
+        final EditText input = new EditText(getActivity());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                reportText = input.getText().toString();
+                accommodation.getHost().setReportingReason(reportText);
+                reportHost();
+            }
+        });
+        builder.create();
+        builder.show();
+    }
+
+
+    public void reportHost() {
+
+        Call<User> callCreateComment = userService.reportUser(accommodation.getHost(), user.getId());
+        callCreateComment.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.code() == 200) {
+                    Log.d("COMMENTS", "Meesage recieved");
+                    Log.d("REPORTING REASON", accommodation.getHost().getReportingReason());
+                    Toast.makeText(getActivity(),"Reported!", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(getActivity(),"You can't report!", Toast.LENGTH_SHORT).show();
+                    Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
+    }
+
+    public void showHostComments() {
+        Bundle args = new Bundle();
+        args.putParcelable("accommodation", accommodation);
+        NavController navController = Navigation.findNavController(getActivity(), R.id.fragment_nav_content_main);
+        navController.navigate(R.id.nav_reported_comments,args);
     }
 }

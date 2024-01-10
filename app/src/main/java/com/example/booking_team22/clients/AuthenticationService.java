@@ -41,27 +41,27 @@ public class AuthenticationService {
 //
 //            return resultLiveData;
 //        }
-public LiveData<UserTokenState> authenticateUser(UserCredentials userCredentials) {
-    MutableLiveData<UserTokenState> resultLiveData = new MutableLiveData<>();
+    public LiveData<UserTokenState> authenticateUser(UserCredentials userCredentials) {
+        MutableLiveData<UserTokenState> resultLiveData = new MutableLiveData<>();
 
-    authService.createAuthenticationToken(userCredentials).enqueue(new Callback<UserTokenState>() {
-        @Override
-        public void onResponse(Call<UserTokenState> call, Response<UserTokenState> response) {
-            if (response.isSuccessful()) {
-                UserTokenState userTokenState = response.body();
-                resultLiveData.setValue(userTokenState);
-            } else {
-                resultLiveData.setValue(null); // or handle authentication failure
+        authService.createAuthenticationToken(userCredentials).enqueue(new Callback<UserTokenState>() {
+            @Override
+            public void onResponse(Call<UserTokenState> call, Response<UserTokenState> response) {
+                if (response.isSuccessful()) {
+                    UserTokenState userTokenState = response.body();
+                    resultLiveData.setValue(userTokenState);
+                } else {
+                    resultLiveData.setValue(null); // or handle authentication failure
+                }
             }
-        }
 
-        @Override
-        public void onFailure(Call<UserTokenState> call, Throwable t) {
-            resultLiveData.setValue(null); // or handle network failure
-        }
+            @Override
+            public void onFailure(Call<UserTokenState> call, Throwable t) {
+                resultLiveData.setValue(null); // or handle network failure
+            }
     });
 
-    return resultLiveData;
+        return resultLiveData;
 }
 
 

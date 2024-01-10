@@ -33,6 +33,7 @@ import retrofit2.Response;
 
 public class GuestReservationAdapter extends ArrayAdapter {
     private ArrayList<ReservationRequest> aReservations;
+    private Button reportGuestButton;
 
 
     public GuestReservationAdapter(FragmentActivity context, ArrayList<ReservationRequest> reservations){
@@ -74,11 +75,13 @@ public class GuestReservationAdapter extends ArrayAdapter {
         TextView status = convertView.findViewById(R.id.textViewStatus);
         TextView accommodation = convertView.findViewById(R.id.textViewAccommodation);
 
+        reportGuestButton = convertView.findViewById(R.id.reportGuestButton);
+        reportGuestButton.setVisibility(View.INVISIBLE);
 
         if(reservation != null){
             timeSlot.setText(reservation.getTimeSlot().getStartDate()+"-"+reservation.getTimeSlot().getEndDate());
             price.setText(String.valueOf((reservation.getPrice())));
-            guest.setText(String.valueOf(reservation.getGuest().getFirstName()));
+            guest.setText(String.valueOf(reservation.getGuest().getAccount().getUsername()));
             guestNum.setText(String.valueOf(reservation.getGuestNumber()));
             status.setText(reservation.getStatus().name());
             accommodation.setText(reservation.getAccommodation().getName());
