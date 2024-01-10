@@ -46,6 +46,9 @@ public interface UserService {
     @PUT("users/{id}")
     Call<User> updateUser(@Body User user, @Path("id") Long id);
 
+    @PUT("users/reportUser/{id}")
+    Call<User> reportUser(@Body User user, @Path("id") Long id);
+
     @DELETE("users/{id}")
     Call<User> deleteUser(@Path("id") Long id);
 }

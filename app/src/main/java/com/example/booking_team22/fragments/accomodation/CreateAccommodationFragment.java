@@ -9,7 +9,6 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,9 +22,7 @@ import android.widget.Spinner;
 
 import com.example.booking_team22.R;
 import com.example.booking_team22.clients.ClientUtils;
-import com.example.booking_team22.databinding.ActivityEditAccomodationBinding;
 import com.example.booking_team22.databinding.FragmentCreateAccommodationBinding;
-import com.example.booking_team22.model.AccommodationStatus;
 import com.example.booking_team22.model.AccommodationType;
 import com.example.booking_team22.model.Accomodation;
 import com.example.booking_team22.model.Address;
@@ -38,10 +35,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -51,26 +46,23 @@ import retrofit2.Response;
 public class CreateAccommodationFragment extends Fragment {
 
     private int mYear, mMonth, mDay;
-
-    private TextInputLayout accommodationName;
-    private TextInputLayout accommodationAddress;
-    private TextInputLayout accommodationDescription;
-    private TextInputLayout accommodationPrice;
-    private TextInputLayout accommodationMinGuests;
-    private TextInputLayout accommodationMaxGuests;
-    private TextInputLayout reservationDeadline;
-    private TextInputEditText cicoInput;
-    private TextInputEditText cicoInput2;
-    private CheckBox automaticConfirmation;
-    private CheckBox pricePerGuest;
+    private ArrayList<String> amenities = new ArrayList<>();
+    private TextInputLayout accommodationName , accommodationAddress, accommodationCity, accommodationCountry, accommodationDescription;
+    private TextInputLayout accommodationPrice, accommodationMinGuests, accommodationMaxGuests, reservationDeadline;
+    private TextInputEditText cicoInput, cicoInput2;
+    private CheckBox automaticConfirmation, pricePerGuest;
     private Button confirm;
+    private Spinner accommodationType;
     private Accomodation newAccommodation;
-    FragmentCreateAccommodationBinding binding;
-
+    private  BottomSheetDialog bottomSheetDialog;
+    private FragmentCreateAccommodationBinding binding;
     private SharedPreferences sp;
     private String userType;
     private User user;
-
+    private String accessToken;
+    private String name, address, city, country, description, startDate, endDate;
+    private double price;
+    private int minGuests, maxGuests, resDeadline;
 
     public CreateAccommodationFragment() {
     }
@@ -84,7 +76,6 @@ public class CreateAccommodationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -93,11 +84,15 @@ public class CreateAccommodationFragment extends Fragment {
         binding = FragmentCreateAccommodationBinding.inflate(getLayoutInflater());
         View root=binding.getRoot();
 
+        sp = getActivity().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
+
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);
 
         return root;
     }
+
     private void setDate(TextInputEditText input) {
         input.setOnClickListener(v->{
             final Calendar c = Calendar.getInstance();
@@ -121,7 +116,7 @@ public class CreateAccommodationFragment extends Fragment {
         Button btnFilters = binding.btnFiltersEdit;
         btnFilters.setOnClickListener(v -> {
             Log.i("travelBee", "Bottom Sheet Dialog");
-            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
+            this.bottomSheetDialog = new BottomSheetDialog(getActivity());
             View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
             bottomSheetDialog.setContentView(dialogView);
             bottomSheetDialog.show();
@@ -135,6 +130,8 @@ public class CreateAccommodationFragment extends Fragment {
 
         this.accommodationName = binding.accommodationName;
         this.accommodationAddress = binding.accommodationAddress;
+        this.accommodationCity = binding.accommodationCity;
+        this.accommodationCountry = binding.accommodationCountry;
         this.accommodationDescription = binding.accommodationDescription;
         this.accommodationPrice = binding.accommodationPrice;
         this.accommodationMinGuests = binding.accommodationMinGuests;
@@ -150,17 +147,17 @@ public class CreateAccommodationFragment extends Fragment {
                 "Apartment", "Villa", "Hotel", "Motel"
         };
 
-        Spinner s = (Spinner) binding.spinner;
+        accommodationType = (Spinner) binding.accommodationType;
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, arraySpinner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        s.setAdapter(adapter);
+        accommodationType.setAdapter(adapter);
 
-        sp= getActivity().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
-        userType=sp.getString("userType","");
-        long id=sp.getLong("userId",0L);
+        sp = getActivity().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
+        userType = sp.getString("userType","");
+        long id = sp.getLong("userId",0L);
 
-        Call<User> callUser = userService.getUser(sp.getLong("userId",0L)); // Assuming you have a method in your UserApiClient to get a user by ID
+        Call<User> callUser = userService.getUser(id);
         callUser.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -180,19 +177,16 @@ public class CreateAccommodationFragment extends Fragment {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Call<Accomodation> call;
 
-                Log.d("ShopApp", "Add product call");
                 addNewProduct();
-                call = ClientUtils.accommodationService.createAccommodation(newAccommodation);
+
+                Call<Accomodation> call = ClientUtils.accommodationService.createAccommodation("Bearer " + accessToken,newAccommodation);
 
                 call.enqueue(new Callback<Accomodation>() {
                     @Override
                     public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
                         if (response.code() == 201){
                             Log.d("REZ","Meesage recieved");
-                            Log.d("VANJAAAA","Meesage recieved");
-                            System.out.println(response.body());
                             Accomodation product1 = response.body();
                             System.out.println(product1);
                             getActivity().getSupportFragmentManager().popBackStack();
@@ -210,19 +204,22 @@ public class CreateAccommodationFragment extends Fragment {
         });
     }
 
-    private void addNewProduct() {
-        String name = accommodationName.getEditText().getText().toString();
-        String address = accommodationAddress.getEditText().getText().toString();
-        String description = accommodationDescription.getEditText().getText().toString();
-        double price = Double.parseDouble(accommodationPrice.getEditText().getText().toString());
-        int minGuests = Integer.parseInt(accommodationMinGuests.getEditText().getText().toString());
-        int maxGuests = Integer.parseInt(accommodationMaxGuests.getEditText().getText().toString());
-        int resDeadline = Integer.parseInt(reservationDeadline.getEditText().getText().toString());
-        String startDate = cicoInput.getText().toString();
-        String endDate = cicoInput2.getText().toString();
+    private boolean addNewProduct() {
+        name = accommodationName.getEditText().getText().toString();
+        address = accommodationAddress.getEditText().getText().toString();
+        city = accommodationCity.getEditText().getText().toString();
+        country = accommodationCountry.getEditText().getText().toString();
+        description = accommodationDescription.getEditText().getText().toString();
+        price = Double.parseDouble(accommodationPrice.getEditText().getText().toString());
+        minGuests = Integer.parseInt(accommodationMinGuests.getEditText().getText().toString());
+        maxGuests = Integer.parseInt(accommodationMaxGuests.getEditText().getText().toString());
+        resDeadline = Integer.parseInt(reservationDeadline.getEditText().getText().toString());
+        startDate = cicoInput.getText().toString();
+        endDate = cicoInput2.getText().toString();
+        AccommodationType type = getAccommodationType(accommodationType.getSelectedItem().toString());
 
-        if (name.length() == 0 && address.length() == 0 && description.length() == 0) {
-            return;
+        if (checkAllFields()) {
+            return false;
         }
 
         newAccommodation = new Accomodation();
@@ -234,20 +231,15 @@ public class CreateAccommodationFragment extends Fragment {
         newAccommodation.setAutomaticConfirmation(automaticConfirmation.isChecked());
         newAccommodation.setReservationDeadline(resDeadline);
 
-//        LocalDate startDateLocal = LocalDate.parse(startDate);
-//        LocalDate endDateLocal = LocalDate.parse(endDate);
         TimeSlot timeslot = new TimeSlot(startDate, endDate);
         ArrayList<TimeSlot> timeslots = new ArrayList<>();
         timeslots.add(timeslot);
-        System.out.println("Timeslotssssssss");
-        System.out.println(startDate);
-        System.out.println(endDate);
 
         Amenity amenity = new Amenity();
         amenity.setId(2L);
         amenity.setAmenityName("pool");
-        ArrayList<Amenity> amenities = new ArrayList<>();
-        amenities.add(amenity);
+        ArrayList<Amenity> amenities2 = new ArrayList<>();
+        amenities2.add(amenity);
 
         PricelistItem pricelistItem = new PricelistItem();
         pricelistItem.setPrice(price);
@@ -256,14 +248,78 @@ public class CreateAccommodationFragment extends Fragment {
         pricelist.add(pricelistItem);
 
         Address accAddress = new Address();
+        accAddress.setAddress(address);
+        accAddress.setCity(city);
+        accAddress.setCountry(country);
+
         Host host = new Host(user);
 
         newAccommodation.setHost(host);
         newAccommodation.setAddress(accAddress);
-        newAccommodation.setType(AccommodationType.HOTEL);
-//        newAccommodation.setStatus(AccommodationStatus.ACCEPTED);
+        newAccommodation.setType(type);
         newAccommodation.setFreeTimeSlots(timeslots);
         newAccommodation.setPriceList(pricelist);
-        newAccommodation.setAmenities(amenities);
+        newAccommodation.setAmenities(amenities2);
+
+        return true;
+    }
+
+
+    public AccommodationType getAccommodationType(String type) {
+        switch (type) {
+            case "Apartment":
+                return AccommodationType.APARTMENT;
+            case "Hotel":
+                return AccommodationType.HOTEL;
+            case "Motel":
+                return AccommodationType.MOTEL;
+            case "Villa":
+                return AccommodationType.VILLA;
+        }
+        return null;
+    }
+
+    public boolean checkAllFields() {
+        if (name.length() == 0) {
+            this.accommodationName.setError("This field is required!");
+            return false;
+        }
+        if (address.length() == 0) {
+            this.accommodationAddress.setError("This field is required!");
+            return false;
+        }
+        if (city.length() == 0) {
+            this.accommodationCity.setError("This field is required!");
+            return false;
+        }
+        if (country.length() == 0) {
+            this.accommodationCountry.setError("This field is required!");
+            return false;
+        }
+        if (description.length() == 0) {
+            this.accommodationDescription.setError("This field is required!");
+            return false;
+        }
+        if (accommodationMaxGuests.getEditText().getText().toString().length()==0) {
+            this.accommodationMaxGuests.setError("This field is required!");
+            return false;
+        }
+        if (accommodationMinGuests.getEditText().getText().toString().length()==0) {
+            this.accommodationMinGuests.setError("This field is required!");
+            return false;
+        }
+        if (accommodationPrice.getEditText().getText().toString().length()==0) {
+            this.accommodationPrice.setError("This field is required!");
+            return false;
+        }
+        if (reservationDeadline.getEditText().getText().toString().length()==0) {
+            this.reservationDeadline.setError("This field is required!");
+            return false;
+        }
+        if (maxGuests < minGuests) {
+            this.accommodationMaxGuests.setError("Max guests number must be greater!");
+            return false;
+        }
+        return true;
     }
 }

@@ -51,6 +51,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
     private SharedPreferences sp;
     private String userType;
     private FragmentActivity context;
+    private String accessToken;
 
 
     public AccomodationListAdapter(FragmentActivity context, ArrayList<Accomodation> products){
@@ -58,8 +59,8 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
         aAccomodation = products;
         this.context=context;
         sp= context.getApplicationContext().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
         userType=sp.getString("userType","");
-
     }
 
     @Override
@@ -101,7 +102,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
 
 
         if(accomodation != null){
-            Call<List<String>> call = ClientUtils.accommodationService.getImages(accomodation.getId());
+            Call<List<String>> call = ClientUtils.accommodationService.getImages("Bearer " + accessToken, accomodation.getId());
             ImageView imageView = convertView.findViewById(R.id.product_image);
             call.enqueue(new Callback<List<String>>() {
                 @Override
@@ -120,7 +121,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                 public void onFailure(Call<List<String>> call, Throwable t) {
                 }
             });
-            Call<Double> callRating = ClientUtils.commentService.getAccommodationRating(accomodation.getId());
+            Call<Double> callRating = ClientUtils.commentService.getAccommodationRating("Bearer " + accessToken, accomodation.getId());
             callRating.enqueue(new Callback<Double>() {
                 @Override
                 public void onResponse(Call<Double> call, Response<Double> response) {
@@ -161,7 +162,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
 
 
             detailButton.setOnClickListener(v->{
-                Call<Accomodation> callDetails = ClientUtils.accommodationService.getById(accomodation.getId());
+                Call<Accomodation> callDetails = ClientUtils.accommodationService.getById("Bearer " + accessToken, accomodation.getId());
                 callDetails.enqueue(new Callback<Accomodation>() {
                     @Override
                     public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
@@ -185,7 +186,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                 });
             });
             updateButton.setOnClickListener(v->{
-                Call<Accomodation> callDetails = ClientUtils.accommodationService.getById(accomodation.getId());
+                Call<Accomodation> callDetails = ClientUtils.accommodationService.getById("Bearer " + accessToken, accomodation.getId());
                 callDetails.enqueue(new Callback<Accomodation>() {
                     @Override
                     public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
@@ -209,7 +210,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                 });
             });
             acceptAccommodation.setOnClickListener(v->{
-                Call<Accomodation> callAccept = ClientUtils.accommodationService.getById(accomodation.getId());
+                Call<Accomodation> callAccept = ClientUtils.accommodationService.getById("Bearer " + accessToken, accomodation.getId());
                 callAccept.enqueue(new Callback<Accomodation>() {
                     @Override
                     public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
@@ -243,7 +244,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                 });
             });
             declineAccommodation.setOnClickListener(v->{
-                Call<Accomodation> callDecline = ClientUtils.accommodationService.getById(accomodation.getId());
+                Call<Accomodation> callDecline = ClientUtils.accommodationService.getById("Bearer " + accessToken, accomodation.getId());
                 callDecline.enqueue(new Callback<Accomodation>() {
                     @Override
                     public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {

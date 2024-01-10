@@ -53,6 +53,11 @@ public class User implements Parcelable, Serializable {
     @Expose
     private LocalDate activationLinkDate;
 
+    @SerializedName("reportingReason")
+    @Expose
+    private String reportingReason;
+
+
 
     public User(Long id, String firstName, String lastName, Address address, String phoneNumber, Account account,
                 String picturePath, String lastPasswordResetDate, String activationLink, LocalDate activationLinkDate) {
@@ -66,6 +71,22 @@ public class User implements Parcelable, Serializable {
         this.lastPasswordResetDate = lastPasswordResetDate;
         this.activationLink = activationLink;
         this.activationLinkDate = activationLinkDate;
+    }
+
+    public User(Long id, String firstName, String lastName, Address address, String phoneNumber, Account account,
+                String picturePath, String lastPasswordResetDate, String activationLink, LocalDate activationLinkDate,
+                String reportingReason) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.account = account;
+        this.picturePath = picturePath;
+        this.lastPasswordResetDate = lastPasswordResetDate;
+        this.activationLink = activationLink;
+        this.activationLinkDate = activationLinkDate;
+        this.reportingReason = reportingReason;
     }
 
     public User() {}
@@ -83,7 +104,8 @@ public class User implements Parcelable, Serializable {
         phoneNumber = in.readString();
         account = in.readParcelable(Account.class.getClassLoader());
         picturePath = in.readString();
-        activationLink = in.readString();
+        firstName = in.readString();
+        reportingReason = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -174,6 +196,12 @@ public class User implements Parcelable, Serializable {
         return activationLinkDate;
     }
 
+    public String getReportingReason() { return reportingReason; }
+
+    public void setReportingReason(String reportingReason) {
+        this.reportingReason = reportingReason;
+    }
+
     public void setActivationLinkDate(LocalDate activationLinkDate) {
         this.activationLinkDate = activationLinkDate;
     }
@@ -200,6 +228,7 @@ public class User implements Parcelable, Serializable {
         dest.writeParcelable(account, flags);
         dest.writeString(picturePath);
         dest.writeString(activationLink);
+        dest.writeString(reportingReason);
     }
 }
 

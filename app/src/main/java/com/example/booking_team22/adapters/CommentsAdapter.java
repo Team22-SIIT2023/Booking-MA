@@ -19,21 +19,31 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.booking_team22.R;
+import com.example.booking_team22.clients.ClientUtils;
 import com.example.booking_team22.model.Comment;
 import com.example.booking_team22.model.Notification;
+import com.example.booking_team22.model.Status;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CommentsAdapter extends ArrayAdapter<Comment> {
     private ArrayList<Comment> aComments;
     private SharedPreferences sp;
     private String userType;
+    private Comment selectedComment;
+    private String accessToken;
+
 
     public CommentsAdapter(FragmentActivity context, ArrayList<Comment> comments){
         super(context, R.layout.comment_card, comments);
         aComments = comments;
-        sp= context.getApplicationContext().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
-        userType=sp.getString("userType","");
+        sp = context.getApplicationContext().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
+        userType = sp.getString("userType","");
     }
 
 
@@ -56,11 +66,18 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Comment comment = getItem(position);
+        selectedComment = getItem(position);
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.comment_card,
                     parent, false);
         }
+
+        Button deleteAccommodationComm = convertView.findViewById(R.id.delete_accommodation_comment);
+        Button reportAccommodationComm = convertView.findViewById(R.id.report_accommodation_comment);
+
+        deleteAccommodationComm.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_delete,0,0,0);
+        reportAccommodationComm.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_report_user,0,0,0);
+
         LinearLayout commentCard = convertView.findViewById(R.id.comment_card_item);
         TextView commentEmail = convertView.findViewById(R.id.comment_email);
         TextView commentText = convertView.findViewById(R.id.comment_text);
@@ -70,22 +87,86 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
         Button reportButton=convertView.findViewById(R.id.reportComment);
         RatingBar ratingBar=convertView.findViewById(R.id.ratingAcc);
 
-        if(comment != null){
-            commentEmail.setText(comment.getGuest().getAccount().getUsername());
-            commentText.setText(comment.getText());
-            commentDate.setText(comment.getDate());
-            ratingBar.setRating((float)comment.getRating());
-            if(!userType.equals("admin")){
+        if(selectedComment != null){
+            commentEmail.setText(selectedComment.getGuest().getAccount().getUsername());
+            commentText.setText(selectedComment.getText());
+            commentDate.setText(selectedComment.getDate());
+            ratingBar.setRating((float)selectedComment.getRating());
+            if(!userType.equals("ROLE_ADMIN")){
+                deleteAccommodationComm.setVisibility(View.INVISIBLE);
+                reportAccommodationComm.setVisibility(View.INVISIBLE);
+            }
+            if(userType.equals("ROLE_HOST")){
+                reportButton.setVisibility(View.INVISIBLE);
+                deleteAccommodationComm.setVisibility(View.INVISIBLE);
                 acceptButton.setVisibility(View.INVISIBLE);
                 declineButton.setVisibility(View.INVISIBLE);
+                reportAccommodationComm.setVisibility(View.VISIBLE);
             }
-            if(userType.equals("host")){
-                reportButton.setVisibility(View.VISIBLE);
+            if(userType.equals("ROLE_GUEST")){
+                deleteAccommodationComm.setVisibility(View.VISIBLE);
+                acceptButton.setVisibility(View.INVISIBLE);
+                declineButton.setVisibility(View.INVISIBLE);
+                reportAccommodationComm.setVisibility(View.INVISIBLE);
+                reportButton.setVisibility(View.INVISIBLE);
             }
             commentCard.setOnClickListener(v -> {
 
             });
+
+
+            deleteAccommodationComm.setOnClickListener(v -> {
+                deleteComment();
+            });
+
+            reportAccommodationComm.setOnClickListener(v -> {
+                reportComment();
+            });
         }
         return convertView;
+    }
+
+
+    public void reportComment() {
+        Call<Comment> callComment = ClientUtils.commentService.reportComment("Bearer " + accessToken, Status.REPORTED, selectedComment.getId());
+        callComment.enqueue(new Callback<Comment>() {
+            @Override
+            public void onResponse(Call<Comment> call, Response<Comment> response) {
+                if (response.code() == 200) {
+                    Log.d("COMMENTS", "Meesage recieved");
+                    System.out.println(response.body());
+                    selectedComment = response.body();
+
+                } else {
+                    Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<Comment> call, Throwable t) {
+                Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
+    }
+
+
+    public void deleteComment() {
+        Call<Comment> callComment = ClientUtils.commentService.deleteComment("Bearer " + accessToken, selectedComment.getId());
+        callComment.enqueue(new Callback<Comment>() {
+            @Override
+            public void onResponse(Call<Comment> call, Response<Comment> response) {
+                if (response.code() == 200) {
+                    Log.d("COMMENTS", "Meesage recieved");
+                    System.out.println(response.body());
+                    selectedComment = response.body();
+
+                } else {
+                    Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<Comment> call, Throwable t) {
+                Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
     }
 }

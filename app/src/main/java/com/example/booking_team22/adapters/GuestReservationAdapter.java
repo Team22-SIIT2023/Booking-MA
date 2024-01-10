@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,9 +24,10 @@ import java.util.ArrayList;
 
 public class GuestReservationAdapter extends ArrayAdapter {
     private ArrayList<ReservationRequest> aReservations;
+    private Button reportGuestButton;
 
     public GuestReservationAdapter(FragmentActivity context, ArrayList<ReservationRequest> reservations){
-        super(context, R.layout.reservation_card, reservations);
+        super(context, R.layout.guest_request_card, reservations);
         aReservations = reservations;
     }
 
@@ -50,7 +52,7 @@ public class GuestReservationAdapter extends ArrayAdapter {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         ReservationRequest reservation = getItem(position);
         if(convertView == null){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.reservation_card,
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.guest_request_card,
                     parent, false);
         }
         LinearLayout reservationCard = convertView.findViewById(R.id.request_card_item);
@@ -61,11 +63,13 @@ public class GuestReservationAdapter extends ArrayAdapter {
         TextView status = convertView.findViewById(R.id.textViewStatus);
         TextView accommodation = convertView.findViewById(R.id.textViewAccommodation);
 
+        reportGuestButton = convertView.findViewById(R.id.reportGuestButton);
+        reportGuestButton.setVisibility(View.INVISIBLE);
 
         if(reservation != null){
             timeSlot.setText(reservation.getTimeSlot().getStartDate()+"-"+reservation.getTimeSlot().getEndDate());
             price.setText(String.valueOf((reservation.getPrice())));
-            guest.setText(String.valueOf(reservation.getGuest().getFirstName()));
+            guest.setText(String.valueOf(reservation.getGuest().getAccount().getUsername()));
             guestNum.setText(String.valueOf(reservation.getGuestNumber()));
             status.setText(reservation.getStatus().name());
             accommodation.setText(reservation.getAccommodation().getName());

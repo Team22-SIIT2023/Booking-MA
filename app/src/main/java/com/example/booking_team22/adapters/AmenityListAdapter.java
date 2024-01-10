@@ -55,10 +55,8 @@ public class AmenityListAdapter extends ArrayAdapter<Amenity> {
         amenityName.setText(amenity.getAmenityName());
         //ImageView amenityImage = convertView.findViewById(R.id.imageIconAmenity);
 
-        if(amenity != null){
 
-            //amenityImage.setImageResource(amenity.getAmenityImage());
-        }
+
         return convertView;
     }
 }

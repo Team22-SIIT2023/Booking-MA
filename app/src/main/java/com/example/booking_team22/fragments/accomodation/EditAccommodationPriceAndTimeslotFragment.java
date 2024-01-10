@@ -1,8 +1,7 @@
 package com.example.booking_team22.fragments.accomodation;
 
-import static com.example.booking_team22.clients.ClientUtils.accommodationService;
-
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -15,10 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
-import com.example.booking_team22.R;
 import com.example.booking_team22.clients.ClientUtils;
-import com.example.booking_team22.databinding.ActivityEditAccommodationFreeTimeSlotsBinding;
 import com.example.booking_team22.databinding.FragmentEditAccommodationPriceAndTimeslotBinding;
 import com.example.booking_team22.model.Accomodation;
 import com.example.booking_team22.model.PricelistItem;
@@ -43,22 +41,18 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
     private TextInputEditText freeTimeSlotsEnd;
     private SharedPreferences sp;
     private Accomodation accommodation;
+    private String accessToken;
 
     FragmentEditAccommodationPriceAndTimeslotBinding binding;
 
     public EditAccommodationPriceAndTimeslotFragment() {
     }
 
-//    public static EditAccommodationPriceAndTimeslotFragment newInstance(Accomodation detailAccommodation) {
-//        EditAccommodationPriceAndTimeslotFragment fragment = new EditAccommodationPriceAndTimeslotFragment();
-//        Bundle args = new Bundle();
-//        args.putParcelable("detailAccommodation", detailAccommodation);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-
-    public static EditAccommodationPriceAndTimeslotFragment newInstance(Accomodation detailAccommodation) {
+    public static EditAccommodationPriceAndTimeslotFragment newInstance(Accomodation accommodation) {
         EditAccommodationPriceAndTimeslotFragment fragment = new EditAccommodationPriceAndTimeslotFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("accommodation", accommodation);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -66,7 +60,7 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-//        accommodation = args.getParcelable("detailAccommodation");
+        this.accommodation = args.getParcelable("accommodation");
     }
 
     @Override
@@ -74,6 +68,9 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentEditAccommodationPriceAndTimeslotBinding.inflate(getLayoutInflater());
         View root=binding.getRoot();
+
+        sp = getActivity().getSharedPreferences("mySharedPrefs", Context.MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
 
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);
@@ -119,23 +116,6 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
         this.freeTimeSlotsEnd = binding.freeTimeSlotsInput2;
 
 
-        Call<Accomodation> callUser = accommodationService.getById(1L); // Assuming you have a method in your UserApiClient to get a user by ID
-        callUser.enqueue(new Callback<Accomodation>() {
-            @Override
-            public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
-                if (response.code() == 200) {
-                    Log.d("USER", "Message received");
-                    accommodation = response.body();
-                } else {
-                    Log.d("ACC_REQUEST", "Message received: " + response.code());
-                }
-            }
-            @Override
-            public void onFailure(Call<Accomodation> call, Throwable t) {
-                Log.e("ACC_REQUEST", "Error: " + t.getMessage(), t);
-            }
-        });
-
         priceButton.setOnClickListener(v ->{
 
             String startDate = cicoInput.getText().toString();
@@ -145,7 +125,7 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
             pricelist.setTimeSlot(timeslot);
             pricelist.setPrice(Integer.parseInt(accommodationPrice.getEditText().getText().toString()));
 
-            Call<Accomodation> call = ClientUtils.accommodationService.editPrice(pricelist, 1L);
+            Call<Accomodation> call = ClientUtils.accommodationService.editPrice("Bearer " + accessToken ,pricelist, accommodation.getId());
 
             call.enqueue(new Callback<Accomodation>() {
                 @Override
@@ -153,6 +133,7 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
                     if (response.code() == 200){
                         Log.d("REZ","Meesage recieved");
                         System.out.println(response.body());
+                        Toast.makeText(getActivity(),"Successfully updated!", Toast.LENGTH_SHORT).show();
                     }else{
                         Log.d("REZ","Meesage recieved: "+response.code());
                     }
@@ -169,7 +150,7 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
             String startDate = freeTimeSlotsStart.getText().toString();
             String endDate = freeTimeSlotsEnd.getText().toString();
             TimeSlot timeslot = new TimeSlot(startDate, endDate);
-            Call<Accomodation> call = ClientUtils.accommodationService.editFreeTimeslots(timeslot, 1L);
+            Call<Accomodation> call = ClientUtils.accommodationService.editFreeTimeslots("Bearer " + accessToken, timeslot, accommodation.getId());
 
             call.enqueue(new Callback<Accomodation>() {
                 @Override
@@ -177,6 +158,7 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
                     if (response.code() == 200){
                         Log.d("REZ","Meesage recieved");
                         System.out.println(response.body());
+                        Toast.makeText(getActivity(),"Successfully updated!", Toast.LENGTH_SHORT).show();
                     }else{
                         Log.d("REZ","Meesage recieved: "+response.code());
                     }
@@ -188,6 +170,5 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
                 }
             });
         });
-
     }
 }

@@ -73,6 +73,8 @@ public class Comment implements Parcelable, Serializable {
         this.guest = guest;
     }
 
+    public Comment() {}
+
     protected Comment(Parcel in) {
         if (in.readByte() == 0) {
             id = null;

@@ -2,6 +2,8 @@ package com.example.booking_team22.fragments.users.admin;
 
 import static com.example.booking_team22.clients.ClientUtils.accommodationService;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,13 +38,12 @@ public class AccommodationApprovalFragment extends ListFragment {
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
-
     private ArrayList<Accomodation> accommodations = new ArrayList<Accomodation>();
-
     private ArrayList<Accomodation> createdAccommodations = new ArrayList<Accomodation>();
-
     private ArrayList<Accomodation> updatedAccommodations = new ArrayList<Accomodation>();
-    AccomodationListAdapter adapter;
+    private AccomodationListAdapter adapter;
+    private SharedPreferences sp;
+    private String accessToken;
 
     FragmentAccommodationApprovalBinding binding;
     public AccommodationApprovalFragment() {
@@ -71,6 +72,10 @@ public class AccommodationApprovalFragment extends ListFragment {
                              Bundle savedInstanceState) {
         binding = FragmentAccommodationApprovalBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        sp = getActivity().getSharedPreferences("mySharedPrefs", Context.MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
+
         return root;
 //        return inflater.inflate(R.layout.fragment_accommodation_approval, container, false);
     }
@@ -78,7 +83,7 @@ public class AccommodationApprovalFragment extends ListFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Call<ArrayList<Accomodation>> call = accommodationService.getAll(
+        Call<ArrayList<Accomodation>> call = accommodationService.getAll("Bearer " + accessToken,
                 null, null, 0, null, 0, 0,"CREATED", null, null, null, null
         );
 
@@ -106,7 +111,7 @@ public class AccommodationApprovalFragment extends ListFragment {
         });
 
 
-        Call<ArrayList<Accomodation>> call1 = accommodationService.getAll(
+        Call<ArrayList<Accomodation>> call1 = accommodationService.getAll("Bearer " + accessToken,
                 null, null, 0, null, 0, 0,"UPDATED", null, null, null, null
         );
         call1.enqueue(new Callback<ArrayList<Accomodation>>() {
@@ -132,5 +137,4 @@ public class AccommodationApprovalFragment extends ListFragment {
             }
         });
     }
-
 }

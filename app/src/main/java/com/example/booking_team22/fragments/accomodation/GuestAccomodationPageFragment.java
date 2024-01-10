@@ -4,6 +4,8 @@ import static com.example.booking_team22.clients.ClientUtils.accommodationServic
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -70,6 +72,8 @@ public class GuestAccomodationPageFragment extends ListFragment {
 
     private  BottomSheetDialog bottomSheetDialog;
     private FragmentAccomodationPageBinding binding;
+    private SharedPreferences sp;
+    private String accessToken;
 
     public static GuestAccomodationPageFragment newInstance() {
         return new GuestAccomodationPageFragment();
@@ -79,6 +83,9 @@ public class GuestAccomodationPageFragment extends ListFragment {
 
         binding = FragmentAccomodationPageBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        sp = getActivity().getSharedPreferences("mySharedPrefs", Context.MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
 
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);
@@ -181,7 +188,7 @@ public class GuestAccomodationPageFragment extends ListFragment {
             if ( !startDate.isEmpty() && !endDate.isEmpty() && numberOfGuests != 0) {
                 long numberOfNights = ChronoUnit.DAYS.between(LocalDate.parse(startDate), LocalDate.parse(endDate));
                 for(Accomodation accomodation:products){
-                    Call<Double> callPrice = accommodationService.calculatePrice(accomodation.getId(), numberOfGuests, startDate, endDate);
+                    Call<Double> callPrice = accommodationService.calculatePrice("Bearer " + accessToken, accomodation.getId(), numberOfGuests, startDate, endDate);
                     callPrice.enqueue(new Callback<Double>() {
                         @Override
                         public void onResponse(Call<Double> call, Response<Double> response) {
@@ -235,7 +242,7 @@ public class GuestAccomodationPageFragment extends ListFragment {
     private void getDataFromClient(String begin, String end, int guestNumber, String type,
                                    double startPrice, double endPrice, String status,
                                    String country, String city, List<String> amenities, Integer hostId) {
-        Call<ArrayList<Accomodation>> call = accommodationService.getAll(
+        Call<ArrayList<Accomodation>> call = accommodationService.getAll("Bearer " + accessToken,
                 begin, end, guestNumber, type, startPrice, endPrice, status, country, city, amenities, hostId
         );
 
