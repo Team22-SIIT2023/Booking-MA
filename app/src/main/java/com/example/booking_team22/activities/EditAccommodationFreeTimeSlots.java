@@ -1,3 +1,4 @@
+
 //package com.example.booking_team22.activities;
 //
 //import static com.example.booking_team22.clients.ClientUtils.accommodationService;

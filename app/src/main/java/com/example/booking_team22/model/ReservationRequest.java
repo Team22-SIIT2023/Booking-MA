@@ -11,9 +11,9 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class ReservationRequest implements Parcelable, Serializable {
-//    @SerializedName("id")
-//    @Expose
-//    private Long id;
+    @SerializedName("id")
+    @Expose
+    private Long id;
     @SerializedName("timeSlot")
     @Expose
     private TimeSlot timeSlot;
@@ -34,13 +34,13 @@ public class ReservationRequest implements Parcelable, Serializable {
     private RequestStatus status;
 
 
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public TimeSlot getTimeSlot() {
         return timeSlot;
@@ -91,7 +91,7 @@ public class ReservationRequest implements Parcelable, Serializable {
     }
 
     public ReservationRequest( TimeSlot timeSlot, double price, Guest guest, int guestNumber, Accomodation accommodation, RequestStatus status) {
-//        this.id = id;
+        this.id = id;
         this.timeSlot = timeSlot;
         this.price = price;
         this.guest = guest;

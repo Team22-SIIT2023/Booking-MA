@@ -24,6 +24,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -43,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -138,7 +140,10 @@ public class AccommodationDetailFragment extends Fragment {
             accommodation.setAmenities(detailAccommodation.getAmenities());
             accommodation.setFreeTimeSlots(detailAccommodation.getFreeTimeSlots());
             accommodation.setAddress(detailAccommodation.getAddress());
+            accommodation.setAutomaticConfirmation(detailAccommodation.isAutomaticConfirmation());
         }
+        sp = getActivity().getSharedPreferences("mySharedPrefs", MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
     }
 
     private boolean enableListScroll(ListView listView) {
@@ -217,6 +222,14 @@ public class AccommodationDetailFragment extends Fragment {
             }
         });
 
+
+        RadioButton rbtAutomatic=binding.automaticRbt;
+        RadioButton rbtManual=binding.manualRbt;
+        if(accommodation.isAutomaticConfirmation()){
+            rbtAutomatic.setChecked(true);
+        }else{
+            rbtManual.setChecked(true);
+        }
 
         TextView description=binding.textAccommodationDescription;
         description.setText(accommodation.getDescription());
@@ -342,6 +355,7 @@ public class AccommodationDetailFragment extends Fragment {
 
         LinearLayout linearLayout = binding.layoutPictures;
         Call<List<String>> callImages = ClientUtils.accommodationService.getImages("Bearer " + accessToken, accommodation.getId());
+
         callImages.enqueue(new Callback<List<String>>() {
             @Override
             public void onResponse(Call<List<String>> call, Response<List<String>> response) {
@@ -377,12 +391,21 @@ public class AccommodationDetailFragment extends Fragment {
         Button addComment=binding.btnAddComments;
         LinearLayout reservationLayout=binding.resrvationLayout;
 
+        LinearLayout approvalLayout=binding.approvalLayout;
+
         if(!userType.equals("ROLE_HOST")){
+            approvalLayout.setVisibility(View.GONE);
             editButton.setVisibility(View.INVISIBLE);
             editPriceButton.setVisibility(View.INVISIBLE);
         }else{
             reservationLayout.setVisibility(View.GONE);
             addComment.setVisibility(View.GONE);
+            Button approvalBtn=binding.changeApprovalBtn;
+            approvalBtn.setOnClickListener(v -> {
+                accommodation.setAutomaticConfirmation(rbtAutomatic.isChecked());
+                updateApprovalType(accommodation);
+
+            });
         }
 
         editButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit,0,0,0);
@@ -437,9 +460,8 @@ public class AccommodationDetailFragment extends Fragment {
         });
 
 
-
-        mapView=binding.mapView;
-        mapView.onCreate(savedInstanceState);
+//        mapView=binding.mapView;
+//        mapView.onCreate(savedInstanceState);
 //        mapView.getMapAsync(googleMap1 -> {
 //            LatLng markerLatLng=new LatLng(47.5189687,18.9606965);
 //            googleMap1.addMarker(new MarkerOptions().position(markerLatLng).title("Marker title"));
@@ -495,7 +517,7 @@ public class AccommodationDetailFragment extends Fragment {
             this.guest = new Guest(user.getId(), user.getFirstName(), user.getLastName(), user.getAddress(),
                                 user.getPhoneNumber(), user.getAccount(), user.getPicturePath(),
                                 user.getLastPasswordResetDate(), user.getActivationLink(), user.getActivationLinkDate());
-            RequestStatus status = RequestStatus.WAITING;
+            RequestStatus status = RequestStatus.PENDING;
             ReservationRequest reservationRequest = new ReservationRequest(
                     timeSlot,
                     price,
@@ -509,8 +531,31 @@ public class AccommodationDetailFragment extends Fragment {
         return root;
     }
 
+    private void updateApprovalType(Accomodation accommodation) {
+        Call<Accomodation> call = accommodationService.updateAccommodationRequestApproval("Bearer "+accessToken,accommodation);
+        call.enqueue(new Callback<Accomodation>() {
+            @Override
+            public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
+                if (response.isSuccessful()) {
+                    Accomodation updatedAccommodation = response.body();
+                    Toast toastMessage=new Toast(requireContext());
+                    toastMessage.setText("Request approval type changed!");
+                    toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
+                    toastMessage.setDuration(Toast.LENGTH_SHORT);
+                    toastMessage.show();
+                } else {
+                    Log.d("Failed to update approval", "Error code: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<Accomodation> call, Throwable t) {
+                Log.e("Failed to update approval", "Error: " + t.getMessage(), t);
+            }
+        });
+    }
+
     private void makeReservationWithCalculatedPrice(ReservationRequest reservationRequest) {
-        Call<ReservationRequest> call = requestService.createRequest(reservationRequest);
+        Call<ReservationRequest> call = requestService.createRequest("Bearer "+accessToken,reservationRequest);
         call.enqueue(new Callback<ReservationRequest>() {
             @Override
             public void onResponse(Call<ReservationRequest> call, Response<ReservationRequest> response) {
@@ -548,6 +593,7 @@ public class AccommodationDetailFragment extends Fragment {
             int numberOfGuests = (Integer) numberOfGuestsSpinner.getSelectedItem();
 
             Call<Double> callPrice = accommodationService.calculatePrice("Bearer " + accessToken, accommodation.getId(), numberOfGuests, startDate, endDate);
+
             callPrice.enqueue(new Callback<Double>() {
                 @Override
                 public void onResponse(Call<Double> call, Response<Double> response) {

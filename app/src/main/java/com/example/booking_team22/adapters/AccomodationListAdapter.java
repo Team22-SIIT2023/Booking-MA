@@ -6,11 +6,16 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +29,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
@@ -50,6 +56,8 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
     private ArrayList<Accomodation> aAccomodation;
     private SharedPreferences sp;
     private String userType;
+    private String accessToken;
+    private Long userId;
     private FragmentActivity context;
     private String accessToken;
 
@@ -59,8 +67,9 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
         aAccomodation = products;
         this.context=context;
         sp= context.getApplicationContext().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
-        accessToken = sp.getString("accessToken", "");
+        accessToken=sp.getString("accessToken","");
         userType=sp.getString("userType","");
+        userId=sp.getLong("userId",0L);
     }
 
     @Override
@@ -99,10 +108,36 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
         Button acceptAccommodation = convertView.findViewById(R.id.acceptAccommodation);
         Button declineAccommodation = convertView.findViewById(R.id.declineAccommodation);
         RatingBar ratingBar=convertView.findViewById(R.id.rating);
+        Button favoritesButton=convertView.findViewById(R.id.btnFavorites);
+
 
 
         if(accomodation != null){
-            Call<List<String>> call = ClientUtils.accommodationService.getImages("Bearer " + accessToken, accomodation.getId());
+
+            if(userType.equals("ROLE_GUEST")){
+                Call<ArrayList<Accomodation>> callFavorites = ClientUtils.userService.getFavorites("Bearer " + accessToken,userId);
+                callFavorites.enqueue(new Callback<ArrayList<Accomodation>>() {
+                    @Override
+                    public void onResponse(Call<ArrayList<Accomodation>> call, Response<ArrayList<Accomodation>> response) {
+                        if (response.isSuccessful()) {
+                            ArrayList<Accomodation> favorites = response.body();
+                            if(favorites.size()!=0 && favorites.contains(accomodation)){
+                                favoritesButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red)));
+                            }else{
+                                favoritesButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.grey)));
+
+                            }
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<ArrayList<Accomodation>> call, Throwable t) {
+                    }
+                });
+            }
+
+
+            Call<List<String>> call = ClientUtils.accommodationService.getImages("Bearer " + accessToken,accomodation.getId());
+
             ImageView imageView = convertView.findViewById(R.id.product_image);
             call.enqueue(new Callback<List<String>>() {
                 @Override
@@ -152,6 +187,9 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
             if(!userType.equals("ROLE_HOST")){
                 updateButton.setVisibility(View.GONE);
             }
+            if(!userType.equals("ROLE_GUEST")){
+                favoritesButton.setVisibility(View.GONE);
+            }
             if(accomodation.getStatus()==AccommodationStatus.ACCEPTED){
                 if(userType.equals("ROLE_ADMIN")){
                     acceptAccommodation.setVisibility(View.GONE);
@@ -159,10 +197,45 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                 }
             }
 
+            favoritesButton.setOnClickListener(v->{
+                ColorStateList colorStateList = favoritesButton.getBackgroundTintList();
+                int currentColor = colorStateList != null ? colorStateList.getColorForState(favoritesButton.getDrawableState(), 0) : Color.TRANSPARENT;
+                int newTint;
 
+                if (currentColor == ContextCompat.getColor(context, R.color.red)) {
+                    newTint = ContextCompat.getColor(context, R.color.grey);
+                } else {
+                    newTint = ContextCompat.getColor(context, R.color.red);
+                }
+                favoritesButton.setBackgroundTintList(ColorStateList.valueOf(newTint));
+
+
+
+                Call<String> callFavorites = ClientUtils.userService.updateFavorites("Bearer "+accessToken,userId,accomodation.getId());
+                callFavorites.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        if (response.code() == 200){
+                            Log.d("REZ","Meesage recieved: "+response.body());
+                            Toast toastMessage = Toast.makeText(context, "Added to favorites!", Toast.LENGTH_SHORT);
+                            toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
+                            toastMessage.show();
+
+                        }else{
+                            Log.d("REZ","Meesage recieved: "+response.code());
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.d("REZ", t.getMessage() != null?t.getMessage():"error");
+                    }
+                });
+            });
 
             detailButton.setOnClickListener(v->{
+              
                 Call<Accomodation> callDetails = ClientUtils.accommodationService.getById("Bearer " + accessToken, accomodation.getId());
+
                 callDetails.enqueue(new Callback<Accomodation>() {
                     @Override
                     public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
@@ -187,6 +260,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
             });
             updateButton.setOnClickListener(v->{
                 Call<Accomodation> callDetails = ClientUtils.accommodationService.getById("Bearer " + accessToken, accomodation.getId());
+
                 callDetails.enqueue(new Callback<Accomodation>() {
                     @Override
                     public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
@@ -211,6 +285,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
             });
             acceptAccommodation.setOnClickListener(v->{
                 Call<Accomodation> callAccept = ClientUtils.accommodationService.getById("Bearer " + accessToken, accomodation.getId());
+
                 callAccept.enqueue(new Callback<Accomodation>() {
                     @Override
                     public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
@@ -245,6 +320,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
             });
             declineAccommodation.setOnClickListener(v->{
                 Call<Accomodation> callDecline = ClientUtils.accommodationService.getById("Bearer " + accessToken, accomodation.getId());
+
                 callDecline.enqueue(new Callback<Accomodation>() {
                     @Override
                     public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {

@@ -49,6 +49,8 @@ public class LoginActivity extends AppCompatActivity {
                 UserCredentials userCredentials = new UserCredentials(username, password);
                 authenticationService.authenticateUser(userCredentials).observe(this, userTokenState -> {
                     if (userTokenState != null) {
+                        binding.usernameField.setText("");
+                        binding.passwordField.setText("");
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString("accessToken", userTokenState.getAccessToken());
                         editor.putString("userType", userTokenState.getRole());

@@ -151,6 +151,13 @@ public class Accomodation implements Parcelable, Serializable {
         dest.writeDouble(price);
         dest.writeDouble(unitPrice);
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Accomodation other = (Accomodation) obj;
+        return id == other.id;
+    }
 
     public double getUnitPrice() {
         return unitPrice;

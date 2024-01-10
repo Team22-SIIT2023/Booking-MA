@@ -19,10 +19,10 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface AccommodationService {
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
+//    @Headers({
+//            "User-Agent: Mobile-Android",
+//            "Content-Type:application/json"
+//    })
     @GET("accommodations")
     Call<ArrayList<Accomodation>> getAll(
             @Header("Authorization") String authorization,
@@ -39,10 +39,10 @@ public interface AccommodationService {
             @Query("hostId") Integer hostId
     );
   
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
+//    @Headers({
+//            "User-Agent: Mobile-Android",
+//            "Content-Type:application/json"
+//    })
     @GET("accommodations/{accommodationId}/images")
     Call<List<String>> getImages(@Header("Authorization") String authorization, @Path("accommodationId") Long accommodationId);
 
@@ -63,10 +63,10 @@ public interface AccommodationService {
     Call<Accomodation> editPrice(@Header("Authorization") String authorization, @Body PricelistItem pricelistItem, @Path("id") Long id);
   
   
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
+//    @Headers({
+//            "User-Agent: Mobile-Android",
+//            "Content-Type:application/json"
+//    })
     @GET("accommodations/{id}")
     Call<Accomodation> getById(@Header("Authorization") String authorization, @Path("id") Long id);
 
@@ -80,10 +80,10 @@ public interface AccommodationService {
     Call<Accomodation> editFreeTimeslots(@Header("Authorization") String authorization, @Body TimeSlot timeSlot, @Path("id") Long id);
 
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
+//    @Headers({
+//            "User-Agent: Mobile-Android",
+//            "Content-Type:application/json"
+//    })
     @GET("accommodations/calculatePrice/{id}")
     Call<Double> calculatePrice(
             @Header("Authorization") String authorization,
@@ -91,6 +91,10 @@ public interface AccommodationService {
             @Query("guestNumber") int guestNumber,
             @Query("begin") String begin,
             @Query("end") String end);
+
+    @PUT("accommodations/approval")
+    Call<Accomodation> updateAccommodationRequestApproval( @Header("Authorization") String authorization,
+                                                           @Body Accomodation accomodation);
 
 
     @PUT("accommodations/{id}")

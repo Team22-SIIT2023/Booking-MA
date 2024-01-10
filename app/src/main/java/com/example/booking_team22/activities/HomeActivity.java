@@ -51,7 +51,8 @@ public class HomeActivity extends AppCompatActivity {
         mAppBarConfiguration = new AppBarConfiguration
                 .Builder(R.id.nav_accomodations,R.id.nav_reservations,R.id.nav_notifications,
                 R.id.nav_account,R.id.nav_accommodations_approval,R.id.nav_reported_comments,
-                R.id.nav_reported_users,R.id.nav_details,R.id.nav_createAccommodation)
+                R.id.nav_reported_users,R.id.nav_details,R.id.nav_createAccommodation,
+                R.id.nav_reports)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 

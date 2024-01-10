@@ -83,6 +83,7 @@ public class AccommodationApprovalFragment extends ListFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Call<ArrayList<Accomodation>> call = accommodationService.getAll("Bearer " + accessToken,
                 null, null, 0, null, 0, 0,"CREATED", null, null, null, null
         );

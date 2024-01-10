@@ -1,6 +1,11 @@
 package com.example.booking_team22.adapters;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.booking_team22.clients.ClientUtils.requestService;
+
+import android.content.SharedPreferences;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +27,19 @@ import com.example.booking_team22.model.ReservationRequest;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class GuestReservationAdapter extends ArrayAdapter {
     private ArrayList<ReservationRequest> aReservations;
     private Button reportGuestButton;
 
+
     public GuestReservationAdapter(FragmentActivity context, ArrayList<ReservationRequest> reservations){
         super(context, R.layout.guest_request_card, reservations);
         aReservations = reservations;
+
     }
 
     @Override
@@ -56,6 +67,7 @@ public class GuestReservationAdapter extends ArrayAdapter {
                     parent, false);
         }
         LinearLayout reservationCard = convertView.findViewById(R.id.request_card_item);
+
         TextView timeSlot = convertView.findViewById(R.id.textViewTimeSlot);
         TextView price = convertView.findViewById(R.id.textViewPrice);
         TextView guest = convertView.findViewById(R.id.textViewGuest);
@@ -74,13 +86,6 @@ public class GuestReservationAdapter extends ArrayAdapter {
             status.setText(reservation.getStatus().name());
             accommodation.setText(reservation.getAccommodation().getName());
 
-            reservationCard.setOnClickListener(v -> {
-//                // Handle click on the item at 'position'
-//                Log.i("ShopApp", "Clicked: " + reservation.getTitle() + ", id: " +
-//                        reservation.getId().toString());
-//                Toast.makeText(getContext(), "Clicked: " + reservation.getTitle()  +
-//                        ", id: " + reservation.getId().toString(), Toast.LENGTH_SHORT).show();
-            });
         }
         return convertView;
     }

@@ -1,7 +1,9 @@
 package com.example.booking_team22.fragments.reservations.guestReservationTabs;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.booking_team22.clients.ClientUtils.requestService;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -33,6 +35,10 @@ import retrofit2.Response;
 public class GuestReservationListFragment extends ListFragment {
 
     private ArrayList<Reservation> reservations = new ArrayList<Reservation>();
+
+    private SharedPreferences sp;
+    private String accessToken;
+
     GuestReservationAdapter adapter;
     FragmentGuestReservationListBinding binding;
 
@@ -56,29 +62,32 @@ public class GuestReservationListFragment extends ListFragment {
                              Bundle savedInstanceState) {
         binding = FragmentGuestReservationListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        sp = getActivity().getSharedPreferences("mySharedPrefs", MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
 //        prepareReservationsList(reservations);
 //        adapter = new GuestReservationAdapter(getActivity(), reservations);
 //        setListAdapter(adapter);
 
-        Call<ArrayList<ReservationRequest>> call = requestService.getAll(RequestStatus.ACCEPTED, null, null, null);
-        call.enqueue(new Callback<ArrayList<ReservationRequest>>() {
-            @Override
-            public void onResponse(Call<ArrayList<ReservationRequest>> call, Response<ArrayList<ReservationRequest>> response) {
-                if (response.isSuccessful()) {
-                    ArrayList<ReservationRequest> requests = response.body();
-                    adapter = new GuestReservationAdapter(getActivity(), requests);
-                    ListView listView=binding.list;
-                    listView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-                } else {
-                }
-            }
-            @Override
-            public void onFailure(Call<ArrayList<ReservationRequest>> call, Throwable t) {
-                // Handle network errors or unexpected failures
-                t.printStackTrace();
-            }
-        });
+//        Call<ArrayList<ReservationRequest>> call = requestService.getAll("Bearer " + accessToken,RequestStatus.ACCEPTED, null, null, null);
+//        call.enqueue(new Callback<ArrayList<ReservationRequest>>() {
+//            @Override
+//            public void onResponse(Call<ArrayList<ReservationRequest>> call, Response<ArrayList<ReservationRequest>> response) {
+//                if (response.isSuccessful()) {
+//                    ArrayList<ReservationRequest> requests = response.body();
+//                    adapter = new GuestReservationAdapter(getActivity(), requests);
+//                    ListView listView=binding.list;
+//                    listView.setAdapter(adapter);
+//                    adapter.notifyDataSetChanged();
+//                } else {
+//                }
+//            }
+//            @Override
+//            public void onFailure(Call<ArrayList<ReservationRequest>> call, Throwable t) {
+//                // Handle network errors or unexpected failures
+//                t.printStackTrace();
+//            }
+//        });
 
 
 

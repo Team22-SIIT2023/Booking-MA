@@ -1,5 +1,7 @@
 package com.example.booking_team22.fragments.accomodation;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.booking_team22.clients.ClientUtils.accommodationService;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -40,6 +42,7 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
     private TextInputEditText freeTimeSlotsStart;
     private TextInputEditText freeTimeSlotsEnd;
     private SharedPreferences sp;
+    private String accessToken;
     private Accomodation accommodation;
     private String accessToken;
 
@@ -114,7 +117,6 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
         this.cicoInput2 = binding.cicoInput2;
         this.freeTimeSlotsStart = binding.freeTimeSlotsInput1;
         this.freeTimeSlotsEnd = binding.freeTimeSlotsInput2;
-
 
         priceButton.setOnClickListener(v ->{
 
