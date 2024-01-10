@@ -150,16 +150,22 @@ public class ReportsFragment extends Fragment {
 
         rangeReport.setOnClickListener(v -> {
             TextInputEditText startDateInput = binding.cicoInput;
-            startDate = startDateInput.getText().toString();
             TextInputEditText endDateInput = binding.cicoInput2;
-            endDate = endDateInput.getText().toString();
-            generateRangeReport(startDate, endDate);
+            if(!startDateInput.getText().toString().equals("") && !endDateInput.getText().toString().equals("")){
+                startDate = startDateInput.getText().toString();
+                endDate = endDateInput.getText().toString();
+                generateRangeReport(startDate, endDate);
+            }
+
         });
         yearlyReport.setOnClickListener(v -> {
             EditText yearInput = binding.yearInput;
-            year = Integer.parseInt(yearInput.getText().toString());
             String nameString = nameSpinner.getSelectedItem().toString();
-            generateYearlyReport(year, nameString);
+            if(!yearInput.getText().toString().equals("") && !nameString.equals("")){
+                year = Integer.parseInt(yearInput.getText().toString());
+                generateYearlyReport(year, nameString);
+            }
+
         });
 
         download.setOnClickListener(v -> {
