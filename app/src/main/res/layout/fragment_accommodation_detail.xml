@@ -255,11 +255,11 @@
 
                 <com.google.android.gms.maps.MapView
                     android:id="@+id/mapView"
+                    app:mapType="normal"
                     android:layout_width="372dp"
                     android:layout_height="190dp"
-                    android:apiKey="AIzaSyC9EE9DdsAWFD14arLFctrQPUxwAAnVDzs"
-                    app:cameraZoom="12"
-                    app:mapType="normal" />
+                    android:apiKey="AIzaSyDEk5U8hy81AVt8d86bgGx2qnOqoL_K2Bg"
+                    app:cameraZoom="12" />
             </LinearLayout>
             <TextView
                 android:id="@+id/textAvailableAmenities"
@@ -287,12 +287,17 @@
             android:text="@string/availableDates"
             android:textAlignment="center"
             android:textSize="16sp" />
-        <CalendarView
+
+        <com.applandeo.materialcalendarview.CalendarView
             android:id="@+id/calendarView"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
+            android:layout_margin="15dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            app:headerColor="@color/darkPurple"
+            app:abbreviationsBarColor="@color/darkPurple"
+            app:pagesColor="@color/purple"
+            app:disabledDaysLabelsColor="@color/pink"
+            app:todayLabelColor="@color/black"/>
         <LinearLayout
             android:id="@+id/resrvationLayout"
             android:backgroundTint="@color/white"

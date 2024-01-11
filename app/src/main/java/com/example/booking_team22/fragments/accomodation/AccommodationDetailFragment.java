@@ -37,7 +37,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -50,12 +49,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.applandeo.materialcalendarview.CalendarView;
 import com.example.booking_team22.R;
 import com.example.booking_team22.adapters.AmenityListAdapter;
 import com.example.booking_team22.adapters.CommentsAdapter;
 import com.example.booking_team22.clients.ClientUtils;
 import com.example.booking_team22.databinding.CommentCardBinding;
 import com.example.booking_team22.databinding.FragmentAccommodationDetailBinding;
+import com.example.booking_team22.databinding.FragmentAccomodationPageBinding;
 import com.example.booking_team22.model.Accomodation;
 import com.example.booking_team22.model.Amenity;
 import com.example.booking_team22.model.Comment;
@@ -74,6 +75,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -102,7 +104,6 @@ public class AccommodationDetailFragment extends Fragment {
     private MapView mapView;
     private User user;
     private int mYear, mMonth, mDay, mHour, mMinute;
-    private GoogleMap googleMap;
     private SharedPreferences sp;
     private String userType, accessToken;
     private RatingBar ratingBarHost, ratingBarAccommodation;
@@ -158,13 +159,11 @@ public class AccommodationDetailFragment extends Fragment {
         return false;
     }
 
-    private void updateNumberText(int value) {
-        //for later
-    }
 
     private void setDate(TextInputEditText input) {
         input.setOnClickListener(v -> {
             final Calendar c = Calendar.getInstance();
+
 
             mYear = c.get(Calendar.YEAR);
             mMonth = c.get(Calendar.MONTH);
@@ -180,11 +179,10 @@ public class AccommodationDetailFragment extends Fragment {
                         }
                     }, mYear, mMonth, mDay);
 
-            Date dateMin = new GregorianCalendar(2024, Calendar.JANUARY, 3).getTime();
-            Date dateMax = new GregorianCalendar(2024, Calendar.JANUARY, 26).getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
 
-            datePickerDialog.getDatePicker().setMinDate(dateMin.getTime());
-            datePickerDialog.getDatePicker().setMaxDate(dateMax.getTime());
+            datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
 
             datePickerDialog.show();
         });
@@ -194,10 +192,38 @@ public class AccommodationDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        binding = FragmentAccommodationDetailBinding.inflate(getLayoutInflater());
+//        super.onCreate(savedInstanceState);
+        binding = FragmentAccommodationDetailBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+
+        String street=accommodation.getAddress().getAddress();
+        String city=accommodation.getAddress().getCity();
+        String country=accommodation.getAddress().getCountry();
+        String location=street+", "+city+", "+country;
+
+        mapView=binding.mapView;
+        mapView.onCreate(savedInstanceState);
+        Geocoder geocoder = new Geocoder(requireContext());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocationName(location, 1);
+            if (addresses != null && addresses.size() > 0) {
+                Address address = addresses.get(0);
+                double latitude = address.getLatitude();
+                double longitude = address.getLongitude();
+                LatLng markerLatLng = new LatLng(latitude, longitude);
+
+                mapView.getMapAsync(googleMap1 -> {
+                    googleMap1.addMarker(new MarkerOptions().position(markerLatLng).title(location));
+                    googleMap1.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng, 12));
+                });
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
 
         sp = getActivity().getSharedPreferences("mySharedPrefs", Context.MODE_PRIVATE);
         accessToken = sp.getString("accessToken", "");
@@ -277,7 +303,7 @@ public class AccommodationDetailFragment extends Fragment {
         });
 
 
-        adapter = new AmenityListAdapter(getActivity(), accommodation.getAmenities());
+        adapter = new AmenityListAdapter(false,getActivity(), accommodation.getAmenities());
         System.out.println(accommodation.getAmenities());
 
         binding.amenityList.setAdapter(adapter);
@@ -288,11 +314,32 @@ public class AccommodationDetailFragment extends Fragment {
         TextInputEditText endDateInput =binding.cicoInput2;
         Spinner numberOfGuestsSpinner = binding.spinner;
         TextInputEditText priceInput = binding.priceInput;
-        CalendarView calendarView=binding.calendarView;
-        Date dateMin = new GregorianCalendar(2024, Calendar.JANUARY, 3).getTime();
-        Date dateMax = new GregorianCalendar(2024, Calendar.JANUARY, 26).getTime();
-        calendarView.setMinDate(dateMin.getTime());
-        calendarView.setMaxDate(dateMax.getTime());
+        CalendarView calendarView=(CalendarView) binding.calendarView;
+        List<Calendar> disabledDates = new ArrayList<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        for(TimeSlot timeSlot:accommodation.getFreeTimeSlots()){
+            try {
+                Date startDate = formatter.parse(timeSlot.getStartDate());
+                Date endDate = formatter.parse(timeSlot.getEndDate());
+
+                Calendar calendarStartDate = Calendar.getInstance();
+                calendarStartDate.setTime(startDate);
+                Calendar calendarEndDate = Calendar.getInstance();
+                calendarEndDate.setTime(endDate);
+
+                while (!calendarStartDate.after(calendarEndDate)) {
+                    if (calendarStartDate.after(Calendar.getInstance())){
+                        disabledDates.add((Calendar) calendarStartDate.clone());
+                    }
+                    calendarStartDate.add(Calendar.DAY_OF_MONTH, 1);
+                }
+
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        calendarView.setDisabledDays(disabledDates);
         startDateInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -460,37 +507,6 @@ public class AccommodationDetailFragment extends Fragment {
         });
 
 
-//        mapView=binding.mapView;
-//        mapView.onCreate(savedInstanceState);
-//        mapView.getMapAsync(googleMap1 -> {
-//            LatLng markerLatLng=new LatLng(47.5189687,18.9606965);
-//            googleMap1.addMarker(new MarkerOptions().position(markerLatLng).title("Marker title"));
-//            googleMap1.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,12));
-//        });
-
-        String street=accommodation.getAddress().getAddress();
-        String city=accommodation.getAddress().getCity();
-        String country=accommodation.getAddress().getCountry();
-        String location=street+", "+city+", "+country;
-
-//        Geocoder geocoder = new Geocoder(requireContext());
-//        List<Address> addresses = null;
-//        try {
-//            addresses = geocoder.getFromLocationName(location, 1);
-//            if (addresses != null && addresses.size() > 0) {
-//                Address address = addresses.get(0);
-//                double latitude = address.getLatitude();
-//                double longitude = address.getLongitude();
-//                LatLng markerLatLng = new LatLng(latitude, longitude);
-//
-//                mapView.getMapAsync(googleMap1 -> {
-//                    googleMap1.addMarker(new MarkerOptions().position(markerLatLng).title(location));
-//                    googleMap1.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng, 12));
-//                });
-//            }
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
 
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);
@@ -528,7 +544,25 @@ public class AccommodationDetailFragment extends Fragment {
             );
             if(price!=0){makeReservationWithCalculatedPrice(reservationRequest);}
         });
+
         return root;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
     }
 
     private void updateApprovalType(Accomodation accommodation) {

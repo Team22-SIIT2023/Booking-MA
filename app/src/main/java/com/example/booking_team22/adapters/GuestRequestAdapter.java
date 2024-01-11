@@ -98,9 +98,12 @@ public class GuestRequestAdapter extends ArrayAdapter {
         TextView guestLabel = convertView.findViewById(R.id.labelGuest);
         TextView guestCancellations = convertView.findViewById(R.id.textViewCancellations);
         TextView cancellationsLabel = convertView.findViewById(R.id.labelCancellations);
+        reportGuestButton = convertView.findViewById(R.id.reportGuestButton);
+
         if(userType.equals("ROLE_GUEST")){
             guest.setVisibility(View.GONE);
             guestLabel.setVisibility(View.GONE);
+            reportGuestButton.setVisibility(View.GONE);
             guestCancellations.setVisibility(View.GONE);
             cancellationsLabel.setVisibility(View.GONE);
         }else{
@@ -110,7 +113,6 @@ public class GuestRequestAdapter extends ArrayAdapter {
         TextView status = convertView.findViewById(R.id.textViewStatus);
         TextView accommodation = convertView.findViewById(R.id.textViewAccommodation);
 
-        reportGuestButton = convertView.findViewById(R.id.reportGuestButton);
         reportGuestButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_report_user,0,0,0);
 
         reportGuestButton.setOnClickListener(v ->{
