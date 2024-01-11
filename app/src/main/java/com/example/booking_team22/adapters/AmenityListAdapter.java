@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,9 +22,13 @@ import java.util.ArrayList;
 public class AmenityListAdapter extends ArrayAdapter<Amenity> {
 
     ArrayList<Amenity> aAmenities;
-    public AmenityListAdapter(FragmentActivity context, ArrayList<Amenity> amenities){
-        super(context, R.layout.activity_amenities_list_view, amenities);
+    public ArrayList<Amenity>checkedAmenities;
+    boolean visible;
+    public AmenityListAdapter(boolean visibleCheckBox,FragmentActivity context, ArrayList<Amenity> amenities){
+        super(context, R.layout.amenity_card, amenities);
         aAmenities = amenities;
+        visible=visibleCheckBox;
+        this.checkedAmenities= new ArrayList<>();
     }
 
     @Override
@@ -52,8 +57,18 @@ public class AmenityListAdapter extends ArrayAdapter<Amenity> {
         }
         LinearLayout amenityCard = convertView.findViewById(R.id.amenity_card_item);
         TextView amenityName = convertView.findViewById(R.id.textViewAmenity);
+        CheckBox checkBox=convertView.findViewById(R.id.amenityCheckBox);
+        if(!visible){
+            checkBox.setVisibility(View.GONE);
+        }
         amenityName.setText(amenity.getAmenityName());
-        //ImageView amenityImage = convertView.findViewById(R.id.imageIconAmenity);
+        checkBox.setOnClickListener(v -> {
+            if(checkBox.isChecked()){
+                checkedAmenities.add(amenity);
+            }else{
+                checkedAmenities.remove(amenity);
+            }
+        });
 
 
 

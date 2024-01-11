@@ -45,6 +45,8 @@ public class ClientUtils {
     public static UserService userService = retrofit.create(UserService.class);
     public static RequestService requestService=retrofit.create(RequestService.class);
     public static ReportService reportService=retrofit.create(ReportService.class);
+    public static AmenityService amenityService=retrofit.create(AmenityService.class);
+
     public static AuthenticationService authenticationService = new AuthenticationService(userService);
 
 

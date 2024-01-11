@@ -1,15 +1,23 @@
 package com.example.booking_team22.fragments.accomodation;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.booking_team22.clients.ClientUtils.accommodationService;
+import static com.example.booking_team22.clients.ClientUtils.amenityService;
 import static com.example.booking_team22.clients.ClientUtils.userService;
 
 import android.app.DatePickerDialog;
+import android.content.ClipData;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +26,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.ListView;
 import android.widget.Spinner;
+import android.content.ContentResolver;
+
 
 import com.example.booking_team22.R;
+import com.example.booking_team22.adapters.AmenityListAdapter;
 import com.example.booking_team22.clients.ClientUtils;
 import com.example.booking_team22.databinding.FragmentCreateAccommodationBinding;
 import com.example.booking_team22.model.AccommodationType;
@@ -35,10 +47,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,7 +62,7 @@ import retrofit2.Response;
 public class CreateAccommodationFragment extends Fragment {
 
     private int mYear, mMonth, mDay;
-    private ArrayList<String> amenities = new ArrayList<>();
+    private ArrayList<Amenity> amenities = new ArrayList<>();
     private TextInputLayout accommodationName , accommodationAddress, accommodationCity, accommodationCountry, accommodationDescription;
     private TextInputLayout accommodationPrice, accommodationMinGuests, accommodationMaxGuests, reservationDeadline;
     private TextInputEditText cicoInput, cicoInput2;
@@ -58,11 +74,16 @@ public class CreateAccommodationFragment extends Fragment {
     private FragmentCreateAccommodationBinding binding;
     private SharedPreferences sp;
     private String userType;
+    private ArrayList<Uri>imageUris=new ArrayList<>();
     private User user;
     private String accessToken;
+    private int PICK_IMAGES_REQUEST=3;
+
     private String name, address, city, country, description, startDate, endDate;
     private double price;
     private int minGuests, maxGuests, resDeadline;
+    AmenityListAdapter amenityListAdapter;
+//    ArrayList<Amenity>amenities=new ArrayList<>();
 
     public CreateAccommodationFragment() {
     }
@@ -87,11 +108,129 @@ public class CreateAccommodationFragment extends Fragment {
         sp = getActivity().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
         accessToken = sp.getString("accessToken", "");
 
+        bottomSheetDialog = new BottomSheetDialog(getActivity());
+
+        View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
+
+
+        Call<ArrayList<Amenity>> callAmenity = amenityService.getAll("Bearer "+accessToken);
+        callAmenity.enqueue(new Callback<ArrayList<Amenity>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Amenity>> call, Response<ArrayList<Amenity>> response) {
+                if (response.code() == 200) {
+                    Log.d("COMMENTS", "Meesage recieved");
+                    System.out.println(response.body());
+                    amenities = response.body();
+                    amenityListAdapter = new AmenityListAdapter(true,getActivity(), amenities);
+
+                    ListView listAmenities=dialogView.findViewById(R.id.allAmenities);
+                    listAmenities.setAdapter(amenityListAdapter);
+                    bottomSheetDialog.setContentView(dialogView);
+
+                } else {
+                    Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<ArrayList<Amenity>> call, Throwable t) {
+                Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
+
+        Button btnFilters = binding.btnFiltersEdit;
+        btnFilters.setOnClickListener(v -> {
+            bottomSheetDialog.show();
+        });
+
+        Button btnUploadImages=binding.buttonAddPhotos;
+        btnUploadImages.setOnClickListener(v -> {
+            chooseImages();
+        });
+
+
+
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);
 
         return root;
     }
+
+    private void chooseImages() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        startActivityForResult(intent, PICK_IMAGES_REQUEST);
+    }
+    private void uploadImages(Long id) {
+        MultipartBody.Part[] parts = new MultipartBody.Part[imageUris.size()];
+
+        for (int i = 0; i < imageUris.size(); i++) {
+            Uri uri = imageUris.get(i);
+            File file = new File(getRealPathFromUri(uri)); // Implement getRealPathFromUri
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+            parts[i] = MultipartBody.Part.createFormData("images", file.getName(), requestFile);
+        }
+
+        Call<Accomodation> call = accommodationService.uploadImages("Bearer "+accessToken,parts,id);
+
+        call.enqueue(new Callback<Accomodation>() {
+            @Override
+            public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
+                if (response.isSuccessful()) {
+                    Log.d("REZ","Dobro"+response.body());
+                    // Handle successful response
+                    //Toast.makeText(YourActivity.this, "Images uploaded successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d("REZ","response error"+response.errorBody());
+
+                    // Handle error response
+                    //Toast.makeText(YourActivity.this, "Failed to upload images", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<Accomodation> call, Throwable t) {
+                // Handle failure
+                //Toast.makeText(YourActivity.this, "Network error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private String getRealPathFromUri(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = requireActivity().getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String filePath = cursor.getString(column_index);
+            cursor.close();
+            return filePath;
+        }
+        return uri.getPath();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 3 && resultCode == RESULT_OK) {
+            if (data != null) {
+                ClipData clipData = data.getClipData();
+                if (clipData != null) {
+                    // Multiple images selected
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                        Uri uri = clipData.getItemAt(i).getUri();
+                        imageUris.add(uri);
+                    }
+                } else {
+                    Uri uri = data.getData();
+                    imageUris.add(uri);
+
+                }
+            }
+        }
+    }
+
+
 
     private void setDate(TextInputEditText input) {
         input.setOnClickListener(v->{
@@ -113,14 +252,6 @@ public class CreateAccommodationFragment extends Fragment {
             datePickerDialog.show();
         });
 
-        Button btnFilters = binding.btnFiltersEdit;
-        btnFilters.setOnClickListener(v -> {
-            Log.i("travelBee", "Bottom Sheet Dialog");
-            this.bottomSheetDialog = new BottomSheetDialog(getActivity());
-            View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
-            bottomSheetDialog.setContentView(dialogView);
-            bottomSheetDialog.show();
-        });
     }
 
     @Override
@@ -188,8 +319,9 @@ public class CreateAccommodationFragment extends Fragment {
                         if (response.code() == 201){
                             Log.d("REZ","Meesage recieved");
                             Accomodation product1 = response.body();
+                            uploadImages(product1.getId());
                             System.out.println(product1);
-                            getActivity().getSupportFragmentManager().popBackStack();
+                            //getActivity().getSupportFragmentManager().popBackStack();
                         }else{
                             Log.d("REZ","Meesage recieved: "+response.code());
                         }
@@ -218,9 +350,9 @@ public class CreateAccommodationFragment extends Fragment {
         endDate = cicoInput2.getText().toString();
         AccommodationType type = getAccommodationType(accommodationType.getSelectedItem().toString());
 
-        if (checkAllFields()) {
-            return false;
-        }
+//        if (checkAllFields()) {
+//            return false;
+//        }
 
         newAccommodation = new Accomodation();
         newAccommodation.setName(name);
@@ -235,11 +367,7 @@ public class CreateAccommodationFragment extends Fragment {
         ArrayList<TimeSlot> timeslots = new ArrayList<>();
         timeslots.add(timeslot);
 
-        Amenity amenity = new Amenity();
-        amenity.setId(2L);
-        amenity.setAmenityName("pool");
-        ArrayList<Amenity> amenities2 = new ArrayList<>();
-        amenities2.add(amenity);
+        newAccommodation.setAmenities(amenityListAdapter.checkedAmenities);
 
         PricelistItem pricelistItem = new PricelistItem();
         pricelistItem.setPrice(price);
@@ -259,7 +387,6 @@ public class CreateAccommodationFragment extends Fragment {
         newAccommodation.setType(type);
         newAccommodation.setFreeTimeSlots(timeslots);
         newAccommodation.setPriceList(pricelist);
-        newAccommodation.setAmenities(amenities2);
 
         return true;
     }

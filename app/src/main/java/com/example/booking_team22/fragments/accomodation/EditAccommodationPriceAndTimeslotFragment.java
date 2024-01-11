@@ -44,7 +44,6 @@ public class EditAccommodationPriceAndTimeslotFragment extends Fragment {
     private SharedPreferences sp;
     private String accessToken;
     private Accomodation accommodation;
-    private String accessToken;
 
     FragmentEditAccommodationPriceAndTimeslotBinding binding;
 

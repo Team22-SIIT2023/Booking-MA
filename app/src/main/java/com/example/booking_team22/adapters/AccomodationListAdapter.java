@@ -59,7 +59,6 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
     private String accessToken;
     private Long userId;
     private FragmentActivity context;
-    private String accessToken;
 
 
     public AccomodationListAdapter(FragmentActivity context, ArrayList<Accomodation> products){

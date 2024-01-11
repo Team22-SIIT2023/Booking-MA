@@ -2,6 +2,7 @@ package com.example.booking_team22.fragments.accomodation;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.booking_team22.clients.ClientUtils.accommodationService;
+import static com.example.booking_team22.clients.ClientUtils.amenityService;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -32,12 +33,16 @@ import android.widget.TextView;
 
 import com.example.booking_team22.R;
 import com.example.booking_team22.adapters.AccomodationListAdapter;
+import com.example.booking_team22.adapters.AmenityListAdapter;
+import com.example.booking_team22.adapters.CommentsAdapter;
 import com.example.booking_team22.clients.ClientUtils;
 import com.example.booking_team22.databinding.AccomodationCardBinding;
 import com.example.booking_team22.databinding.FragmentAccomodationPageBinding;
 import com.example.booking_team22.model.AccommodationType;
 import com.example.booking_team22.model.Accomodation;
 import com.example.booking_team22.model.Amenity;
+import com.example.booking_team22.model.Comment;
+import com.example.booking_team22.model.Status;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -45,6 +50,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -60,14 +66,16 @@ public class GuestAccomodationPageFragment extends ListFragment {
 
     public static ArrayList<Accomodation> products = new ArrayList<Accomodation>();
     AccomodationListAdapter adapter;
+    AmenityListAdapter amenityListAdapter;
     private String startDate=null;
     private String endDate=null;
     private String location=null;
     private String type=null;
-    private List<String>amenities=new ArrayList<>();
+    private List<String>amenitieStrings=new ArrayList<>();
     private int numberOfGuests=0;
     private int minPrice=0;
     private int maxPrice=0;
+    ArrayList<Amenity>amenities=new ArrayList<>();
     private final Map<CheckBox, Boolean> checkboxStates = new HashMap<>();
     private Map<Long, Double> pricesMap=new HashMap<>();
     private Map<Long, Double> unitPricesMap=new HashMap<>();
@@ -145,9 +153,33 @@ public class GuestAccomodationPageFragment extends ListFragment {
             }
         });
 
-
         View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
-        bottomSheetDialog.setContentView(dialogView);
+
+
+        Call<ArrayList<Amenity>> callAmenity = amenityService.getAll("Bearer "+accessToken);
+        callAmenity.enqueue(new Callback<ArrayList<Amenity>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Amenity>> call, Response<ArrayList<Amenity>> response) {
+                if (response.code() == 200) {
+                    Log.d("COMMENTS", "Meesage recieved");
+                    System.out.println(response.body());
+                    amenities = response.body();
+                    amenityListAdapter = new AmenityListAdapter(true,getActivity(), amenities);
+
+                    ListView listAmenities=dialogView.findViewById(R.id.allAmenities);
+                    listAmenities.setAdapter(amenityListAdapter);
+                    bottomSheetDialog.setContentView(dialogView);
+
+                } else {
+                    Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<ArrayList<Amenity>> call, Throwable t) {
+                Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
+
         btnFilters.setOnClickListener(v -> {
             Log.i("ShopApp", "Bottom Sheet Dialog");
             bottomSheetDialog.show();
@@ -155,24 +187,9 @@ public class GuestAccomodationPageFragment extends ListFragment {
 
         Button btnSearch = binding.btnAcceptFilters;
         btnSearch.setOnClickListener(v -> {
-            amenities.clear();
 
             minPrice = minSeekBar.getProgress();
             maxPrice = maxSeekBar.getProgress();
-
-            LinearLayout checkboxContainer = bottomSheetDialog.findViewById(R.id.filterLayout);
-            for (int i = 0; i < checkboxContainer.getChildCount(); i++) {
-                View childView = checkboxContainer.getChildAt(i);
-
-                if (childView instanceof CheckBox) {
-                    CheckBox checkBox = (CheckBox) childView;
-
-                    if (checkBox.isChecked()) {
-                        String optionText = checkBox.getText().toString();
-                        amenities.add(optionText);
-                    }
-                }
-            }
 
 
             EditText guestNum = binding.numberOfGuests;
@@ -216,9 +233,13 @@ public class GuestAccomodationPageFragment extends ListFragment {
                     });
                 }
             }
+            amenitieStrings.clear();
+            for(Amenity amenity:amenityListAdapter.checkedAmenities){
+                amenitieStrings.add(amenity.getAmenityName());
+            }
             getDataFromClient(startDate,endDate,numberOfGuests,type,
                     minPrice,maxPrice,null,
-                    location,null,amenities,null);
+                    location,null,amenitieStrings,null);
         });
 
         return root;

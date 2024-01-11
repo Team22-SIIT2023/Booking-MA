@@ -9,18 +9,18 @@
     android:layout_marginVertical="5dp"
     android:id="@+id/amenity_card_item">
 
-<!--    <ImageView-->
-<!--        android:layout_width="40dp"-->
-<!--        android:layout_height="40dp"-->
-<!--        android:layout_marginRight="2dp"-->
-<!--        android:id="@+id/imageIconAmenity"/>-->
+    <CheckBox
+        android:id="@+id/amenityCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </CheckBox>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:id="@+id/textViewAmenity"
         android:gravity="center"
-        android:text="My text"
+        android:text="Wifi"
         android:textSize="15sp">
     </TextView>
 </LinearLayout>

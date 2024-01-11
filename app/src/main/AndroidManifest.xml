@@ -22,9 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Bookingteam22"
         tools:targetApi="31">
-        <activity
-            android:name=".activities.EditAccommodationFreeTimeSlots"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".activities.EditAccommodationFreeTimeSlots"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".activities.EditAccomodationActivity"
             android:exported="false" />
@@ -49,7 +49,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC9EE9DdsAWFD14arLFctrQPUxwAAnVDzs" />
+            android:value="AIzaSyDEk5U8hy81AVt8d86bgGx2qnOqoL_K2Bg" />
     </application>
 
 </manifest>

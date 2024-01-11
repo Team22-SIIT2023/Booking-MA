@@ -18,6 +18,7 @@
 
         <!-- guest -->
         <TextView
+            android:id="@+id/labelGuest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Guest: "
@@ -54,7 +55,6 @@
 
         <!-- price -->
         <TextView
-            android:id="@+id/labelGuest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Price: "
