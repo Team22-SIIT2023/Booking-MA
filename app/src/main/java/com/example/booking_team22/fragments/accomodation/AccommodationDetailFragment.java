@@ -3,6 +3,7 @@ package com.example.booking_team22.fragments.accomodation;
 import static android.content.Context.MODE_PRIVATE;
 
 import static com.example.booking_team22.clients.ClientUtils.accommodationService;
+import static com.example.booking_team22.clients.ClientUtils.notificationService;
 import static com.example.booking_team22.clients.ClientUtils.requestService;
 import static com.example.booking_team22.clients.ClientUtils.userService;
 
@@ -61,6 +62,10 @@ import com.example.booking_team22.model.Accomodation;
 import com.example.booking_team22.model.Amenity;
 import com.example.booking_team22.model.Comment;
 import com.example.booking_team22.model.Guest;
+import com.example.booking_team22.model.GuestNotificationSettings;
+import com.example.booking_team22.model.HostNotificationSettings;
+import com.example.booking_team22.model.Notification;
+import com.example.booking_team22.model.NotificationType;
 import com.example.booking_team22.model.RequestStatus;
 import com.example.booking_team22.model.ReservationRequest;
 import com.example.booking_team22.model.Status;
@@ -91,7 +96,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AccommodationDetailFragment extends Fragment {
-    private Accomodation accommodation = new Accomodation();
     float accommodationRating = 0;
     float hostRating = 0;
     private Button reportHostButton, viewHostCommentsButton;
@@ -111,6 +115,8 @@ public class AccommodationDetailFragment extends Fragment {
     private FragmentAccommodationDetailBinding binding;
     private Guest guest;
     private String reportText;
+
+    private HostNotificationSettings hostSettings;
 
 
     public AccommodationDetailFragment() { // Required empty public constructor
@@ -134,17 +140,23 @@ public class AccommodationDetailFragment extends Fragment {
         Bundle args = getArguments();
         detailAccommodation = args.getParcelable("detailAccommodation");
         if (detailAccommodation != null) {
-            accommodation.setId(detailAccommodation.getId());
-            accommodation.setName(detailAccommodation.getName());
-            accommodation.setDescription(detailAccommodation.getDescription());
-            accommodation.setHost(detailAccommodation.getHost());
-            accommodation.setAmenities(detailAccommodation.getAmenities());
-            accommodation.setFreeTimeSlots(detailAccommodation.getFreeTimeSlots());
-            accommodation.setAddress(detailAccommodation.getAddress());
-            accommodation.setAutomaticConfirmation(detailAccommodation.isAutomaticConfirmation());
+//            accommodation.setId(detailAccommodation.getId());
+//            accommodation.setName(detailAccommodation.getName());
+//            accommodation.setDescription(detailAccommodation.getDescription());
+//            accommodation.setHost(detailAccommodation.getHost());
+//            accommodation.setAmenities(detailAccommodation.getAmenities());
+//            accommodation.setFreeTimeSlots(detailAccommodation.getFreeTimeSlots());
+//            accommodation.setAddress(detailAccommodation.getAddress());
+//            accommodation.setAutomaticConfirmation(detailAccommodation.isAutomaticConfirmation());
+//            accommodation.setMinGuests(detailAccommodation.getMinGuests());
+//            accommodation.setMaxGuests(detailAccommodation.getMaxGuests());
+//            accommodation.setPriceList(detailAccommodation.getPriceList());
+//            accommodation.setPrice(detailAccommodation.getPrice());
+//            accommodation.setUnitPrice(detailAccommodation.getUnitPrice());
+//            accommodation.setStatus(detailAccommodation.getStatus());
+//            accommodation.setType(detailAccommodation.getType());
+//            accommodation.setReservationDeadline(detailAccommodation.getReservationDeadline());
         }
-        sp = getActivity().getSharedPreferences("mySharedPrefs", MODE_PRIVATE);
-        accessToken = sp.getString("accessToken", "");
     }
 
     private boolean enableListScroll(ListView listView) {
@@ -197,39 +209,39 @@ public class AccommodationDetailFragment extends Fragment {
         View root = binding.getRoot();
 
 
-        String street=accommodation.getAddress().getAddress();
-        String city=accommodation.getAddress().getCity();
-        String country=accommodation.getAddress().getCountry();
+        String street=detailAccommodation.getAddress().getAddress();
+        String city=detailAccommodation.getAddress().getCity();
+        String country=detailAccommodation.getAddress().getCountry();
         String location=street+", "+city+", "+country;
 
-        mapView=binding.mapView;
-        mapView.onCreate(savedInstanceState);
-        Geocoder geocoder = new Geocoder(requireContext());
-        List<Address> addresses = null;
-        try {
-            addresses = geocoder.getFromLocationName(location, 1);
-            if (addresses != null && addresses.size() > 0) {
-                Address address = addresses.get(0);
-                double latitude = address.getLatitude();
-                double longitude = address.getLongitude();
-                LatLng markerLatLng = new LatLng(latitude, longitude);
-
-                mapView.getMapAsync(googleMap1 -> {
-                    googleMap1.addMarker(new MarkerOptions().position(markerLatLng).title(location));
-                    googleMap1.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng, 12));
-                });
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
+//        mapView=binding.mapView;
+//        mapView.onCreate(savedInstanceState);
+//        Geocoder geocoder = new Geocoder(requireContext());
+//        List<Address> addresses = null;
+//        try {
+//            addresses = geocoder.getFromLocationName(location, 1);
+//            if (addresses != null && addresses.size() > 0) {
+//                Address address = addresses.get(0);
+//                double latitude = address.getLatitude();
+//                double longitude = address.getLongitude();
+//                LatLng markerLatLng = new LatLng(latitude, longitude);
+//
+//                mapView.getMapAsync(googleMap1 -> {
+//                    googleMap1.addMarker(new MarkerOptions().position(markerLatLng).title(location));
+//                    googleMap1.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng, 12));
+//                });
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
         sp = getActivity().getSharedPreferences("mySharedPrefs", Context.MODE_PRIVATE);
         accessToken = sp.getString("accessToken", "");
 
         userType = sp.getString("userType","");
         long id = sp.getLong("userId",0L);
+
+        getSettings();
 
         Call<User> callUser = userService.getUser(id); // Assuming you have a method in your UserApiClient to get a user by ID
         callUser.enqueue(new Callback<User>() {
@@ -238,6 +250,7 @@ public class AccommodationDetailFragment extends Fragment {
                 if (response.code() == 200) {
                     Log.d("USER", "Message received");
                     user = response.body();
+                    Log.d("USEERR",user.getFirstName());
                 } else {
                     Log.d("USER_REQUEST", "Message received: " + response.code());
                 }
@@ -251,20 +264,20 @@ public class AccommodationDetailFragment extends Fragment {
 
         RadioButton rbtAutomatic=binding.automaticRbt;
         RadioButton rbtManual=binding.manualRbt;
-        if(accommodation.isAutomaticConfirmation()){
+        if(detailAccommodation.isAutomaticConfirmation()){
             rbtAutomatic.setChecked(true);
         }else{
             rbtManual.setChecked(true);
         }
 
         TextView description=binding.textAccommodationDescription;
-        description.setText(accommodation.getDescription());
+        description.setText(detailAccommodation.getDescription());
 
         TextView name=binding.textAccommodationName;
-        name.setText(accommodation.getName());
+        name.setText(detailAccommodation.getName());
 
         RatingBar ratingBar=binding.rating;
-        Call<Double> callRating = ClientUtils.commentService.getAccommodationRating("Bearer " + accessToken, accommodation.getId());
+        Call<Double> callRating = ClientUtils.commentService.getAccommodationRating("Bearer " + accessToken, detailAccommodation.getId());
         callRating.enqueue(new Callback<Double>() {
             @Override
             public void onResponse(Call<Double> call, Response<Double> response) {
@@ -278,13 +291,13 @@ public class AccommodationDetailFragment extends Fragment {
         });
 
         TextView addressTxt=binding.addressFiled;
-        String addressAcc = accommodation.getAddress().getCountry()+","
-                +accommodation.getAddress().getCity()+", "+accommodation.getAddress().getAddress();
+        String addressAcc = detailAccommodation.getAddress().getCountry()+","
+                +detailAccommodation.getAddress().getCity()+", "+detailAccommodation.getAddress().getAddress();
         addressTxt.setText(addressAcc);
 
         TextView host=binding.txtHost;
-        String hostTxt = accommodation.getHost().getFirstName()+" "+
-                accommodation.getHost().getLastName()+"\n"+accommodation.getHost().getAccount().getUsername();
+        String hostTxt = detailAccommodation.getHost().getFirstName()+" "+
+                detailAccommodation.getHost().getLastName()+"\n"+detailAccommodation.getHost().getAccount().getUsername();
         host.setText(hostTxt);
 
         reportHostButton = binding.reportHostButton;
@@ -303,8 +316,8 @@ public class AccommodationDetailFragment extends Fragment {
         });
 
 
-        adapter = new AmenityListAdapter(false,getActivity(), accommodation.getAmenities());
-        System.out.println(accommodation.getAmenities());
+        adapter = new AmenityListAdapter(false,getActivity(), detailAccommodation.getAmenities());
+        System.out.println(detailAccommodation.getAmenities());
 
         binding.amenityList.setAdapter(adapter);
         enableListScroll(binding.amenityList);
@@ -317,7 +330,7 @@ public class AccommodationDetailFragment extends Fragment {
         CalendarView calendarView=(CalendarView) binding.calendarView;
         List<Calendar> disabledDates = new ArrayList<>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        for(TimeSlot timeSlot:accommodation.getFreeTimeSlots()){
+        for(TimeSlot timeSlot:detailAccommodation.getFreeTimeSlots()){
             try {
                 Date startDate = formatter.parse(timeSlot.getStartDate());
                 Date endDate = formatter.parse(timeSlot.getEndDate());
@@ -378,7 +391,7 @@ public class AccommodationDetailFragment extends Fragment {
 
 
 
-        Call<ArrayList<Comment>> callComment = ClientUtils.commentService.getAccommodationComments("Bearer " + accessToken, accommodation.getId(), Status.ACTIVE.name());
+        Call<ArrayList<Comment>> callComment = ClientUtils.commentService.getAccommodationComments("Bearer " + accessToken, detailAccommodation.getId(), Status.ACTIVE.name());
         callComment.enqueue(new Callback<ArrayList<Comment>>() {
             @Override
             public void onResponse(Call<ArrayList<Comment>> call, Response<ArrayList<Comment>> response) {
@@ -401,7 +414,7 @@ public class AccommodationDetailFragment extends Fragment {
         });
 
         LinearLayout linearLayout = binding.layoutPictures;
-        Call<List<String>> callImages = ClientUtils.accommodationService.getImages("Bearer " + accessToken, accommodation.getId());
+        Call<List<String>> callImages = ClientUtils.accommodationService.getImages("Bearer " + accessToken, detailAccommodation.getId());
 
         callImages.enqueue(new Callback<List<String>>() {
             @Override
@@ -449,8 +462,8 @@ public class AccommodationDetailFragment extends Fragment {
             addComment.setVisibility(View.GONE);
             Button approvalBtn=binding.changeApprovalBtn;
             approvalBtn.setOnClickListener(v -> {
-                accommodation.setAutomaticConfirmation(rbtAutomatic.isChecked());
-                updateApprovalType(accommodation);
+                detailAccommodation.setAutomaticConfirmation(rbtAutomatic.isChecked());
+                updateApprovalType(detailAccommodation);
 
             });
         }
@@ -469,7 +482,7 @@ public class AccommodationDetailFragment extends Fragment {
 
         editPriceButton.setOnClickListener(v ->{
             Bundle args = new Bundle();
-            args.putParcelable("accommodation", accommodation);
+            args.putParcelable("accommodation", detailAccommodation);
             NavController navController = Navigation.findNavController(getActivity(),R.id.fragment_nav_content_main);
             navController.navigate(R.id.nav_edit_price_and_timeslot, args);
         });
@@ -539,7 +552,7 @@ public class AccommodationDetailFragment extends Fragment {
                     price,
                     guest,
                     numberOfGuests,
-                    accommodation,
+                    detailAccommodation,
                     status
             );
             if(price!=0){makeReservationWithCalculatedPrice(reservationRequest);}
@@ -547,23 +560,23 @@ public class AccommodationDetailFragment extends Fragment {
 
         return root;
     }
-    @Override
-    public void onResume() {
-        super.onResume();
-        mapView.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        mapView.onResume();
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        mapView.onPause();
+//    }
+//
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        mapView.onDestroy();
+//    }
 
     private void updateApprovalType(Accomodation accommodation) {
         Call<Accomodation> call = accommodationService.updateAccommodationRequestApproval("Bearer "+accessToken,accommodation);
@@ -596,18 +609,53 @@ public class AccommodationDetailFragment extends Fragment {
                 if (response.isSuccessful()) {
                     ReservationRequest createdRequest = response.body();
                     Log.d("POST_SUCCESS", "Reservation request created: " + createdRequest);
-                     Toast toastMessage=new Toast(requireContext());
-                     toastMessage.setText("Reservation request sent!");
-                     toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
-                     toastMessage.setDuration(Toast.LENGTH_SHORT);
-                     toastMessage.show();
+                    String text="User "+createdRequest.getGuest().getAccount().getUsername()+" has made a reservation request for " + createdRequest.getAccommodation().getName();
+                    if(checkNotificationStatus(NotificationType.RESERVATION_REQUEST)){
+                        createNotification(text, NotificationType.RESERVATION_REQUEST);
+                    }
+                    Toast toastMessage=new Toast(requireContext());
+                    toastMessage.setText("Reservation request sent!");
+                    toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
+                    toastMessage.setDuration(Toast.LENGTH_SHORT);
+                    toastMessage.show();
+
                 } else {
+                    if(response.code()==400){
+                        Toast toastMessage=new Toast(requireContext());
+                        toastMessage.setText("Request cannot be sent!");
+                        toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
+                        toastMessage.setDuration(Toast.LENGTH_SHORT);
+                        toastMessage.show();
+                    }
                     Log.d("POST_ERROR", "Error code: " + response.code());
                 }
             }
             @Override
             public void onFailure(Call<ReservationRequest> call, Throwable t) {
                 Log.e("POST_FAILURE", "Error: " + t.getMessage(), t);
+            }
+        });
+    }
+
+    private void createNotification(String text, NotificationType type) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = dateFormat.format(new Date());
+        Notification notification=new Notification(detailAccommodation.getHost(),text,formattedDate,type);
+        Call<Notification> call = notificationService.createUserNotification("Bearer "+accessToken,notification);
+        call.enqueue(new Callback<Notification>() {
+            @Override
+            public void onResponse(Call<Notification> call, Response<Notification> response) {
+                if (response.code() == 200) {
+                    Log.d("COMMENTS", "Meesage recieved");
+                    System.out.println(response.body());
+
+                } else {
+                    Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<Notification> call, Throwable t) {
+                Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
             }
         });
     }
@@ -626,7 +674,7 @@ public class AccommodationDetailFragment extends Fragment {
         if ( !startDate.isEmpty() && !endDate.isEmpty() && numberOfGuestsSpinner.getSelectedItem() != null) {
             int numberOfGuests = (Integer) numberOfGuestsSpinner.getSelectedItem();
 
-            Call<Double> callPrice = accommodationService.calculatePrice("Bearer " + accessToken, accommodation.getId(), numberOfGuests, startDate, endDate);
+            Call<Double> callPrice = accommodationService.calculatePrice("Bearer " + accessToken, detailAccommodation.getId(), numberOfGuests, startDate, endDate);
 
             callPrice.enqueue(new Callback<Double>() {
                 @Override
@@ -715,7 +763,7 @@ public class AccommodationDetailFragment extends Fragment {
         accommodationComment.setText(String.valueOf(hostComm.getEditText().getText()));
         accommodationComment.setRating(accommodationRating);
 
-        Call<Comment> callCreateComment = ClientUtils.commentService.createAccommodationComment("Bearer " + accessToken, accommodationComment, accommodation.getId());
+        Call<Comment> callCreateComment = ClientUtils.commentService.createAccommodationComment("Bearer " + accessToken, accommodationComment, detailAccommodation.getId());
         callCreateComment.enqueue(new Callback<Comment>() {
             @Override
             public void onResponse(Call<Comment> call, Response<Comment> response) {
@@ -727,6 +775,10 @@ public class AccommodationDetailFragment extends Fragment {
                     binding.commentsList.setAdapter(commentsAdapter);
                     enableListScroll(binding.commentsList);
                     commentsAdapter.notifyDataSetChanged();
+                    String text="User " + user.getAccount().getUsername()+ " has commented " + detailAccommodation.getName();
+                    if(checkNotificationStatus(NotificationType.ACCOMMODATION_RATED)){
+                        createNotification(text, NotificationType.ACCOMMODATION_RATED);
+                    }
                     Toast.makeText(getActivity(),"Comment created", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity(),"You can't comment on accommodation!", Toast.LENGTH_SHORT).show();
@@ -755,11 +807,15 @@ public class AccommodationDetailFragment extends Fragment {
         accommodationComment.setText(String.valueOf(accommodationComm.getEditText().getText()));
         accommodationComment.setRating(hostRating);
 
-        Call<Comment> callCreateComment = ClientUtils.commentService.createHostComment("Bearer " + accessToken, accommodationComment, accommodation.getHost().getId());
+        Call<Comment> callCreateComment = ClientUtils.commentService.createHostComment("Bearer " + accessToken, accommodationComment, detailAccommodation.getHost().getId());
         callCreateComment.enqueue(new Callback<Comment>() {
             @Override
             public void onResponse(Call<Comment> call, Response<Comment> response) {
                 if (response.code() == 201) {
+                    String text="User " + user.getAccount().getUsername()+ " has commented you";
+                    if(checkNotificationStatus(NotificationType.HOST_RATED)){
+                        createNotification(text, NotificationType.HOST_RATED);
+                    }
                     Log.d("COMMENTS", "Meesage recieved");
                     Toast.makeText(getActivity(),"Comment created", Toast.LENGTH_SHORT).show();
 
@@ -787,7 +843,7 @@ public class AccommodationDetailFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 reportText = input.getText().toString();
-                accommodation.getHost().setReportingReason(reportText);
+                detailAccommodation.getHost().setReportingReason(reportText);
                 reportHost();
             }
         });
@@ -798,13 +854,13 @@ public class AccommodationDetailFragment extends Fragment {
 
     public void reportHost() {
 
-        Call<User> callCreateComment = userService.reportUser(accommodation.getHost(), user.getId());
+        Call<User> callCreateComment = userService.reportUser(detailAccommodation.getHost(), user.getId());
         callCreateComment.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.code() == 200) {
                     Log.d("COMMENTS", "Meesage recieved");
-                    Log.d("REPORTING REASON", accommodation.getHost().getReportingReason());
+                    Log.d("REPORTING REASON", detailAccommodation.getHost().getReportingReason());
                     Toast.makeText(getActivity(),"Reported!", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -821,8 +877,44 @@ public class AccommodationDetailFragment extends Fragment {
 
     public void showHostComments() {
         Bundle args = new Bundle();
-        args.putParcelable("accommodation", accommodation);
+        args.putParcelable("accommodation", detailAccommodation);
         NavController navController = Navigation.findNavController(getActivity(), R.id.fragment_nav_content_main);
         navController.navigate(R.id.nav_reported_comments,args);
+    }
+
+    public void getSettings(){
+        Call<HostNotificationSettings> callSettings = notificationService.getHostNotificationSettings("Bearer "+accessToken,detailAccommodation.getHost().getId());
+        callSettings.enqueue(new Callback<HostNotificationSettings>() {
+            @Override
+            public void onResponse(Call<HostNotificationSettings> call, Response<HostNotificationSettings> response) {
+                if (response.code() == 200) {
+                    hostSettings=response.body();
+                    System.out.println(response.body());
+
+                    Log.d("COMMENTS", "Meesage recieved");
+
+
+                } else {
+                    Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<HostNotificationSettings> call, Throwable t) {
+                Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
+    }
+
+    public boolean checkNotificationStatus(NotificationType type){
+        if (NotificationType.RESERVATION_REQUEST==type && hostSettings.isRequestCreated()) {
+            return true;
+        }
+        if (NotificationType.ACCOMMODATION_RATED==type && hostSettings.isAccommodationRated()) {
+            return true;
+        }
+        if (NotificationType.HOST_RATED==type && hostSettings.isRated()) {
+            return true;
+        }
+        return false;
     }
 }

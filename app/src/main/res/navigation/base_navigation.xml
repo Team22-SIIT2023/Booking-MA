@@ -83,4 +83,10 @@
         android:label="Reports"
         tools:layout="@layout/fragment_reports"
         />
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.example.booking_team22.fragments.notifications.NotificationSettingsFragment"
+        android:label="Notifications"
+        tools:layout="@layout/fragment_notification_settings"
+        />
 </navigation>

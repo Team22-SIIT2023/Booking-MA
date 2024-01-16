@@ -53,20 +53,15 @@ public class NotificationListAdapter extends ArrayAdapter<Notification> {
                     parent, false);
         }
         LinearLayout notificationCard = convertView.findViewById(R.id.notification_card_item);
-        TextView notifictionDate = convertView.findViewById(R.id.notification_date);
+        TextView notificationDate = convertView.findViewById(R.id.notification_date);
         TextView notificationTitle = convertView.findViewById(R.id.notification_title);
         TextView notificationDescription = convertView.findViewById(R.id.notification_message);
 
         if(notification != null){
-            notifictionDate.setText(notification.getDate());
-            notificationTitle.setText(notification.getTitle());
-            notificationDescription.setText(notification.getDescription());
+            notificationDate.setText(notification.getDate());
+            notificationTitle.setText(notification.getType().name());
+            notificationDescription.setText(notification.getText());
             notificationCard.setOnClickListener(v -> {
-                // Handle click on the item at 'position'
-                Log.i("ShopApp", "Clicked: " + notification.getTitle() + ", id: " +
-                        notification.getId().toString());
-                Toast.makeText(getContext(), "Clicked: " + notification.getTitle()  +
-                        ", id: " + notification.getId().toString(), Toast.LENGTH_SHORT).show();
             });
         }
         return convertView;
