@@ -10,14 +10,21 @@
     android:background="@drawable/backround"
     android:id="@+id/notification_card_item">
 
-    <ImageView
-        android:id="@+id/notification_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="25dp"
-        android:background="@color/red"
-        android:contentDescription="notification"
-        app:srcCompat="@drawable/ic_notification2" />
+<!--    <ImageView-->
+<!--        android:id="@+id/notification_icon"-->
+<!--        android:layout_width="30dp"-->
+<!--        android:layout_height="30dp"-->
+<!--        android:layout_marginEnd="25dp"-->
+<!--        android:background="@color/red"-->
+<!--        android:contentDescription="notification"-->
+<!--        app:srcCompat="@drawable/ic_notification2" />-->
+     <Button
+        android:id="@+id/notificationButton"
+        android:layout_width="50dp"
+         android:layout_marginRight="10dp"
+        android:layout_height="40dp"
+        android:textAlignment="center"
+        android:backgroundTint="@color/purple" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -51,6 +58,7 @@
             android:layout_marginLeft="5dp"
             android:text="Message"
             android:textSize="15sp" />
+
 
         <LinearLayout
             android:layout_width="match_parent"

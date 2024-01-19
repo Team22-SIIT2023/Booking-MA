@@ -20,6 +20,9 @@ public interface NotificationService {
     @GET("notifications/{userId}")
     Call<ArrayList<Notification>> getUserNotifications(@Header("Authorization") String authorization, @Path("userId") Long id);
 
+    @GET("notifications/new/{userId}")
+    Call<Notification> getNewNotifications(@Header("Authorization") String authorization, @Path("userId") Long id);
+
     @POST("notifications")
     Call<Notification> createUserNotification(@Header("Authorization") String authorization, @Body Notification notification);
 
@@ -37,6 +40,11 @@ public interface NotificationService {
     Call<HostNotificationSettings> updateHostNotificationSettings(@Header("Authorization") String authorization,
                                                        @Path("userId") Long id,
                                                        @Body HostNotificationSettings hostNotificationSettings);
+
+    @PUT("notifications/{notificationId}")
+    Call<Notification> updateNotification(@Header("Authorization") String authorization,
+                                                                  @Path("notificationId") Long id,
+                                                                  @Body Notification notification);
 
 
 }
