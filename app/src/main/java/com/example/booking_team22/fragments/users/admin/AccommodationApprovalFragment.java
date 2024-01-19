@@ -96,38 +96,31 @@ public class AccommodationApprovalFragment extends ListFragment {
                     System.out.println("rispons bodi" + response.body());
                     createdAccommodations = response.body();
                     accommodations.addAll(createdAccommodations);
-//                    adapter = new AccomodationListAdapter(getActivity(), createdAccommodations);
-                    //setListAdapter(adapter);
-//                    ListView listView = binding.list;
-//                    listView.setAdapter(adapter);
-//                    adapter.notifyDataSetChanged();
-                } else {
-                    Log.d("REZ", "Meesage recieved: " + response.code());
-                }
-            }
-            @Override
-            public void onFailure(Call<ArrayList<Accomodation>> call, Throwable t) {
-                Log.d("REZ", t.getMessage() != null?t.getMessage():"error");
-            }
-        });
+                    Call<ArrayList<Accomodation>> call1 = accommodationService.getAll("Bearer " + accessToken,
+                            null, null, 0, null, 0, 0,"UPDATED", null, null, null, null
+                    );
+                    call1.enqueue(new Callback<ArrayList<Accomodation>>() {
+                        @Override
+                        public void onResponse(Call<ArrayList<Accomodation>> call, Response<ArrayList<Accomodation>> response) {
+                            if (response.code() == 200) {
+                                Log.d("REZ", "Meesage recieved");
+                                System.out.println("rispons bodi" + response.body());
+                                updatedAccommodations = response.body();
+                                accommodations.addAll(updatedAccommodations);
+                                adapter = new AccomodationListAdapter(getActivity(), accommodations);
+                                ListView listView = binding.list;
+                                listView.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                            } else {
+                                Log.d("REZ", "Meesage recieved: " + response.code());
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<ArrayList<Accomodation>> call, Throwable t) {
+                            Log.d("REZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
 
-
-        Call<ArrayList<Accomodation>> call1 = accommodationService.getAll("Bearer " + accessToken,
-                null, null, 0, null, 0, 0,"UPDATED", null, null, null, null
-        );
-        call1.enqueue(new Callback<ArrayList<Accomodation>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Accomodation>> call, Response<ArrayList<Accomodation>> response) {
-                if (response.code() == 200) {
-                    Log.d("REZ", "Meesage recieved");
-                    System.out.println("rispons bodi" + response.body());
-                    updatedAccommodations = response.body();
-                    accommodations.addAll(updatedAccommodations);
-                    adapter = new AccomodationListAdapter(getActivity(), accommodations);
-                    //setListAdapter(adapter);
-                    ListView listView = binding.list;
-                    listView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
                 } else {
                     Log.d("REZ", "Meesage recieved: " + response.code());
                 }

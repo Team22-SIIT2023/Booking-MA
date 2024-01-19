@@ -21,6 +21,7 @@ import com.example.booking_team22.adapters.NotificationListAdapter;
 import com.example.booking_team22.databinding.FragmentGuestRequestsBinding;
 import com.example.booking_team22.databinding.FragmentGuestReservationBinding;
 import com.example.booking_team22.databinding.FragmentGuestReservationListBinding;
+import com.example.booking_team22.fragments.reservations.GuestReservationFragment;
 import com.example.booking_team22.model.Notification;
 import com.example.booking_team22.model.RequestStatus;
 import com.example.booking_team22.model.Reservation;
@@ -38,8 +39,9 @@ public class GuestReservationListFragment extends ListFragment {
 
     private SharedPreferences sp;
     private String accessToken;
+    private String userType;
 
-    GuestReservationAdapter adapter;
+    GuestRequestAdapter adapter;
     FragmentGuestReservationListBinding binding;
 
     public GuestReservationListFragment() {
@@ -65,50 +67,56 @@ public class GuestReservationListFragment extends ListFragment {
 
         sp = getActivity().getSharedPreferences("mySharedPrefs", MODE_PRIVATE);
         accessToken = sp.getString("accessToken", "");
-//        prepareReservationsList(reservations);
-//        adapter = new GuestReservationAdapter(getActivity(), reservations);
-//        setListAdapter(adapter);
+        userType = sp.getString("userType","");
+        long id = sp.getLong("userId",0L);
 
-//        Call<ArrayList<ReservationRequest>> call = requestService.getAll("Bearer " + accessToken,RequestStatus.ACCEPTED, null, null, null);
-//        call.enqueue(new Callback<ArrayList<ReservationRequest>>() {
-//            @Override
-//            public void onResponse(Call<ArrayList<ReservationRequest>> call, Response<ArrayList<ReservationRequest>> response) {
-//                if (response.isSuccessful()) {
-//                    ArrayList<ReservationRequest> requests = response.body();
-//                    adapter = new GuestReservationAdapter(getActivity(), requests);
-//                    ListView listView=binding.list;
-//                    listView.setAdapter(adapter);
-//                    adapter.notifyDataSetChanged();
-//                } else {
-//                }
-//            }
-//            @Override
-//            public void onFailure(Call<ArrayList<ReservationRequest>> call, Throwable t) {
-//                // Handle network errors or unexpected failures
-//                t.printStackTrace();
-//            }
-//        });
+        if(userType.equals("ROLE_GUEST")) {
+            Call<ArrayList<ReservationRequest>> call = requestService.getAllForGuest("Bearer " + accessToken,id, RequestStatus.ACCEPTED, null, null, null);
+            call.enqueue(new Callback<ArrayList<ReservationRequest>>() {
+                @Override
+                public void onResponse(Call<ArrayList<ReservationRequest>> call, Response<ArrayList<ReservationRequest>> response) {
+                    if (response.isSuccessful()) {
+                        ArrayList<ReservationRequest> requests = response.body();
+                        adapter = new GuestRequestAdapter(getActivity(), requests);
+                        ListView listView = binding.list;
+                        listView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                    }
+                }
 
+                @Override
+                public void onFailure(Call<ArrayList<ReservationRequest>> call, Throwable t) {
+                    // Handle network errors or unexpected failures
+                    t.printStackTrace();
+                }
+            });
+        }
+        else{
+            Call<ArrayList<ReservationRequest>> call = requestService.getAllForHost("Bearer " + accessToken, id, RequestStatus.ACCEPTED, null, null, null);
+            call.enqueue(new Callback<ArrayList<ReservationRequest>>() {
+                @Override
+                public void onResponse(Call<ArrayList<ReservationRequest>> call, Response<ArrayList<ReservationRequest>> response) {
+                    if (response.isSuccessful()) {
+                        ArrayList<ReservationRequest> requests = response.body();
+                        adapter = new GuestRequestAdapter(getActivity(), requests);
+                        ListView listView = binding.list;
+                        listView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<ReservationRequest>> call, Throwable t) {
+                    // Handle network errors or unexpected failures
+                    t.printStackTrace();
+                }
+            });
+        }
 
 
         return root;
-
-    }
-    private void prepareReservationsList(ArrayList<Reservation> reservations){
-        reservations.add(new Reservation(
-                1L,
-                "Accomodation name",
-                "Address",
-                R.drawable.ap2,
-                "15-5-2023-20-5-2023"
-        ));
-        reservations.add(new Reservation(
-                2L,
-                "Accomodation name",
-                "Address",
-                R.drawable.ap1,
-                "15-5-2023-26-5-2023"
-        ));
 
     }
 }

@@ -2,6 +2,7 @@ package com.example.booking_team22.fragments.accomodation;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.booking_team22.clients.ClientUtils.accommodationService;
+import static com.example.booking_team22.clients.ClientUtils.amenityService;
 import static com.example.booking_team22.clients.ClientUtils.requestService;
 import static com.example.booking_team22.clients.ClientUtils.userService;
 
@@ -80,9 +81,14 @@ public class UpdateAccommodationFragment extends Fragment {
     private Accomodation accommodation=new Accomodation();
     private ArrayList<Amenity> amenities = new ArrayList<Amenity>();
     AmenityListAdapter adapter;
+    private  BottomSheetDialog bottomSheetDialog;
+
+    private String accessToken;
     private User user;
     private SharedPreferences sp;
     private String userType;
+    private Spinner accommodationType;
+    AmenityListAdapter amenityListAdapter;
 
     private TextInputLayout accommodationName;
 
@@ -148,40 +154,75 @@ public class UpdateAccommodationFragment extends Fragment {
 
         sp= getActivity().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
         userType=sp.getString("userType","");
+        accessToken = sp.getString("accessToken", "");
         long id=sp.getLong("userId",0L);
 
-        Call<User> callUser = userService.getUser(sp.getLong("userId",0L)); // Assuming you have a method in your UserApiClient to get a user by ID
+        Call<User> callUser = userService.getUser(id); // Assuming you have a method in your UserApiClient to get a user by ID
         callUser.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.code() == 200) {
-                    Log.d("USER", "Message received");
                     user = response.body();
-                } else {
-                    Log.d("USER_REQUEST", "Message received: " + response.code());
                 }
             }
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Log.e("USER_REQUEST", "Error: " + t.getMessage(), t);
             }
         });
-        String[] arraySpinner = new String[]{
-                "Apartment", "Villa", "Hotel", "Motel"
-        };
+        bottomSheetDialog = new BottomSheetDialog(getActivity());
+        View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
+        Call<ArrayList<Amenity>> callAmenity = amenityService.getAll("Bearer " + accessToken);
+        callAmenity.enqueue(new Callback<ArrayList<Amenity>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Amenity>> call, Response<ArrayList<Amenity>> response) {
+                if (response.code() == 200) {
+                    amenities = response.body();
+                    amenityListAdapter = new AmenityListAdapter(true, getActivity(), amenities);
+
+                    // Set checked amenities after adapter creation
+                    amenityListAdapter.setCheckedAmenities(accommodation.getAmenities());
+                    amenityListAdapter.notifyDataSetChanged();
+
+
+                    Log.d("Checked Amenities", "Total Checked Amenities: " + amenityListAdapter.checkedAmenities.size());
+
+                    ListView listAmenities = dialogView.findViewById(R.id.allAmenities);
+                    listAmenities.setAdapter(amenityListAdapter);
+                    bottomSheetDialog.setContentView(dialogView);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Amenity>> call, Throwable t) {
+                // Handle failure
+            }
+        });
+
         Button btnFilters = binding.btnFiltersEdit;
         btnFilters.setOnClickListener(v -> {
-            Log.i("travelBee", "Bottom Sheet Dialog");
-            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
-            View dialogView = getLayoutInflater().inflate(R.layout.filter_dialog, null);
-            bottomSheetDialog.setContentView(dialogView);
             bottomSheetDialog.show();
         });
-        Spinner s = (Spinner) binding.spinner;
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+
+        accommodationType = root.findViewById(R.id.spinner);
+        String[] arraySpinner = new String[]{"Apartment", "Villa", "Hotel", "Motel"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(),
                 android.R.layout.simple_spinner_item, arraySpinner);
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        s.setAdapter(adapter);
+        accommodationType.setAdapter(adapter);
+        String selectedType = accommodation.getType().toString().toLowerCase();
+        int index = -1;
+        for (int i = 0; i < arraySpinner.length; i++) {
+            if (arraySpinner[i].toLowerCase().equals(selectedType)) {
+                index = i;
+                break;
+            }
+        }
+        if (index != -1) {
+            accommodationType.setSelection(index);
+        }
+
+
         this.accommodationName = binding.accommodationName;
         this.accommodationCountry = binding.accommodationCountry;
         this.accommodationCity = binding.accommodationCity;
@@ -214,17 +255,13 @@ public class UpdateAccommodationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Call<Accomodation> call;
-
-                Log.d("ShopApp", "Add product call");
                 updateAccommodation();
-                call = ClientUtils.accommodationService.updateAccommodation(accommodation,accommodation.getId());
+                call = ClientUtils.accommodationService.updateAccommodation("Bearer " + accessToken, accommodation, accommodation.getId());
 
                 call.enqueue(new Callback<Accomodation>() {
                     @Override
                     public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
                         if (response.code() == 201){
-                            Log.d("REZ","Meesage recieved");
-                            Log.d("VANJAAAA","Meesage recieved");
                             System.out.println(response.body());
                             Accomodation product1 = response.body();
                             System.out.println(product1);
@@ -251,6 +288,8 @@ public class UpdateAccommodationFragment extends Fragment {
         int minGuests = Integer.parseInt(accommodationMinGuests.getEditText().getText().toString());
         int maxGuests = Integer.parseInt(accommodationMaxGuests.getEditText().getText().toString());
         int resDeadline = Integer.parseInt(reservationDeadline.getEditText().getText().toString());
+        AccommodationType type = getAccommodationType(accommodationType.getSelectedItem().toString());
+
         if (name.length() == 0
                 && country.length() == 0
                 && city.length() == 0
@@ -258,6 +297,7 @@ public class UpdateAccommodationFragment extends Fragment {
                 && description.length() == 0) {
             return;
         }
+        accommodation.setType(type);
         accommodation.setName(name);
         accommodation.setDescription(description);
         accommodation.setMinGuests(minGuests);
@@ -275,7 +315,24 @@ public class UpdateAccommodationFragment extends Fragment {
                 ,user.getPhoneNumber(),user.getAccount()
                 ,"",user.getLastPasswordResetDate(),user.getActivationLink(),user.getActivationLinkDate());
         accommodation.setHost(host);
-        accommodation.setType(AccommodationType.HOTEL);
+        accommodation.setAmenities(amenityListAdapter.checkedAmenities);
         accommodation.setStatus(AccommodationStatus.UPDATED);
     }
+
+    public AccommodationType getAccommodationType(String type) {
+        switch (type) {
+            case "Apartment":
+                return AccommodationType.APARTMENT;
+            case "Hotel":
+                return AccommodationType.HOTEL;
+            case "Motel":
+                return AccommodationType.MOTEL;
+            case "Villa":
+                return AccommodationType.VILLA;
+        }
+        return null;
+    }
+
+
+
 }

@@ -74,4 +74,11 @@
     <string name="addressRegister">Address</string>
     <string name="forgot_password"><a href="">Forgot password?</a></string>
     <string name="hostDescription">Name: Pera Peric\nSome basic information about the host of this accommodation</string>
+
+    <string name="magnetic_field">Magnetic field:</string>
+    <string name="non_gravity_accelerometer">Non-gravity accelerometer:</string>
+    <string name="accelerometer">Accelerometer:</string>
+    <string name="proximity_sensor">Proximity sensor:</string>
+    <string name="gyroscope">Gyroscope:</string>
+    <string name="sensors">Sensors</string>
 </resources>

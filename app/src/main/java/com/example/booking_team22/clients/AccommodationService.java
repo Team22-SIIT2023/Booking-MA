@@ -64,8 +64,15 @@ public interface AccommodationService {
     })
     @PUT("accommodations/editPricelist/{id}")
     Call<Accomodation> editPrice(@Header("Authorization") String authorization, @Body PricelistItem pricelistItem, @Path("id") Long id);
-  
-  
+
+
+    @PUT("accommodations/changeFreeTimeSlots/{accommodationId}")
+    Call<Accomodation> changeFreeTimeSlots(
+            @Header("Authorization") String authorization,
+            @Path("accommodationId") Long accommodationId,
+            @Body TimeSlot reservationTimeSlot
+    );
+
 //    @Headers({
 //            "User-Agent: Mobile-Android",
 //            "Content-Type:application/json"
@@ -101,13 +108,22 @@ public interface AccommodationService {
 
 
     @PUT("accommodations/{id}")
-    Call<Accomodation> updateAccommodation(@Body Accomodation accomodation, @Path("id") Long id);
+    Call<Accomodation> updateAccommodation(
+            @Header("Authorization") String authorization,
+            @Body Accomodation accomodation,
+            @Path("id") Long id);
 
     @PUT("accommodations/accept/{id}")
-    Call<Accomodation> accept(@Body  Accomodation acceptingAccommodation,@Path("id") Long id);
+    Call<Accomodation> accept(
+            @Header("Authorization") String authorization,
+            @Body  Accomodation acceptingAccommodation,
+            @Path("id") Long id);
 
     @PUT("accommodations/decline/{id}")
-    Call<Accomodation> decline(@Body Accomodation decliningAccommodation, @Path("id") Long id);
+    Call<Accomodation> decline(
+            @Header("Authorization") String authorization,
+            @Body Accomodation decliningAccommodation,
+            @Path("id") Long id);
 
     @Multipart
     @POST("accommodations/{accommodationId}/upload-picture")
