@@ -13,6 +13,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -63,4 +64,21 @@ public interface RequestService {
             @Path("guestId") Long guestId
     );
 
+    @PUT("requests/cancel/{id}")
+    Call<ReservationRequest> cancelRequest(
+            @Header("Authorization") String authorization,
+            @Body ReservationRequest reservationRequest,
+            @Path("id") Long id);
+
+    @PUT("requests/accept/{id}")
+    Call<ReservationRequest> accept(
+            @Header("Authorization") String authorization,
+            @Body ReservationRequest reservationRequest,
+            @Path("id") Long id);
+
+    @PUT("requests/deny/{id}")
+    Call<ReservationRequest> decline(
+            @Header("Authorization") String authorization,
+            @Body ReservationRequest reservationRequest,
+            @Path("id") Long id);
 }

@@ -115,4 +115,16 @@ public class Comment implements Parcelable, Serializable {
         dest.writeDouble(rating);
         dest.writeParcelable(guest, flags);
     }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", date='" + date + '\'' +
+                ", rating=" + rating +
+                ", status=" + status +
+                ", guest=" + guest +
+                '}';
+    }
 }

@@ -1,7 +1,9 @@
 package com.example.booking_team22.clients;
 
+import com.example.booking_team22.model.AccommodationComments;
 import com.example.booking_team22.model.Accomodation;
 import com.example.booking_team22.model.Comment;
+import com.example.booking_team22.model.HostComments;
 import com.example.booking_team22.model.Status;
 import com.example.booking_team22.model.TimeSlot;
 
@@ -26,6 +28,14 @@ public interface CommentService {
     })
     @GET("comments")
     Call<ArrayList<Accomodation>> getAll();
+
+    @GET("comments/accommodations")
+    Call<ArrayList<AccommodationComments>> getAccommodationsComments(
+            @Header("Authorization") String authorization,@Query("status")String status);
+
+    @GET("comments/hosts")
+    Call<ArrayList<HostComments>> getHostsComments(
+            @Header("Authorization") String authorization,@Query("status")String status);
 
 
     @Headers({
@@ -91,6 +101,35 @@ public interface CommentService {
     Call<Comment> reportComment(@Header("Authorization") String authorization,
                                 @Body Status status,
                                 @Path("commentId") Long id);
+
+
+    @PUT("comments/approve/accommodations/{id}")
+    Call<Comment> acceptAccommodationComment(
+            @Header("Authorization") String authorization,
+            @Path("id") Long id,
+            @Body Comment comment
+    );
+
+    @PUT("comments/approve/hosts/{id}")
+    Call<Comment> acceptHostComment(
+            @Header("Authorization") String authorization,
+            @Path("id") Long id,
+            @Body Comment comment
+    );
+
+    @PUT("comments/decline/accommodations/{id}")
+    Call<Comment> declineAccommodationComment(
+            @Header("Authorization") String authorization,
+            @Path("id") Long id,
+            @Body Comment comment
+    );
+
+    @PUT("comments/decline/hosts/{id}")
+    Call<Comment> declineHostComment(
+            @Header("Authorization") String authorization,
+            @Path("id") Long id,
+            @Body Comment comment
+    );
 
 
     @Headers({

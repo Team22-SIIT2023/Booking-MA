@@ -30,14 +30,22 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.booking_team22.R;
+import com.example.booking_team22.clients.ClientUtils;
+import com.example.booking_team22.model.Comment;
 import com.example.booking_team22.model.RequestStatus;
 import com.example.booking_team22.model.Reservation;
 import com.example.booking_team22.model.ReservationRequest;
 import com.example.booking_team22.model.User;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -92,6 +100,9 @@ public class GuestRequestAdapter extends ArrayAdapter {
         }
         LinearLayout reservationCard = convertView.findViewById(R.id.request_card_item);
         Button deleteRequest=convertView.findViewById(R.id.deleteRequest);
+        Button cancelReservation = convertView.findViewById(R.id.cancelReservation);
+        Button acceptRequest = convertView.findViewById(R.id.acceptRequest);
+        Button declineRequest = convertView.findViewById(R.id.declineRequest);
         TextView timeSlot = convertView.findViewById(R.id.textViewTimeSlot);
         TextView price = convertView.findViewById(R.id.textViewPrice);
         TextView guest = convertView.findViewById(R.id.textViewGuest);
@@ -106,8 +117,20 @@ public class GuestRequestAdapter extends ArrayAdapter {
             reportGuestButton.setVisibility(View.GONE);
             guestCancellations.setVisibility(View.GONE);
             cancellationsLabel.setVisibility(View.GONE);
+            acceptRequest.setVisibility(View.GONE);
+            declineRequest.setVisibility(View.GONE);
+            if(reservation.getStatus()!=RequestStatus.ACCEPTED){
+                cancelReservation.setVisibility(View.GONE);
+            }
         }else{
+            acceptRequest.setVisibility(View.VISIBLE);
+            declineRequest.setVisibility(View.VISIBLE);
             deleteRequest.setVisibility(View.GONE);
+            cancelReservation.setVisibility(View.GONE);
+            if(reservation.getStatus()!=RequestStatus.PENDING){
+                acceptRequest.setVisibility(View.GONE);
+                declineRequest.setVisibility(View.GONE);
+            }
         }
         TextView guestNum = convertView.findViewById(R.id.textViewGuestNumber);
         TextView status = convertView.findViewById(R.id.textViewStatus);
@@ -169,10 +192,91 @@ public class GuestRequestAdapter extends ArrayAdapter {
                 });
             }
 
+            cancelReservation.setOnClickListener(v->{
+                cancel(position);
+            });
 
+            acceptRequest.setOnClickListener(v->{
+                accept(position);
+            });
 
+            declineRequest.setOnClickListener(v->{
+                decline(position);
+            });
         }
         return convertView;
+    }
+
+    private void accept(int position){
+        ReservationRequest request = aReservations.get(position);
+        if(userType.equals("ROLE_HOST")){
+            if(request.getStatus() == RequestStatus.PENDING){
+                Call<ReservationRequest> call = requestService.accept("Bearer " + accessToken,request,request.getId());
+                call.enqueue(new Callback<ReservationRequest>() {
+                    @Override
+                    public void onResponse(Call<ReservationRequest> call, Response<ReservationRequest> response) {
+                        if (response.isSuccessful()) {
+                            ReservationRequest result = response.body();
+                            Toast.makeText(context,"Reservation accepted!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReservationRequest> call, Throwable t) {
+                    }
+                });
+            }
+        }
+    };
+
+    private void decline(int position){
+        ReservationRequest request = aReservations.get(position);
+        if(userType.equals("ROLE_HOST")){
+            if(request.getStatus() == RequestStatus.PENDING){
+                Call<ReservationRequest> call = requestService.decline("Bearer " + accessToken,request,request.getId());
+                call.enqueue(new Callback<ReservationRequest>() {
+                    @Override
+                    public void onResponse(Call<ReservationRequest> call, Response<ReservationRequest> response) {
+                        if (response.isSuccessful()) {
+                            ReservationRequest result = response.body();
+                            Toast.makeText(context,"Reservation declined!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReservationRequest> call, Throwable t) {
+                    }
+                });
+            }
+        }
+    };
+
+    private void cancel(int position) {
+        ReservationRequest reservation = aReservations.get(position);
+        if(userType.equals("ROLE_GUEST")){
+            if(reservation.getStatus()==RequestStatus.ACCEPTED){
+                if(todayIsBeforeDeadline(reservation)){
+                    Call<ReservationRequest> call = requestService.cancelRequest("Bearer " + accessToken,reservation,reservation.getId());
+                    call.enqueue(new Callback<ReservationRequest>() {
+                        @Override
+                        public void onResponse(Call<ReservationRequest> call, Response<ReservationRequest> response) {
+                            if (response.isSuccessful()) {
+                                ReservationRequest result = response.body();
+                                Toast.makeText(context,"Reservation cancelled!", Toast.LENGTH_SHORT).show();
+                            } else {
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ReservationRequest> call, Throwable t) {
+                        }
+                    });
+                }
+                else{
+                    Toast.makeText(context,"You can't cancel reservation because of deadline.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
     public void showReportDialog() {
@@ -217,5 +321,15 @@ public class GuestRequestAdapter extends ArrayAdapter {
                 Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
             }
         });
+    }
+
+    public boolean todayIsBeforeDeadline(ReservationRequest reservation){
+        Integer daysBeforeDeadline = reservation.getAccommodation().getReservationDeadline();
+        String reservationStartDate = reservation.getTimeSlot().getStartDate();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate reservationStart = LocalDate.parse(reservationStartDate, dateFormatter);
+        LocalDate reservationDeadLineDate = reservationStart.minusDays(daysBeforeDeadline);
+        LocalDate today = LocalDate.now();
+        return today.isBefore(reservationDeadLineDate);
     }
 }

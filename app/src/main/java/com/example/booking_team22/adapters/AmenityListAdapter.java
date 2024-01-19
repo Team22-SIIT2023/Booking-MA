@@ -51,17 +51,21 @@ public class AmenityListAdapter extends ArrayAdapter<Amenity> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         Amenity amenity = getItem(position);
-        if(convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.amenity_card,
                     parent, false);
         }
         LinearLayout amenityCard = convertView.findViewById(R.id.amenity_card_item);
         TextView amenityName = convertView.findViewById(R.id.textViewAmenity);
-        CheckBox checkBox=convertView.findViewById(R.id.amenityCheckBox);
-        if(!visible){
+        CheckBox checkBox = convertView.findViewById(R.id.amenityCheckBox);
+        if (!visible) {
             checkBox.setVisibility(View.GONE);
         }
         amenityName.setText(amenity.getAmenityName());
+
+        //ovo je nova linija koda
+        checkBox.setChecked(checkedAmenities.contains(amenity));
+
         checkBox.setOnClickListener(v -> {
             if(checkBox.isChecked()){
                 checkedAmenities.add(amenity);
@@ -70,8 +74,14 @@ public class AmenityListAdapter extends ArrayAdapter<Amenity> {
             }
         });
 
-
-
         return convertView;
+    }
+
+    public void setCheckedAmenities(ArrayList<Amenity> checkedAmenities) {
+        this.checkedAmenities.clear();
+        if (checkedAmenities != null) {
+            this.checkedAmenities.addAll(checkedAmenities);
+        }
+        notifyDataSetChanged();
     }
 }

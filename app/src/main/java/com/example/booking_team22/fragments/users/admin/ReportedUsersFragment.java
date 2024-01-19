@@ -1,6 +1,11 @@
 package com.example.booking_team22.fragments.users.admin;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.booking_team22.clients.ClientUtils.userService;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,30 +16,35 @@ import androidx.fragment.app.ListFragment;
 import com.example.booking_team22.R;
 import com.example.booking_team22.adapters.CommentsAdapter;
 import com.example.booking_team22.adapters.UserListAdapter;
+import com.example.booking_team22.databinding.FragmentReportedCommentBinding;
+import com.example.booking_team22.databinding.FragmentReportedUserBinding;
 import com.example.booking_team22.fragments.account.AccountFragment;
 import com.example.booking_team22.model.Comment;
 import com.example.booking_team22.model.User;
 
 import java.util.ArrayList;
 
-public class ReportedUsersFragment extends ListFragment {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
-    private String mParam2;
+public class ReportedUsersFragment extends ListFragment {
 
     private ArrayList<User> users = new ArrayList<User>();
 
     UserListAdapter adapter;
+
+    private SharedPreferences sp;
+    private String userType;
+    private String accessToken;
+
+    FragmentReportedUserBinding binding;
     public ReportedUsersFragment() {
         // Required empty public constructor
     }
     public static ReportedUsersFragment newInstance(String param1, String param2) {
         ReportedUsersFragment fragment = new ReportedUsersFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,33 +52,41 @@ public class ReportedUsersFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        prepareProductList(users);
-        adapter = new UserListAdapter(getActivity(), users);
-        setListAdapter(adapter);
-        return inflater.inflate(R.layout.fragment_reported_user, container, false);
+        binding = FragmentReportedUserBinding.inflate(getLayoutInflater());
+        View root = binding.getRoot();
+
+        sp = getActivity().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
+
+        userType = sp.getString("userType","");
+        long id = sp.getLong("userId",0L);
+
+        Call<ArrayList<User>> callUser = userService.getUsersByStatus("Bearer " + accessToken,"REPORTED");
+        callUser.enqueue(new Callback<ArrayList<User>>() {
+            @Override
+            public void onResponse(Call<ArrayList<User>> call, Response<ArrayList<User>> response) {
+                if (response.code() == 200) {
+                    Log.d("USER", "Message received");
+                    users = response.body();
+                    adapter = new UserListAdapter(getActivity(), users);
+                    setListAdapter(adapter);
+                } else {
+                    Log.d("USER_REQUEST", "Message received: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<ArrayList<User>> call, Throwable t) {
+                Log.e("USER_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
+
+        return root;
     }
 
-    private void prepareProductList(ArrayList<User> users) {
-//        users.add(new User(
-//                "isidoraaleksic@yahoo.com","isidoricaslatkica",User.UserStatus.ACTIVE
-//        ));
-//        users.add(new User(
-//                "isidoraaleksic@yahoo.com","isidoricaslatkica", User.UserStatus.ACTIVE
-//        ));
-//        users.add(new User(
-//                "isidoraaleksic@yahoo.com","isidoricaslatkica", User.UserStatus.ACTIVE
-//        ));
-//        users.add(new User(
-//                "isidoraaleksic@yahoo.com","isidoricaslatkica", User.UserStatus.ACTIVE
-//        ));
-    }
 }

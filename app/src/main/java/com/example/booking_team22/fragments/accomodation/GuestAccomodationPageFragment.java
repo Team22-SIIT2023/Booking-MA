@@ -8,6 +8,10 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,6 +34,7 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.booking_team22.R;
 import com.example.booking_team22.adapters.AccomodationListAdapter;
@@ -51,19 +56,21 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GuestAccomodationPageFragment extends ListFragment {
+public class GuestAccomodationPageFragment extends ListFragment  implements SensorEventListener  {
     private int mYear, mMonth, mDay, mHour, mMinute;
-
+    private SensorManager sensorManager;
     public static ArrayList<Accomodation> products = new ArrayList<Accomodation>();
     AccomodationListAdapter adapter;
     AmenityListAdapter amenityListAdapter;
@@ -71,6 +78,13 @@ public class GuestAccomodationPageFragment extends ListFragment {
     private String endDate=null;
     private String location=null;
     private String type=null;
+
+    private long lastUpdate;
+
+    private static final int SHAKE_THRESHOLD = 800;
+    private float last_x;
+    private float last_y;
+    private float last_z;
     private List<String>amenitieStrings=new ArrayList<>();
     private int numberOfGuests=0;
     private int minPrice=0;
@@ -83,7 +97,10 @@ public class GuestAccomodationPageFragment extends ListFragment {
     private  BottomSheetDialog bottomSheetDialog;
     private FragmentAccomodationPageBinding binding;
     private SharedPreferences sp;
+    private String userType;
     private String accessToken;
+    private Long userId;
+
 
     public static GuestAccomodationPageFragment newInstance() {
         return new GuestAccomodationPageFragment();
@@ -95,8 +112,9 @@ public class GuestAccomodationPageFragment extends ListFragment {
         View root = binding.getRoot();
 
         sp = getActivity().getSharedPreferences("mySharedPrefs", Context.MODE_PRIVATE);
-
         accessToken = sp.getString("accessToken", "");
+        userType=sp.getString("userType","");
+        userId=sp.getLong("userId",0L);
 
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);
@@ -196,6 +214,9 @@ public class GuestAccomodationPageFragment extends ListFragment {
             if(!guestNum.getText().toString().equals("")){
                 numberOfGuests=Integer.parseInt(guestNum.getText().toString());
             }
+            else{
+                numberOfGuests=0;
+            }
             type = typeSpinner.getSelectedItem().toString();
             TextInputEditText startDateInput = binding.cicoInput;
             startDate = startDateInput.getText().toString();
@@ -204,7 +225,10 @@ public class GuestAccomodationPageFragment extends ListFragment {
             EditText destination = binding.locationText;
             if(!destination.getText().toString().equals("")){
                 location=destination.getText().toString();
+            }else{
+                location=null;
             }
+//            location=destination.getText().toString();
             if ( !startDate.isEmpty() && !endDate.isEmpty() && numberOfGuests != 0) {
                 long numberOfNights = ChronoUnit.DAYS.between(LocalDate.parse(startDate), LocalDate.parse(endDate));
                 for(Accomodation accomodation:products){
@@ -253,6 +277,11 @@ public class GuestAccomodationPageFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
+        sensorManager = (SensorManager) requireActivity().getSystemService(Context.SENSOR_SERVICE);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL);
+
         binding.cicoInput.setText("");
         binding.cicoInput2.setText("");
         binding.numberOfGuests.setText("");
@@ -260,8 +289,14 @@ public class GuestAccomodationPageFragment extends ListFragment {
         binding.typeSpinner.setSelection(0);
         pricesMap.clear();
         unitPricesMap.clear();
-        getDataFromClient(null,null,0,null,0,0,null,
-        null,null,null,null);
+        if(userType.equals("ROLE_GUEST")){
+            getDataFromClient(null,null,0,null,0,0,null,
+                null,null,null,null);
+        }
+        if(userType.equals("ROLE_HOST")){
+            getDataFromClient(null,null,0,null,0,0,null,
+                    null,null,null,userId.intValue());
+        }
     }
 
     private void getDataFromClient(String begin, String end, int guestNumber, String type,
@@ -328,5 +363,74 @@ public class GuestAccomodationPageFragment extends ListFragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        sensorManager.unregisterListener(this);
+    }
+
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        Spinner spinner = requireActivity().findViewById(R.id.btnSort);
+
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+
+            long curTime = System.currentTimeMillis();
+            // only allow one update every 100ms.
+            if ((curTime - lastUpdate) > 200) {
+                long diffTime = (curTime - lastUpdate);
+                lastUpdate = curTime;
+
+                float[] values = sensorEvent.values;
+                float x = values[0];
+                float y = values[1];
+                float z = values[2];
+
+                float speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
+
+                if (speed > SHAKE_THRESHOLD && spinner != null) {
+                    if (products != null){
+                        ArrayList<Accomodation> newList = new ArrayList<>();
+                        SharedPreferences.Editor editor = sp.edit();
+                        if (sp.contains("sort_type")) {
+                            if (sp.getString("sort_type", "ascending").equals("ascending")){
+                                sortList(newList, Comparator.reverseOrder());
+                                editor.putString("sort_type", "descending");
+                                spinner.setSelection(1);
+                            } else {
+                                sortList(newList, Comparator.naturalOrder());
+                                editor.putString("sort_type", "ascending");
+                                spinner.setSelection(0);
+                            }
+                            editor.apply();
+                            Log.i("REZ", "SORT = " + sp.getString("sort_type", "ascending"));
+                        } else {
+                            sortList(newList, Comparator.naturalOrder());
+                            editor.putString("sort_type", "ascending");
+                            spinner.setSelection(0);
+                            editor.apply();
+                        }
+                        products.clear();
+                        products.addAll(newList);
+                        adapter.notifyDataSetChanged();
+                        Log.d("REZ", "shake detected w/ speed: " + speed);
+                    }
+                }
+                last_x = x;
+                last_y = y;
+                last_z = z;
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+        if(sensor.getType() == Sensor.TYPE_ACCELEROMETER){
+            Log.i("REZ_ACCELEROMETER", String.valueOf(i));
+        }
+    }
+
+    public void sortList(ArrayList<Accomodation> newList, Comparator<? super String> keyComparator){
+        newList.addAll(products.stream()
+                .sorted(Comparator.comparing(Accomodation::getName, keyComparator))
+                .collect(Collectors.toList()));
     }
 }

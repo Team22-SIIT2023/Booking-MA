@@ -17,6 +17,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface UserService {
     @Headers({
@@ -63,5 +64,9 @@ public interface UserService {
                           @Path("guestId") Long guestId,
                           @Path("accommodationId")Long accommodationId);
 
+    @GET("users/status")
+    Call<ArrayList<User>> getUsersByStatus(@Header("Authorization") String authorization, @Query("status") String status);
 
+    @PUT("users/block/{userId}")
+    Call<User> blockUser(@Header("Authorization") String authorization, @Path("userId") Long userId, @Body User user);
 }

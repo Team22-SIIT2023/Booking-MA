@@ -3,7 +3,12 @@ package com.example.booking_team22.fragments.account;
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.booking_team22.clients.ClientUtils.userService;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -63,6 +68,7 @@ public class AccountFragment extends Fragment {
     FragmentAccountBinding binding;
     private SharedPreferences sp;
     private String userType;
+
     public AccountFragment() {
     }
 
@@ -100,7 +106,7 @@ public class AccountFragment extends Fragment {
         if(userType.equals("ROLE_ADMIN")){
             this.deleteUser.setVisibility(View.GONE);
         }
-        Call<User> callUser = userService.getUser(sp.getLong("userId",0L)); // Assuming you have a method in your UserApiClient to get a user by ID
+        Call<User> callUser = userService.getUser(id); // Assuming you have a method in your UserApiClient to get a user by ID
         callUser.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -127,7 +133,11 @@ public class AccountFragment extends Fragment {
         });
 
         return root;
-//        return inflater.inflate(R.layout.fragment_account, container, false);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     @Override
@@ -228,7 +238,6 @@ public class AccountFragment extends Fragment {
         updatedUser.setPhoneNumber(phoneNumber);
         return updatedUser;
     }
-
 
 
 }
