@@ -13,11 +13,11 @@
     <ImageView
         android:id="@+id/notification_icon"
         android:layout_width="30dp"
-        android:background="@color/red"
         android:layout_height="30dp"
         android:layout_marginEnd="25dp"
-        app:srcCompat="@drawable/ic_notification2"
-        android:contentDescription="notification" />
+        android:background="@color/red"
+        android:contentDescription="notification"
+        app:srcCompat="@drawable/ic_notification2" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -32,6 +32,7 @@
             android:layout_marginLeft="5dp"
             android:text="Date:12.12.2023."
             android:textSize="13sp" />
+
         <TextView
             android:id="@+id/notification_title"
             android:layout_width="match_parent"

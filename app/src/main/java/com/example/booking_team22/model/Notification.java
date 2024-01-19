@@ -5,27 +5,23 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.time.LocalDate;
+
 public class Notification implements Parcelable {
+
     private Long id;
+
+    private User user;
+
+    private String text;
+
     private String date;
-    private String title;
-    private String description;
 
-    public Notification(Long id, String date, String title,String description) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.date = date;
-    }
+    private NotificationType type;
 
-    public Notification() {
-    }
-    protected Notification(Parcel in) {
-        id = in.readLong();
-        title = in.readString();
-        description = in.readString();
-        date=in.readString();
-    }
+    private boolean deleted = Boolean.FALSE;
+
+    public Notification(){}
 
     public Long getId() {
         return id;
@@ -35,20 +31,20 @@ public class Notification implements Parcelable {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public User getUser() {
+        return user;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getDescription() {
-        return description;
+    public String getText() {
+        return text;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public String getDate() {
@@ -59,29 +55,49 @@ public class Notification implements Parcelable {
         this.date = date;
     }
 
-    @Override
-    public String toString() {
-        return "Notification{" +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", date='" + date + '\'' +
-                '}';
+    public NotificationType getType() {
+        return type;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setType(NotificationType type) {
+        this.type = type;
     }
 
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeLong(id);
-        dest.writeString(title);
-        dest.writeString(description);
-        dest.writeString(date);
+    public boolean isDeleted() {
+        return deleted;
     }
 
-    public static final Parcelable.Creator<Notification> CREATOR = new Parcelable.Creator<Notification>() {
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Notification(Long id, User user, String text, String date, NotificationType type, boolean deleted) {
+        this.id = id;
+        this.user = user;
+        this.text = text;
+        this.date = date;
+        this.type = type;
+        this.deleted = deleted;
+    }
+    public Notification(User user, String text, String date, NotificationType type) {
+        this.user = user;
+        this.text = text;
+        this.date = date;
+        this.type = type;
+    }
+
+    protected Notification(Parcel in) {
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readLong();
+        }
+        user = in.readParcelable(User.class.getClassLoader());
+        text = in.readString();
+        deleted = in.readByte() != 0;
+    }
+
+    public static final Creator<Notification> CREATOR = new Creator<Notification>() {
         @Override
         public Notification createFromParcel(Parcel in) {
             return new Notification(in);
@@ -92,4 +108,22 @@ public class Notification implements Parcelable {
             return new Notification[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(id);
+        }
+        dest.writeParcelable(user, flags);
+        dest.writeString(text);
+        dest.writeByte((byte) (deleted ? 1 : 0));
+    }
 }
