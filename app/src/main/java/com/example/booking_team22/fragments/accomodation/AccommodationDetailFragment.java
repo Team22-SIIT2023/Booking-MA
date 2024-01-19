@@ -1,7 +1,5 @@
 package com.example.booking_team22.fragments.accomodation;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import static com.example.booking_team22.clients.ClientUtils.accommodationService;
 import static com.example.booking_team22.clients.ClientUtils.notificationService;
 import static com.example.booking_team22.clients.ClientUtils.requestService;
@@ -11,13 +9,9 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -25,7 +19,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -55,14 +48,11 @@ import com.example.booking_team22.R;
 import com.example.booking_team22.adapters.AmenityListAdapter;
 import com.example.booking_team22.adapters.CommentsAdapter;
 import com.example.booking_team22.clients.ClientUtils;
-import com.example.booking_team22.databinding.CommentCardBinding;
 import com.example.booking_team22.databinding.FragmentAccommodationDetailBinding;
-import com.example.booking_team22.databinding.FragmentAccomodationPageBinding;
 import com.example.booking_team22.model.Accomodation;
 import com.example.booking_team22.model.Amenity;
 import com.example.booking_team22.model.Comment;
 import com.example.booking_team22.model.Guest;
-import com.example.booking_team22.model.GuestNotificationSettings;
 import com.example.booking_team22.model.HostNotificationSettings;
 import com.example.booking_team22.model.Notification;
 import com.example.booking_team22.model.NotificationType;
@@ -71,23 +61,16 @@ import com.example.booking_team22.model.ReservationRequest;
 import com.example.booking_team22.model.Status;
 import com.example.booking_team22.model.TimeSlot;
 import com.example.booking_team22.model.User;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.io.IOException;
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -192,6 +175,12 @@ public class AccommodationDetailFragment extends Fragment {
         binding = FragmentAccommodationDetailBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        sp = getActivity().getSharedPreferences("mySharedPrefs", Context.MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
+
+        userType = sp.getString("userType","");
+        long id = sp.getLong("userId",0L);
+
 
         String street=detailAccommodation.getAddress().getAddress();
         String city=detailAccommodation.getAddress().getCity();
@@ -219,11 +208,7 @@ public class AccommodationDetailFragment extends Fragment {
 //            throw new RuntimeException(e);
 //        }
 
-        sp = getActivity().getSharedPreferences("mySharedPrefs", Context.MODE_PRIVATE);
-        accessToken = sp.getString("accessToken", "");
 
-        userType = sp.getString("userType","");
-        long id = sp.getLong("userId",0L);
 
         getSettings();
 
@@ -292,6 +277,8 @@ public class AccommodationDetailFragment extends Fragment {
             showReportDialog();
 
         });
+
+
 
 
         viewHostCommentsButton = binding.viewHostComments;
@@ -661,7 +648,7 @@ public class AccommodationDetailFragment extends Fragment {
     }
 
     private void createNotification(String text, NotificationType type) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate = dateFormat.format(new Date());
         Notification notification=new Notification(detailAccommodation.getHost(),text,formattedDate,type);
         Call<Notification> call = notificationService.createUserNotification("Bearer "+accessToken,notification);

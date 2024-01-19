@@ -21,6 +21,16 @@ public class Notification implements Parcelable {
 
     private boolean deleted = Boolean.FALSE;
 
+    private boolean read=Boolean.FALSE;
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
+    }
+
     public Notification(){}
 
     public Long getId() {
@@ -79,6 +89,15 @@ public class Notification implements Parcelable {
         this.type = type;
         this.deleted = deleted;
     }
+    public Notification(Long id, User user, String text, String date, NotificationType type, boolean deleted,boolean read) {
+        this.id = id;
+        this.user = user;
+        this.text = text;
+        this.date = date;
+        this.type = type;
+        this.deleted = deleted;
+        this.read=read;
+    }
     public Notification(User user, String text, String date, NotificationType type) {
         this.user = user;
         this.text = text;
@@ -95,6 +114,7 @@ public class Notification implements Parcelable {
         user = in.readParcelable(User.class.getClassLoader());
         text = in.readString();
         deleted = in.readByte() != 0;
+        read=in.readByte()!=0;
     }
 
     public static final Creator<Notification> CREATOR = new Creator<Notification>() {
@@ -125,5 +145,6 @@ public class Notification implements Parcelable {
         dest.writeParcelable(user, flags);
         dest.writeString(text);
         dest.writeByte((byte) (deleted ? 1 : 0));
+        dest.writeByte((byte) (read ? 1 : 0));
     }
 }

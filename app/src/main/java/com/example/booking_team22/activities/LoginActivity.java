@@ -1,25 +1,16 @@
 package com.example.booking_team22.activities;
 
 import static com.example.booking_team22.clients.ClientUtils.authenticationService;
-import static com.example.booking_team22.clients.ClientUtils.userService;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.booking_team22.databinding.ActivityLoginBinding;
-import com.example.booking_team22.fragments.users.admin.AccommodationApprovalFragment;
-import com.example.booking_team22.model.User;
 import com.example.booking_team22.model.UserCredentials;
-import com.example.booking_team22.model.UserTokenState;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
