@@ -2,6 +2,8 @@ package com.example.booking_team22.adapters;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static com.example.booking_team22.fragments.users.admin.ReportedCommentsFragment.getAccommodationComments;
+
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +22,9 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.booking_team22.R;
 import com.example.booking_team22.clients.ClientUtils;
+import com.example.booking_team22.fragments.users.admin.ReportedCommentsFragment;
+import com.example.booking_team22.fragments.users.admin.ReportedUsersFragment;
+import com.example.booking_team22.model.AccommodationComments;
 import com.example.booking_team22.model.Comment;
 import com.example.booking_team22.model.Notification;
 import com.example.booking_team22.model.Status;
@@ -110,6 +115,16 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
                 reportAccommodationComm.setVisibility(View.INVISIBLE);
                 reportButton.setVisibility(View.INVISIBLE);
             }
+            if(userType.equals("ROLE_ADMIN")){
+                deleteAccommodationComm.setVisibility(View.INVISIBLE);
+                reportAccommodationComm.setVisibility(View.INVISIBLE);
+                reportButton.setVisibility(View.INVISIBLE);
+                acceptButton.setVisibility(View.VISIBLE);
+                declineButton.setVisibility(View.VISIBLE);
+                if(selectedComment.getStatus().equals(Status.PENDING)){
+                    declineButton.setVisibility(View.INVISIBLE);
+                }
+            }
             commentCard.setOnClickListener(v -> {
 
             });
@@ -122,9 +137,112 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
             reportAccommodationComm.setOnClickListener(v -> {
                 reportComment();
             });
+
+            acceptButton.setOnClickListener(v->{
+                acceptComment(position);
+            });
+
+            declineButton.setOnClickListener(v->{
+                declineComment(position);
+            });
         }
         return convertView;
     }
+
+    public void acceptComment(int position){
+        Comment comment = aComments.get(position);
+        if(isInAccommodationComments(comment.getId())){
+            Call<Comment> callComment = ClientUtils.commentService.acceptAccommodationComment("Bearer " + accessToken, comment.getId(), comment);
+            callComment.enqueue(new Callback<Comment>() {
+                @Override
+                public void onResponse(Call<Comment> call, Response<Comment> response) {
+                    if (response.code() == 200) {
+                        Log.d("COMMENTS", "Meesage recieved");
+                        System.out.println(response.body());
+
+                    } else {
+                        Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                    }
+                }
+                @Override
+                public void onFailure(Call<Comment> call, Throwable t) {
+                    Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+                }
+            });
+        }
+        else {
+            Call<Comment> callComment = ClientUtils.commentService.acceptHostComment("Bearer " + accessToken, comment.getId(), comment);
+            callComment.enqueue(new Callback<Comment>() {
+                @Override
+                public void onResponse(Call<Comment> call, Response<Comment> response) {
+                    if (response.code() == 200) {
+                        Log.d("COMMENTS", "Meesage recieved");
+                        System.out.println(response.body());
+
+                    } else {
+                        Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                    }
+                }
+                @Override
+                public void onFailure(Call<Comment> call, Throwable t) {
+                    Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+                }
+            });
+        }
+    };
+
+    public boolean isInAccommodationComments(Long id){
+        ArrayList<AccommodationComments> accommodationComments1 = getAccommodationComments();
+        for(AccommodationComments aComment:accommodationComments1){
+            Log.d(String.valueOf(aComment.getId()),String.valueOf(id));
+            if(aComment.getId().equals(id)){
+                return true;
+            }
+        }
+        return false;
+    };
+
+    public void declineComment(int position){
+        Comment comment = aComments.get(position);
+        if(isInAccommodationComments(comment.getId())){
+            Call<Comment> callComment = ClientUtils.commentService.declineAccommodationComment("Bearer " + accessToken, comment.getId(), comment);
+            callComment.enqueue(new Callback<Comment>() {
+                @Override
+                public void onResponse(Call<Comment> call, Response<Comment> response) {
+                    if (response.code() == 200) {
+                        Log.d("COMMENTS", "Meesage recieved");
+                        System.out.println(response.body());
+
+                    } else {
+                        Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                    }
+                }
+                @Override
+                public void onFailure(Call<Comment> call, Throwable t) {
+                    Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+                }
+            });
+        }
+        else {
+            Call<Comment> callComment = ClientUtils.commentService.declineHostComment("Bearer " + accessToken, comment.getId(), comment);
+            callComment.enqueue(new Callback<Comment>() {
+                @Override
+                public void onResponse(Call<Comment> call, Response<Comment> response) {
+                    if (response.code() == 200) {
+                        Log.d("COMMENTS", "Meesage recieved");
+                        System.out.println(response.body());
+
+                    } else {
+                        Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                    }
+                }
+                @Override
+                public void onFailure(Call<Comment> call, Throwable t) {
+                    Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+                }
+            });
+        }
+    };
 
 
     public void reportComment() {
@@ -158,7 +276,6 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
                     Log.d("COMMENTS", "Meesage recieved");
                     System.out.println(response.body());
                     selectedComment = response.body();
-
                 } else {
                     Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
                 }

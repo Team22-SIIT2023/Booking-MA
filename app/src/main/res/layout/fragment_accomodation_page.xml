@@ -144,6 +144,8 @@
                 android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
 
+
+
             <Button
                 android:id="@+id/btnFilters"
                 android:layout_width="140dp"
@@ -162,7 +164,18 @@
                 android:textSize="13sp"
                 android:text="Search"
                 tools:ignore="TextContrastCheck" />
+                <Spinner
+                    android:id="@+id/btnSort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="0.3"
+                    android:text="Sort"
+                    android:tooltipText="sort"
+                    android:contentDescription="sort"
+                    />
             </LinearLayout>
+
         </LinearLayout>
         <ListView
             android:id="@android:id/list"

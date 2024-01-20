@@ -99,8 +99,8 @@ public class AccommodationDetailFragment extends Fragment {
     private Guest guest;
     private String reportText;
 
+    List<Calendar> disabledDates = new ArrayList<>();
     private HostNotificationSettings hostSettings;
-
 
     public AccommodationDetailFragment() { // Required empty public constructor
     }
@@ -122,24 +122,8 @@ public class AccommodationDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         detailAccommodation = args.getParcelable("detailAccommodation");
-        if (detailAccommodation != null) {
-//            accommodation.setId(detailAccommodation.getId());
-//            accommodation.setName(detailAccommodation.getName());
-//            accommodation.setDescription(detailAccommodation.getDescription());
-//            accommodation.setHost(detailAccommodation.getHost());
-//            accommodation.setAmenities(detailAccommodation.getAmenities());
-//            accommodation.setFreeTimeSlots(detailAccommodation.getFreeTimeSlots());
-//            accommodation.setAddress(detailAccommodation.getAddress());
-//            accommodation.setAutomaticConfirmation(detailAccommodation.isAutomaticConfirmation());
-//            accommodation.setMinGuests(detailAccommodation.getMinGuests());
-//            accommodation.setMaxGuests(detailAccommodation.getMaxGuests());
-//            accommodation.setPriceList(detailAccommodation.getPriceList());
-//            accommodation.setPrice(detailAccommodation.getPrice());
-//            accommodation.setUnitPrice(detailAccommodation.getUnitPrice());
-//            accommodation.setStatus(detailAccommodation.getStatus());
-//            accommodation.setType(detailAccommodation.getType());
-//            accommodation.setReservationDeadline(detailAccommodation.getReservationDeadline());
-        }
+        sp = getActivity().getSharedPreferences("mySharedPrefs", MODE_PRIVATE);
+        accessToken = sp.getString("accessToken", "");
     }
 
     private boolean enableListScroll(ListView listView) {
@@ -315,7 +299,6 @@ public class AccommodationDetailFragment extends Fragment {
         Spinner numberOfGuestsSpinner = binding.spinner;
         TextInputEditText priceInput = binding.priceInput;
         CalendarView calendarView=(CalendarView) binding.calendarView;
-        List<Calendar> disabledDates = new ArrayList<>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         for(TimeSlot timeSlot:detailAccommodation.getFreeTimeSlots()){
             try {
@@ -528,7 +511,7 @@ public class AccommodationDetailFragment extends Fragment {
 
             String startDate=startDateInput.getText().toString();
             String endDate=endDateInput.getText().toString();
-
+            RequestStatus status;
             int numberOfGuests = (int) numberOfGuestsSpinner.getSelectedItem();
             double price = Double.parseDouble(priceInput.getText().toString());
 
@@ -536,7 +519,12 @@ public class AccommodationDetailFragment extends Fragment {
             this.guest = new Guest(user.getId(), user.getFirstName(), user.getLastName(), user.getAddress(),
                                 user.getPhoneNumber(), user.getAccount(), user.getPicturePath(),
                                 user.getLastPasswordResetDate(), user.getActivationLink(), user.getActivationLinkDate());
-            RequestStatus status = RequestStatus.PENDING;
+            if(detailAccommodation.isAutomaticConfirmation()){
+                status = RequestStatus.ACCEPTED;
+            }
+            else{
+                status = RequestStatus.PENDING;
+            }
             ReservationRequest reservationRequest = new ReservationRequest(
                     timeSlot,
                     price,
@@ -550,23 +538,34 @@ public class AccommodationDetailFragment extends Fragment {
 
         return root;
     }
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        mapView.onResume();
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        mapView.onPause();
-//    }
-//
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        mapView.onDestroy();
-//    }
+
+    private boolean isDateAllowed(Calendar selectedDate) {
+        for (Calendar disabledDate : disabledDates) {
+            if (selectedDate.equals(disabledDate)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+//     @Override
+//     public void onResume() {
+//         super.onResume();
+//         mapView.onResume();
+//     }
+
+//     @Override
+//     public void onPause() {
+//         super.onPause();
+//         mapView.onPause();
+//     }
+
+//     @Override
+//     public void onDestroy() {
+//         super.onDestroy();
+//         mapView.onDestroy();
+//     }
 
     private void updateApprovalType(Accomodation accommodation) {
         Call<Accomodation> call = accommodationService.updateAccommodationRequestApproval("Bearer "+accessToken,accommodation);
@@ -598,14 +597,39 @@ public class AccommodationDetailFragment extends Fragment {
                 if (response.isSuccessful()) {
                     ReservationRequest createdRequest = response.body();
                     Log.d("POST_SUCCESS", "Reservation request created: " + createdRequest);
+                    if(reservationRequest.getAccommodation().isAutomaticConfirmation()){
+                        Call<Accomodation> callTimeSlots = accommodationService.changeFreeTimeSlots("Bearer "+accessToken,reservationRequest.getAccommodation().getId(), reservationRequest.getTimeSlot());
+
+                        callTimeSlots.enqueue(new Callback<Accomodation>() {
+                            @Override
+                            public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
+                                if (response.isSuccessful()) {
+                                    Accomodation accommodationDTO = response.body();
+                                    Toast toastMessage=new Toast(requireContext());
+                                    toastMessage.setText("Reservation accepted immediately!");
+                                    toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
+                                    toastMessage.setDuration(Toast.LENGTH_SHORT);
+                                    toastMessage.show();
+                                } else {
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Accomodation> call, Throwable t) {
+                            }
+                        });
+                    }
+                    else{
+                        Toast toastMessage=new Toast(requireContext());
+                        toastMessage.setText("Reservation request sent!");
+                        toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
+                        toastMessage.setDuration(Toast.LENGTH_SHORT);
+                        toastMessage.show();
+                    }
                     String text="User "+createdRequest.getGuest().getAccount().getUsername()+" has made a reservation request for " + createdRequest.getAccommodation().getName();
                     if(checkNotificationStatus(NotificationType.RESERVATION_REQUEST)){
                         createNotification(text, NotificationType.RESERVATION_REQUEST);
                     }
-                    Toast toastMessage=new Toast(requireContext());
-                    toastMessage.setText("Reservation request sent!");
-                    toastMessage.setDuration(Toast.LENGTH_SHORT);
-                    toastMessage.show();
 
                 } else {
                     if(response.code()==400){

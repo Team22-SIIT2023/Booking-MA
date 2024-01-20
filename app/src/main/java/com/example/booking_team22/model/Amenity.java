@@ -9,6 +9,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Amenity implements Parcelable, Serializable {
 
@@ -93,4 +94,17 @@ public class Amenity implements Parcelable, Serializable {
             return new Amenity[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Amenity amenity = (Amenity) o;
+        return id == amenity.id && Objects.equals(name, amenity.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 }

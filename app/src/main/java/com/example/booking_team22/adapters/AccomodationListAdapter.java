@@ -290,7 +290,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                     public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
                         if (response.code() == 200) {
                             Accomodation acceptingAccommodation = response.body();
-                            Call<Accomodation> callAccept1 = ClientUtils.accommodationService.accept(acceptingAccommodation, acceptingAccommodation.getId());
+                            Call<Accomodation> callAccept1 = ClientUtils.accommodationService.accept("Bearer " + accessToken,acceptingAccommodation, acceptingAccommodation.getId());
                             callAccept1.enqueue(new Callback<Accomodation>() {
                                 @Override
                                 public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
@@ -325,7 +325,7 @@ public class AccomodationListAdapter extends ArrayAdapter<Accomodation> {
                     public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
                         if (response.code() == 200) {
                             Accomodation decliningAccommodation = response.body();
-                            Call<Accomodation> callDecline1 = ClientUtils.accommodationService.decline(decliningAccommodation, decliningAccommodation.getId());
+                            Call<Accomodation> callDecline1 = ClientUtils.accommodationService.decline("Bearer " + accessToken,decliningAccommodation, decliningAccommodation.getId());
                             callDecline1.enqueue(new Callback<Accomodation>() {
                                 @Override
                                 public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
