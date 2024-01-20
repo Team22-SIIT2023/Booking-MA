@@ -1,5 +1,6 @@
 package com.example.booking_team22.fragments.accomodation;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.booking_team22.clients.ClientUtils.accommodationService;
 import static com.example.booking_team22.clients.ClientUtils.notificationService;
 import static com.example.booking_team22.clients.ClientUtils.requestService;
@@ -175,7 +176,7 @@ public class AccommodationDetailFragment extends Fragment {
         binding = FragmentAccommodationDetailBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        sp = getActivity().getSharedPreferences("mySharedPrefs", Context.MODE_PRIVATE);
+        sp = getActivity().getSharedPreferences("mySharedPrefs", MODE_PRIVATE);
         accessToken = sp.getString("accessToken", "");
 
         userType = sp.getString("userType","");
