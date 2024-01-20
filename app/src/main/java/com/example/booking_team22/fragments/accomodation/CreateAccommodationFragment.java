@@ -29,6 +29,7 @@ import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.content.ContentResolver;
+import android.widget.Toast;
 
 
 import com.example.booking_team22.R;
@@ -48,6 +49,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -309,29 +312,29 @@ public class CreateAccommodationFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                addNewProduct();
+                if (addNewProduct()) {
+                    Call<Accomodation> call = ClientUtils.accommodationService.createAccommodation("Bearer " + accessToken,newAccommodation);
 
-                Call<Accomodation> call = ClientUtils.accommodationService.createAccommodation("Bearer " + accessToken,newAccommodation);
-
-                call.enqueue(new Callback<Accomodation>() {
-                    @Override
-                    public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
-                        if (response.code() == 201){
-                            Log.d("REZ","Meesage recieved");
-                            Accomodation product1 = response.body();
-                            uploadImages(product1.getId());
-                            System.out.println(product1);
-                            //getActivity().getSupportFragmentManager().popBackStack();
-                        }else{
-                            Log.d("REZ","Meesage recieved: "+response.code());
+                    call.enqueue(new Callback<Accomodation>() {
+                        @Override
+                        public void onResponse(Call<Accomodation> call, Response<Accomodation> response) {
+                            if (response.code() == 201){
+                                Log.d("OKKK","Meesage recieved");
+                                Accomodation product1 = response.body();
+                                uploadImages(product1.getId());
+                                System.out.println(product1);
+                                getActivity().getSupportFragmentManager().popBackStack();
+                            }else{
+                                Log.d("REZ","Meesage recieved: "+response.code());
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Accomodation> call, Throwable t) {
-                        Log.d("REZ", t.getMessage() != null?t.getMessage():"error");
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<Accomodation> call, Throwable t) {
+                            Log.d("REZ", t.getMessage() != null?t.getMessage():"error");
+                        }
+                    });
+                }
             }
         });
     }
@@ -342,17 +345,24 @@ public class CreateAccommodationFragment extends Fragment {
         city = accommodationCity.getEditText().getText().toString();
         country = accommodationCountry.getEditText().getText().toString();
         description = accommodationDescription.getEditText().getText().toString();
-        price = Double.parseDouble(accommodationPrice.getEditText().getText().toString());
-        minGuests = Integer.parseInt(accommodationMinGuests.getEditText().getText().toString());
-        maxGuests = Integer.parseInt(accommodationMaxGuests.getEditText().getText().toString());
-        resDeadline = Integer.parseInt(reservationDeadline.getEditText().getText().toString());
         startDate = cicoInput.getText().toString();
         endDate = cicoInput2.getText().toString();
         AccommodationType type = getAccommodationType(accommodationType.getSelectedItem().toString());
 
-//        if (checkAllFields()) {
-//            return false;
-//        }
+        if (!checkAllFields()) {
+            return false;
+        }
+
+        price = Double.parseDouble(accommodationPrice.getEditText().getText().toString());
+        minGuests = Integer.parseInt(accommodationMinGuests.getEditText().getText().toString());
+        maxGuests = Integer.parseInt(accommodationMaxGuests.getEditText().getText().toString());
+        resDeadline = Integer.parseInt(reservationDeadline.getEditText().getText().toString());
+
+        if (price < 0 || minGuests < 0 || maxGuests < 0 || resDeadline < 0) {
+            Toast.makeText(getActivity(),"Incorrect input!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
 
         newAccommodation = new Accomodation();
         newAccommodation.setName(name);
@@ -407,6 +417,7 @@ public class CreateAccommodationFragment extends Fragment {
     }
 
     public boolean checkAllFields() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (name.length() == 0) {
             this.accommodationName.setError("This field is required!");
             return false;
@@ -443,8 +454,12 @@ public class CreateAccommodationFragment extends Fragment {
             this.reservationDeadline.setError("This field is required!");
             return false;
         }
-        if (maxGuests < minGuests) {
+        if (Integer.parseInt(accommodationMaxGuests.getEditText().getText().toString()) < Integer.parseInt(accommodationMinGuests.getEditText().getText().toString())) {
             this.accommodationMaxGuests.setError("Max guests number must be greater!");
+            return false;
+        }
+        if (LocalDate.parse(cicoInput.getText().toString(),formatter).isAfter(LocalDate.parse(cicoInput2.getText().toString(),formatter))) {
+            this.cicoInput2.setError("End date must be after start date!");
             return false;
         }
         return true;

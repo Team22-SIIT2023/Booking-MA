@@ -271,6 +271,10 @@ public class AccommodationDetailFragment extends Fragment {
         host.setText(hostTxt);
 
         reportHostButton = binding.reportHostButton;
+        if (userType.equals("ROLE_HOST") || userType.equals("ROLE_ADMIN")) {
+            reportHostButton.setVisibility(View.INVISIBLE);
+        }
+
         reportHostButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_report_user,0,0,0);
 
         reportHostButton.setOnClickListener(v ->{
@@ -278,7 +282,10 @@ public class AccommodationDetailFragment extends Fragment {
             showReportDialog();
 
         });
-
+        if (userType.equals("ROLE_HOST") || userType.equals("ROLE_ADMIN")) {
+            binding.accommodationCommentLayout.setVisibility(View.GONE);
+            binding.hostCommentLayout.setVisibility(View.GONE);
+        }
 
 
 
@@ -370,10 +377,13 @@ public class AccommodationDetailFragment extends Fragment {
                     Log.d("COMMENTS", "Meesage recieved");
                     System.out.println(response.body());
                     comments = response.body();
-                    commentsAdapter=new CommentsAdapter(getActivity(),comments);
-                    binding.commentsList.setAdapter(commentsAdapter);
-                    enableListScroll(binding.commentsList);
-                    commentsAdapter.notifyDataSetChanged();
+                    if(getActivity()!=null){
+                        commentsAdapter=new CommentsAdapter(getActivity(),comments);
+                        binding.commentsList.setAdapter(commentsAdapter);
+                        enableListScroll(binding.commentsList);
+                        commentsAdapter.notifyDataSetChanged();
+                    }
+
                 } else {
                     Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
                 }
@@ -396,18 +406,21 @@ public class AccommodationDetailFragment extends Fragment {
                         for(String imageCode:images){
                             byte[] decodedBytes = Base64.decode(imageCode, Base64.DEFAULT);
                             Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-                            ImageView imageView = new ImageView(getActivity());
-                            imageView.setImageBitmap(bitmap);
-                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                                    LinearLayout.LayoutParams.WRAP_CONTENT
-                            );
-                            layoutParams.width = 650; // Set your desired width in pixels
-                            layoutParams.height = 650; // Set your desired height in pixels
-                            layoutParams.leftMargin=10;
-                            layoutParams.rightMargin=10;
-                            imageView.setLayoutParams(layoutParams);
-                            linearLayout.addView(imageView);
+                            if(getActivity()!=null){
+                                ImageView imageView = new ImageView(getActivity());
+                                imageView.setImageBitmap(bitmap);
+                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT
+                                );
+                                layoutParams.width = 650; // Set your desired width in pixels
+                                layoutParams.height = 650; // Set your desired height in pixels
+                                layoutParams.leftMargin=10;
+                                layoutParams.rightMargin=10;
+                                imageView.setLayoutParams(layoutParams);
+                                linearLayout.addView(imageView);
+                            }
+
                         }
                     }
                 }
@@ -424,20 +437,28 @@ public class AccommodationDetailFragment extends Fragment {
 
         LinearLayout approvalLayout=binding.approvalLayout;
 
-        if(!userType.equals("ROLE_HOST")){
+        if(userType.equals("ROLE_GUEST")){
             approvalLayout.setVisibility(View.GONE);
             editButton.setVisibility(View.INVISIBLE);
             editPriceButton.setVisibility(View.INVISIBLE);
-        }else{
+        }
+        if(userType.equals("ROLE_HOST")){
             reservationLayout.setVisibility(View.GONE);
             addComment.setVisibility(View.GONE);
-            Button approvalBtn=binding.changeApprovalBtn;
-            approvalBtn.setOnClickListener(v -> {
-                detailAccommodation.setAutomaticConfirmation(rbtAutomatic.isChecked());
-                updateApprovalType(detailAccommodation);
-
-            });
         }
+        if(userType.equals("ROLE_ADMIN")){
+            approvalLayout.setVisibility(View.GONE);
+            editButton.setVisibility(View.INVISIBLE);
+            editPriceButton.setVisibility(View.INVISIBLE);
+            reservationLayout.setVisibility(View.GONE);
+            addComment.setVisibility(View.GONE);
+        }
+        Button approvalBtn=binding.changeApprovalBtn;
+        approvalBtn.setOnClickListener(v -> {
+            detailAccommodation.setAutomaticConfirmation(rbtAutomatic.isChecked());
+            updateApprovalType(detailAccommodation);
+
+        });
 
         editButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit,0,0,0);
         editPriceButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar,0,0,0);

@@ -225,9 +225,6 @@ public class GuestAccomodationPageFragment extends ListFragment  implements Sens
             }else{
                 numberOfGuests=0;
             }
-            else{
-                numberOfGuests=0;
-            }
             type = typeSpinner.getSelectedItem().toString();
             TextInputEditText startDateInput = binding.cicoInput;
             startDate = startDateInput.getText().toString();
@@ -319,7 +316,7 @@ public class GuestAccomodationPageFragment extends ListFragment  implements Sens
         }
         if(userType.equals("ROLE_HOST")){
             getDataFromClient(null,null,0,null,0,0,null,
-                    null,null,null,userId.intValue());
+                    null,null,null,userId);
         }
     }
 
