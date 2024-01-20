@@ -39,7 +39,7 @@ public interface AccommodationService {
             @Query("country") String country,
             @Query("city") String city,
             @Query("amenities") List<String> amenities,
-            @Query("hostId") Integer hostId
+            @Query("hostId") Long hostId
     );
   
 //    @Headers({
@@ -95,7 +95,7 @@ public interface AccommodationService {
             @Query("begin") String begin,
             @Query("end") String end);
 
-    @PUT("accommodations/approval")
+    @PUT("accommodations/request/approval")
     Call<Accomodation> updateAccommodationRequestApproval( @Header("Authorization") String authorization,
                                                            @Body Accomodation accomodation);
 

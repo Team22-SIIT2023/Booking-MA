@@ -49,12 +49,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.Request;
 import retrofit2.Call;
@@ -70,6 +72,8 @@ public class GuestAccomodationPageFragment extends ListFragment {
     private String startDate=null;
     private String endDate=null;
     private String location=null;
+    private String country=null;
+    private String city=null;
     private String type=null;
     private List<String>amenitieStrings=new ArrayList<>();
     private int numberOfGuests=0;
@@ -104,9 +108,13 @@ public class GuestAccomodationPageFragment extends ListFragment {
         Button btnFilters = binding.btnFilters;
         bottomSheetDialog = new BottomSheetDialog(getActivity());
 
-        String[] arraySpinner = new String[] {
-                "","HOTEL", "MOTEL", "VILLA", "APARTMENT"
-        };
+        AccommodationType[] enumValues = AccommodationType.values();
+
+        String[] arraySpinner = new String[enumValues.length + 1];
+        arraySpinner[0] = "";
+        for (int i = 0; i < enumValues.length; i++) {
+            arraySpinner[i + 1] = enumValues[i].name();
+        }
         Spinner typeSpinner = (Spinner) binding.typeSpinner;
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, arraySpinner);
@@ -195,6 +203,8 @@ public class GuestAccomodationPageFragment extends ListFragment {
             EditText guestNum = binding.numberOfGuests;
             if(!guestNum.getText().toString().equals("")){
                 numberOfGuests=Integer.parseInt(guestNum.getText().toString());
+            }else{
+                numberOfGuests=0;
             }
             type = typeSpinner.getSelectedItem().toString();
             TextInputEditText startDateInput = binding.cicoInput;
@@ -204,6 +214,8 @@ public class GuestAccomodationPageFragment extends ListFragment {
             EditText destination = binding.locationText;
             if(!destination.getText().toString().equals("")){
                 location=destination.getText().toString();
+            }else{
+                location=null;
             }
             if ( !startDate.isEmpty() && !endDate.isEmpty() && numberOfGuests != 0) {
                 long numberOfNights = ChronoUnit.DAYS.between(LocalDate.parse(startDate), LocalDate.parse(endDate));
@@ -237,9 +249,22 @@ public class GuestAccomodationPageFragment extends ListFragment {
             for(Amenity amenity:amenityListAdapter.checkedAmenities){
                 amenitieStrings.add(amenity.getAmenityName());
             }
+            if(location!=null){
+                String [] countryCity=location.split(",");
+                if(countryCity.length>1 && !Objects.equals(countryCity[1], "")){
+                    country=countryCity[0];
+                    city=countryCity[1];
+                }else{
+                    country=countryCity[0];
+                    city=null;
+                }
+            }else{
+                country=null;
+                city=null;
+            }
             getDataFromClient(startDate,endDate,numberOfGuests,type,
                     minPrice,maxPrice,null,
-                    location,null,amenitieStrings,null);
+                    country,city,amenitieStrings,null);
         });
 
         return root;
@@ -266,7 +291,7 @@ public class GuestAccomodationPageFragment extends ListFragment {
 
     private void getDataFromClient(String begin, String end, int guestNumber, String type,
                                    double startPrice, double endPrice, String status,
-                                   String country, String city, List<String> amenities, Integer hostId) {
+                                   String country, String city, List<String> amenities, Long hostId) {
 
         Call<ArrayList<Accomodation>> call = accommodationService.getAll("Bearer " + accessToken,
                 begin, end, guestNumber, type, startPrice, endPrice, status, country, city, amenities, hostId
