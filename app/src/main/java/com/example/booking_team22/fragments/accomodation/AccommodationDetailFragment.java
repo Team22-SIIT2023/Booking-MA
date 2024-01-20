@@ -494,9 +494,12 @@ public class AccommodationDetailFragment extends Fragment {
         setDate(binding.cicoInput);
         setDate(binding.cicoInput2);
 
-        Integer[] arraySpinner = new Integer[] {
-                1, 2,3,4,5
-        };
+        Integer[] arraySpinner = new Integer[detailAccommodation.getMaxGuests() - detailAccommodation.getMinGuests() + 1];
+
+        for (int i = detailAccommodation.getMinGuests(); i <= detailAccommodation.getMaxGuests(); i++) {
+            arraySpinner[i - detailAccommodation.getMinGuests()] = i;
+        }
+
         Spinner s = (Spinner) binding.spinner;
         ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(getActivity(),
                 android.R.layout.simple_spinner_item, arraySpinner);
@@ -573,7 +576,6 @@ public class AccommodationDetailFragment extends Fragment {
                     Accomodation updatedAccommodation = response.body();
                     Toast toastMessage=new Toast(requireContext());
                     toastMessage.setText("Request approval type changed!");
-                    toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
                     toastMessage.setDuration(Toast.LENGTH_SHORT);
                     toastMessage.show();
                 } else {
@@ -633,7 +635,6 @@ public class AccommodationDetailFragment extends Fragment {
                     if(response.code()==400){
                         Toast toastMessage=new Toast(requireContext());
                         toastMessage.setText("Request cannot be sent!");
-                        toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
                         toastMessage.setDuration(Toast.LENGTH_SHORT);
                         toastMessage.show();
                     }

@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -38,6 +39,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 
 
+import com.example.booking_team22.adapters.AccomodationListAdapter;
+import com.example.booking_team22.model.Accomodation;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.io.source.ByteArrayOutputStream;
 import com.itextpdf.kernel.geom.PageSize;
@@ -102,6 +105,7 @@ public class ReportsFragment extends Fragment {
     private Long userId = null;
 
     private ArrayList<Report> reports = new ArrayList<Report>();
+    private ArrayList<Accomodation> accomodations = new ArrayList<>();
     private Report yearlyReport;
 
 
@@ -135,10 +139,8 @@ public class ReportsFragment extends Fragment {
         setDate(binding.cicoInput2);
 
         Spinner nameSpinner = (Spinner) binding.accNameSpinner;
-        List<String> arraySpinner = new ArrayList<>();  //load from backend!
-        arraySpinner.add("");
-        arraySpinner.add("Accommodation Name 1");
-        arraySpinner.add("Accommodation Name 3");
+        List<String> arraySpinner = loadHostAccommodations();
+        arraySpinner.add(0,"");
         ArrayAdapter<String> namesAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, arraySpinner);
         namesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -174,6 +176,33 @@ public class ReportsFragment extends Fragment {
 
 
         return root;
+    }
+
+    private List<String> loadHostAccommodations() {
+        List<String>accommodationNames=new ArrayList<>();
+        Call<ArrayList<Accomodation>> call = accommodationService.getAll("Bearer " + accessToken,
+                null, null, 0, null, 0, 0, null, null, null, null, userId
+        );
+        call.enqueue(new Callback<ArrayList<Accomodation>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Accomodation>> call, Response<ArrayList<Accomodation>> response) {
+                if (response.code() == 200) {
+                    Log.d("REZ", "Meesage recieved");
+                    System.out.println(response.body());
+                    accomodations = response.body();
+                    for(Accomodation a:accomodations){
+                        accommodationNames.add(a.getName());
+                    }
+                } else {
+                    Log.d("REZ", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<ArrayList<Accomodation>> call, Throwable t) {
+                Log.d("REZ", t.getMessage() != null?t.getMessage():"error");
+            }
+        });
+        return  accommodationNames;
     }
 
 
