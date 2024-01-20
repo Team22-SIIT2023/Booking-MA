@@ -164,7 +164,7 @@
                         android:layout_marginTop="15dp"
                         android:layout_marginBottom="10dp"
                         android:layout_width="150dp"
-                        android:layout_height="48dp"
+                        android:layout_height="55dp"
                         android:backgroundTint="@color/darkPurple"
                         android:text="View comments"
                         android:textSize="13sp" />
@@ -172,6 +172,11 @@
 
                 </LinearLayout>
             </LinearLayout>
+            <LinearLayout
+                android:id="@+id/hostCommentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/hostComment"
@@ -181,6 +186,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Write host comment.."
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -202,7 +208,7 @@
                 android:scaleY="1.7"/>
             <Button
                 android:id="@+id/commentHostButton"
-                android:layout_width="115dp"
+                android:layout_width="124dp"
                 android:layout_gravity="right"
                 android:layout_marginBottom="15dp"
                 android:layout_marginRight="12dp"
@@ -210,6 +216,7 @@
                 android:layout_height="50dp"
                 android:text="Comment"
                 />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/approvalLayout"
@@ -468,6 +475,12 @@
                     android:paddingRight="2dp"
                     />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/accommodationCommentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/inputAccommodationComment"
                 android:layout_width="match_parent"
@@ -495,7 +508,7 @@
                 android:scaleY="1.7"/>
             <Button
                 android:id="@+id/commentAccommmodationButton"
-                android:layout_width="115dp"
+                android:layout_width="126dp"
                 android:layout_gravity="right"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="12dp"
@@ -503,6 +516,7 @@
                 android:layout_height="50dp"
                 android:text="Comment"
                 />
+            </LinearLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
