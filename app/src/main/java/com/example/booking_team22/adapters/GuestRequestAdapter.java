@@ -1,5 +1,6 @@
 package com.example.booking_team22.adapters;
 
+import static com.example.booking_team22.clients.ClientUtils.notificationService;
 import static com.example.booking_team22.clients.ClientUtils.userService;
 
 import android.app.AlertDialog;
@@ -32,6 +33,10 @@ import androidx.navigation.Navigation;
 import com.example.booking_team22.R;
 import com.example.booking_team22.clients.ClientUtils;
 import com.example.booking_team22.model.Comment;
+import com.example.booking_team22.model.GuestNotificationSettings;
+import com.example.booking_team22.model.HostNotificationSettings;
+import com.example.booking_team22.model.Notification;
+import com.example.booking_team22.model.NotificationType;
 import com.example.booking_team22.model.RequestStatus;
 import com.example.booking_team22.model.Reservation;
 import com.example.booking_team22.model.ReservationRequest;
@@ -63,6 +68,9 @@ public class GuestRequestAdapter extends ArrayAdapter {
     private SharedPreferences sp;
     private String accessToken;
     private String userType;
+    private GuestNotificationSettings guestSettings;
+
+    private HostNotificationSettings hostSettings;
 
     public GuestRequestAdapter(FragmentActivity context, ArrayList<ReservationRequest> reservations){
         super(context, R.layout.guest_request_card, reservations);
@@ -71,7 +79,6 @@ public class GuestRequestAdapter extends ArrayAdapter {
         sp= context.getApplicationContext().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
         accessToken=sp.getString("accessToken","");
         userType=sp.getString("userType","");
-
     }
 
     @Override
@@ -94,6 +101,8 @@ public class GuestRequestAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         reservation = getItem(position);
+        getGuestSettings();
+        getHostSettings();
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.guest_request_card,
                     parent, false);
@@ -161,6 +170,7 @@ public class GuestRequestAdapter extends ArrayAdapter {
                             public void onResponse(Call<ReservationRequest> call, Response<ReservationRequest> response) {
                                 if (response.isSuccessful()) {
                                     ReservationRequest deletedRequest = response.body();
+
                                 } else {
                                     Log.d("DELETE_ERROR", "Error code: " + response.code());
                                 }
@@ -218,6 +228,11 @@ public class GuestRequestAdapter extends ArrayAdapter {
                         if (response.isSuccessful()) {
                             ReservationRequest result = response.body();
                             Toast.makeText(context,"Reservation accepted!", Toast.LENGTH_SHORT).show();
+                            assert result != null;
+                            String text="Host " + request.getAccommodation().getHost().getAccount().getUsername()+" has accepted a reservation request for " + request.getAccommodation().getName();
+                            if(checkNotificationStatus(NotificationType.RESERVATION_RESPONSE)){
+                                createNotification(text, NotificationType.RESERVATION_RESPONSE);
+                            }
                         }
                     }
 
@@ -240,6 +255,11 @@ public class GuestRequestAdapter extends ArrayAdapter {
                         if (response.isSuccessful()) {
                             ReservationRequest result = response.body();
                             Toast.makeText(context,"Reservation declined!", Toast.LENGTH_SHORT).show();
+                            assert result != null;
+                            String text="Host " + request.getAccommodation().getHost().getAccount().getUsername()+" has declined a reservation request for " + request.getAccommodation().getName();
+                            if(checkNotificationStatus(NotificationType.RESERVATION_RESPONSE)){
+                                createNotification(text, NotificationType.RESERVATION_RESPONSE);
+                            }
                         }
                     }
 
@@ -250,6 +270,75 @@ public class GuestRequestAdapter extends ArrayAdapter {
             }
         }
     };
+
+    private void createNotification(String text, NotificationType type) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = dateFormat.format(new Date());
+        Notification notification=new Notification(reservation.getGuest(),text,formattedDate,type);
+        Call<Notification> call = notificationService.createUserNotification("Bearer "+accessToken,notification);
+        call.enqueue(new Callback<Notification>() {
+            @Override
+            public void onResponse(Call<Notification> call, Response<Notification> response) {
+                if (response.code() == 200) {
+                    Log.d("COMMENTS", "Meesage recieved");
+                    System.out.println(response.body());
+
+                } else {
+                    Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<Notification> call, Throwable t) {
+                Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
+    }
+
+    public void getHostSettings(){
+        Call<HostNotificationSettings> callSettings = notificationService.getHostNotificationSettings("Bearer "+accessToken,reservation.getAccommodation().getHost().getId());
+        callSettings.enqueue(new Callback<HostNotificationSettings>() {
+            @Override
+            public void onResponse(Call<HostNotificationSettings> call, Response<HostNotificationSettings> response) {
+                if (response.code() == 200) {
+                    hostSettings=response.body();
+                    System.out.println(response.body());
+
+                    Log.d("COMMENTS", "Meesage recieved");
+
+
+                } else {
+                    Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<HostNotificationSettings> call, Throwable t) {
+                Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
+    }
+
+    public void getGuestSettings(){
+        Call<GuestNotificationSettings> callSettings = notificationService.getGuestNotificationSettings("Bearer "+accessToken,reservation.getGuest().getId());
+        callSettings.enqueue(new Callback<GuestNotificationSettings>() {
+            @Override
+            public void onResponse(Call<GuestNotificationSettings> call, Response<GuestNotificationSettings> response) {
+                if (response.code() == 200) {
+                    guestSettings=response.body();
+                    System.out.println(response.body());
+
+                    Log.d("COMMENTS", "Meesage recieved");
+
+
+                } else {
+                    Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(Call<GuestNotificationSettings> call, Throwable t) {
+                Log.e("COMMENTS_REQUEST", "Error: " + t.getMessage(), t);
+            }
+        });
+    }
 
     private void cancel(int position) {
         ReservationRequest reservation = aReservations.get(position);
@@ -263,6 +352,10 @@ public class GuestRequestAdapter extends ArrayAdapter {
                             if (response.isSuccessful()) {
                                 ReservationRequest result = response.body();
                                 Toast.makeText(context,"Reservation cancelled!", Toast.LENGTH_SHORT).show();
+                                String text="Guest " + reservation.getGuest().getAccount().getUsername()+" has cancelled a reservation for" + reservation.getAccommodation().getName();
+                                if(checkNotificationStatus(NotificationType.RESERVATION_CANCELLED)){
+                                    createNotification(text, NotificationType.RESERVATION_CANCELLED);
+                                }
                             } else {
                             }
                         }
@@ -331,5 +424,15 @@ public class GuestRequestAdapter extends ArrayAdapter {
         LocalDate reservationDeadLineDate = reservationStart.minusDays(daysBeforeDeadline);
         LocalDate today = LocalDate.now();
         return today.isBefore(reservationDeadLineDate);
+    }
+
+    public boolean checkNotificationStatus(NotificationType type){
+        if (NotificationType.RESERVATION_RESPONSE==type && guestSettings.isRequestResponded()) {
+            return true;
+        }
+        if (NotificationType.RESERVATION_CANCELLED==type && hostSettings.isReservationCancelled()) {
+            return true;
+        }
+        return false;
     }
 }
