@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:layout_marginTop="7dp"
+    android:background="@drawable/backround"
+    android:backgroundTint="@color/purple"
+    android:id="@+id/comment_card_item">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <TextView
+        android:id="@+id/comment_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text="Date:12.12.2023."
+        android:textSize="13sp" />
+    <Button
+        android:id="@+id/report_accommodation_comment"
+        android:layout_width="55dp"
+        android:layout_height="40dp"
+        android:textAlignment="center"
+        android:layout_marginLeft="120dp"
+        android:backgroundTint="@color/purple" />
+
+    <Button
+        android:id="@+id/delete_accommodation_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:textAlignment="center"
+        android:layout_marginLeft="5dp"
+        android:backgroundTint="@color/purple" />
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/comment_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="5dp"
+        android:text="email"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <RatingBar
+        android:id="@+id/ratingAcc"
+        style="@style/Widget.AppCompat.RatingBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="10dp"
+        android:progressTint="@color/yellow"
+        android:rating="3"
+        android:scaleX="1.2"
+        android:scaleY="1.2" />
+
+    <TextView
+        android:id="@+id/comment_text"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginLeft="5dp"
+        android:text="Message"
+        android:textSize="17sp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:backgroundTint="@color/violet"
+            android:id="@+id/acceptComment"
+            android:layout_height="38dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:textSize="11sp"
+            android:text="Accept"
+            android:textColor="@color/white"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="48sp"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            >
+        </Button>
+        <Button
+            android:backgroundTint="@color/violet"
+            android:id="@+id/declineComment"
+            android:layout_height="38dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:textSize="11sp"
+            android:text="Decline"
+            android:textColor="@color/white"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="48sp"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            >
+        </Button>
+        <Button
+            android:backgroundTint="@color/violet"
+            android:id="@+id/reportComment"
+            android:layout_height="38dp"
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:textSize="11sp"
+            android:text="Report"
+            android:visibility="invisible"
+            android:textColor="@color/white"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="48sp"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            >
+        </Button>
+
+    </LinearLayout>
+</LinearLayout>

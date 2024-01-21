@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.accomodation.GuestAccomodationPageFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".fragments.products.ProductsPageFragment"
+        >
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp">
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:cardCornerRadius="2dp"
+                app:cardBackgroundColor="@color/darkPurple"
+                app:cardElevation="1dp">
+                <Spinner
+                    android:id="@+id/typeSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+            </androidx.cardview.widget.CardView>
+            <EditText
+                android:id="@+id/locationText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:hint="Country, City"/>
+            <EditText
+                android:id="@+id/numberOfGuests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="guest num"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/rangeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp">
+            <TextView
+                android:id="@+id/minValueText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Min: $0"/>
+            <SeekBar
+                android:id="@+id/minSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="20000"
+                android:progress="0"/>
+
+            <SeekBar
+                android:id="@+id/maxSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="20000"
+                android:progress="20000"/>
+            <TextView
+                android:id="@+id/maxValueText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Max: $20000"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/backround"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                app:endIconMode="custom"
+                android:layout_marginRight="3dp"
+                app:endIconDrawable="@drawable/ic_calendar"
+                android:hint="start date">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/cicoInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="true"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_calendar"
+                android:hint="end date">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/cicoInput2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="true"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+
+
+            <Button
+                android:id="@+id/btnFilters"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:layout_marginRight="3dp"
+                android:textSize="13sp"
+                android:text="@string/filters"
+                tools:ignore="TextContrastCheck" />
+
+            <Button
+                android:id="@+id/btnAcceptFilters"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:textSize="13sp"
+                android:text="Search"
+                tools:ignore="TextContrastCheck" />
+                <Spinner
+                    android:id="@+id/btnSort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="0.3"
+                    android:text="Sort"
+                    android:tooltipText="sort"
+                    android:contentDescription="sort"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/accomodation_card"
+            />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

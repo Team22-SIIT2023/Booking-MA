@@ -1,0 +1,84 @@
+<resources>
+    <string name="app_name">Booking-team22</string>
+    <string name="usernameTxt">Username</string>
+    <string name="passwordTxt">Password</string>
+    <string name="loginTxt">Login</string>
+    <string name="signupTxt">"Don't have an account?"</string>
+    <string name="signupButtonText">"Sign up"</string>
+    <string name="firstName">"First name"</string>
+    <string name="LastName">"Last name"</string>
+    <string name="adress">Address</string>
+    <string name="messageSignUp"><i>"Bee"</i>"come a member, sign up!"</string>
+    <string name="hello_blank_fragment">"Hello blank fragment"</string>
+    <string name="accomodationButton">"View accomodation"</string>
+    <string name="title">My account</string>
+    <string name="name">Name:</string>
+    <string name="myName">Isidora</string>
+    <string name="lastName">Last name:</string>
+    <string name="myLastName">Aleksic</string>
+    <string name="address">Address:</string>
+    <string name="country">Country:</string>
+    <string name="city">City:</string>
+    <string name="myAddress">Novi Sad</string>
+    <string name="phoneNumber">Phone number:</string>
+    <string name="myPhoneNumber">0691234567</string>
+    <string name="username">Username:</string>
+    <string name="myUsername">isiiiii_</string>
+    <string name="password1">Password:</string>
+    <string name="myPassword">isidorajenajlepsa</string>
+    <string name="password2">Confirm password:</string>
+    <string name="email">Email:</string>
+    <string name="myEmail">aleksicisidora@yahoo.com</string>
+    <string name="saveChanges">SAVE CHANGES</string>
+    <string name="deleteAccount">DELETE ACCOUNT</string>
+    <string name="passwordRepeatTxt">Repeat password</string>
+    <string name="phone">Phone number</string>
+    <string name="detailsOfAccommodation">Details</string>
+    <string name="filters">Amenities</string>
+    <string name="Type">Accommodation type</string>
+    <string name="apartment">Apartment</string>
+    <string name="motel">Motel</string>
+    <string name="villa">Villa</string>
+    <string name="hotel">Hotel</string>
+
+    <string name="facilities">Amenities available</string>
+    <string name="freeWifi">wifi</string>
+    <string name="pool">pool</string>
+    <string name="airConditioning">air conditioning</string>
+    <string name="spa">spa</string>
+    <string name="tv">tv</string>
+    <string name="breakfast">breakfast</string>
+    <string name="petFriendly">pet friendly</string>
+    <string name="bar">bar</string>
+    <string name="kitchen">kitchen</string>
+    <string name="balcony">balcony</string>
+
+    <string name="propertyRating">Property rating</string>
+    <string name="oneStar">1 star</string>
+    <string name="twoStars">2 stars</string>
+    <string name="threeStars">3 stars</string>
+    <string name="fourStars">4 stars</string>
+    <string name="fiveStars">5 stars</string>
+    <string name="accommodationName"> Brand New DobHouse in Budapest</string>
+    <string name="accommodationDescription"> "DobHouse, situated in the heart of Budapest at 1072 Budapest, Dob utca 46, Hungary, is a shining example of contemporary comfort and style. This brand-new accommodation promises a delightful stay, blending modern amenities with a prime location."
+    </string>
+    <string name="availableAmenities"> Available amenities</string>
+    <string name="view_reservation">View reservation</string>
+    <string name="cancel">Cancel\n</string>
+    <string name="rating">Rating\n</string>
+    <string name="Accepted">Accepted\n</string>
+    <string name="Cancelled">Cancelled</string>
+    <string name="Waiting">Waiting</string>
+    <string name="status">Request status</string>
+    <string name="availableDates">Available dates\n</string>
+    <string name="addressRegister">Address</string>
+    <string name="forgot_password"><a href="">Forgot password?</a></string>
+    <string name="hostDescription">Name: Pera Peric\nSome basic information about the host of this accommodation</string>
+
+    <string name="magnetic_field">Magnetic field:</string>
+    <string name="non_gravity_accelerometer">Non-gravity accelerometer:</string>
+    <string name="accelerometer">Accelerometer:</string>
+    <string name="proximity_sensor">Proximity sensor:</string>
+    <string name="gyroscope">Gyroscope:</string>
+    <string name="sensors">Sensors</string>
+</resources>
