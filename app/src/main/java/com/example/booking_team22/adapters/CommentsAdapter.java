@@ -42,10 +42,14 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
     private Comment selectedComment;
     private String accessToken;
 
+    private FragmentActivity context;
+
+
 
     public CommentsAdapter(FragmentActivity context, ArrayList<Comment> comments){
         super(context, R.layout.comment_card, comments);
         aComments = comments;
+        this.context = context;
         sp = context.getApplicationContext().getSharedPreferences("mySharedPrefs",MODE_PRIVATE);
         accessToken = sp.getString("accessToken", "");
         userType = sp.getString("userType","");
@@ -254,7 +258,7 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
                     Log.d("COMMENTS", "Meesage recieved");
                     System.out.println(response.body());
                     selectedComment = response.body();
-
+                    Toast.makeText(context,"Successfully reported!", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
                 }
@@ -276,6 +280,7 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
                     Log.d("COMMENTS", "Meesage recieved");
                     System.out.println(response.body());
                     selectedComment = response.body();
+                    Toast.makeText(context,"Successfully deleted!", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("COMMENT LOS", "Meesage recieved: " + response.code());
                 }

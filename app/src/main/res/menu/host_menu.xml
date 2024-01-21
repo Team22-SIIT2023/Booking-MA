@@ -37,6 +37,11 @@
         android:icon="@drawable/ic_account"
         android:orderInCategory="300"
         app:showAsAction="always" />
+    <item android:id="@+id/nav_login"
+        android:title="Login"
+        android:icon="@drawable/ic_logout"
+        android:orderInCategory="300"
+        app:showAsAction="always" />
 
 
 </menu>
