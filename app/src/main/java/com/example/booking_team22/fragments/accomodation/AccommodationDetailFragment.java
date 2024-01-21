@@ -629,7 +629,7 @@ public class AccommodationDetailFragment extends Fragment {
                                     Accomodation accommodationDTO = response.body();
                                     Toast toastMessage=new Toast(requireContext());
                                     toastMessage.setText("Reservation accepted immediately!");
-                                    toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
+//                                    toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
                                     toastMessage.setDuration(Toast.LENGTH_SHORT);
                                     toastMessage.show();
                                 } else {
@@ -644,7 +644,7 @@ public class AccommodationDetailFragment extends Fragment {
                     else{
                         Toast toastMessage=new Toast(requireContext());
                         toastMessage.setText("Reservation request sent!");
-                        toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
+//                        toastMessage.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 16);
                         toastMessage.setDuration(Toast.LENGTH_SHORT);
                         toastMessage.show();
                     }

@@ -89,4 +89,8 @@
         android:label="Notifications"
         tools:layout="@layout/fragment_notification_settings"
         />
+    <activity
+        android:id="@+id/nav_login"
+        android:name="com.example.booking_team22.activities.LoginActivity"
+        tools:layout="@layout/activity_login"/>
 </navigation>
